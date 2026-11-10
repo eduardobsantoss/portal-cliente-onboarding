@@ -1,6 +1,8 @@
+import { AnimatePresence } from 'motion/react';
 import type { CanhotoUploadState } from '@/flows/portal/dashboard/hooks/useCanhotoUpload';
 import type { CarteiraState } from '@/flows/portal/dashboard/hooks/useCarteira';
 import type { OverlaysState } from '@/flows/portal/dashboard/hooks/useDashboardOverlays';
+import type { GroupSwitchState } from '@/flows/portal/dashboard/hooks/useGroupSwitch';
 import type { LinkSelectionState } from '@/flows/portal/dashboard/hooks/useLinkSelection';
 import type { OperationsState } from '@/flows/portal/dashboard/hooks/useOperations';
 import type { SacadoContactsState } from '@/flows/portal/dashboard/hooks/useSacadoContacts';
@@ -14,12 +16,15 @@ import { LinkSelectionModal } from '@/flows/portal/dashboard/modais/LinkSelectio
 import { OperationDetailsModal } from '@/flows/portal/dashboard/modais/OperationDetailsModal/OperationDetailsModal';
 import { OperationRequestModal } from '@/flows/portal/dashboard/modais/OperationRequestModal';
 import { PendingTaskModal } from '@/flows/portal/dashboard/modais/PendingTaskModal';
+import { GroupSwitchLoadingOverlay } from '@/flows/portal/dashboard/toasts/GroupSwitchLoadingOverlay';
+import { SuccessOperationToast } from '@/flows/portal/dashboard/toasts/SuccessOperationToast';
 import { TitleDetailsModal } from '@/flows/portal/dashboard/modais/TitleDetailsModal/TitleDetailsModal';
 import { FIRST_PENDING_NOTIFICATION } from '@/mocks/portalNotifications';
 import type { Titulo } from '@/types/titulo';
 
 interface DashboardModalsProps {
   ops: OperationsState;
+  group: GroupSwitchState;
   carteira: CarteiraState;
   overlays: OverlaysState;
   sacado: SacadoContactsState;
@@ -29,7 +34,7 @@ interface DashboardModalsProps {
 }
 
 /** Todos os modais do portal; cada um decide sozinho se está aberto a partir das props. */
-export const DashboardModals = ({ ops, carteira, overlays, sacado, canhoto, link, resolutionTitulo }: DashboardModalsProps) => (
+export const DashboardModals = ({ ops, group, carteira, overlays, sacado, canhoto, link, resolutionTitulo }: DashboardModalsProps) => (
   <>
     {/* Operation Details Modal */}
     <OperationDetailsModal
@@ -84,6 +89,18 @@ export const DashboardModals = ({ ops, carteira, overlays, sacado, canhoto, link
 
     {/* Filtros Carteira Modal */}
     <CarteiraFilterModal isOpen={carteira.showFilterModal} onClose={() => carteira.setShowFilterModal(false)} />
+
+    {/* Success Notification Toast */}
+    <AnimatePresence>
+      {ops.showSuccessOperationToast && (
+        <SuccessOperationToast onClose={() => ops.setShowSuccessOperationToast(false)} />
+      )}
+    </AnimatePresence>
+
+    {/* Loading Overlay for Group Switch */}
+    <AnimatePresence>
+      {group.isLoadingGroup && <GroupSwitchLoadingOverlay selectedGroup={group.selectedGroup} />}
+    </AnimatePresence>
 
     {/* Confirmation Modal */}
     <ConfirmacaoModal

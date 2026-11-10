@@ -1,4 +1,3 @@
-import { AnimatePresence } from 'motion/react';
 import { DashboardModals } from './DashboardModals';
 import { DashboardNotices } from './DashboardNotices';
 import { DashboardTabContent } from './DashboardTabContent';
@@ -15,8 +14,6 @@ import { PageHeader } from './layout/PageHeader';
 import { Sidebar } from './layout/Sidebar';
 import { SidebarOverlay } from './layout/SidebarOverlay';
 import { TopHeader } from './layout/TopHeader';
-import { GroupSwitchLoadingOverlay } from './toasts/GroupSwitchLoadingOverlay';
-import { SuccessOperationToast } from './toasts/SuccessOperationToast';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -111,6 +108,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
 
       <DashboardModals
         ops={ops}
+        group={group}
         carteira={carteira}
         overlays={overlays}
         sacado={sacado}
@@ -118,18 +116,6 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
         link={link}
         resolutionTitulo={resolveScreen.resolutionTitulo}
       />
-
-      {/* Success Notification Toast */}
-      <AnimatePresence>
-        {ops.showSuccessOperationToast && (
-          <SuccessOperationToast onClose={() => ops.setShowSuccessOperationToast(false)} />
-        )}
-      </AnimatePresence>
-
-      {/* Loading Overlay for Group Switch */}
-      <AnimatePresence>
-        {group.isLoadingGroup && <GroupSwitchLoadingOverlay selectedGroup={group.selectedGroup} />}
-      </AnimatePresence>
     </div>
   );
 };

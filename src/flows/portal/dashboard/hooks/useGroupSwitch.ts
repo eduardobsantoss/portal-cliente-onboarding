@@ -20,3 +20,5 @@ export function useGroupSwitch() {
 
   return { selectedGroup, isLoadingGroup, handleGroupChange };
 }
+
+export type GroupSwitchState = ReturnType<typeof useGroupSwitch>;
