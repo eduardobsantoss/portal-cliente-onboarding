@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { OnboardingPageShell } from '@/components/layout/OnboardingPageShell';
-import { OnboardingProgressSteps } from '@/components/layout/OnboardingProgressSteps';
 import { MOCK_COMPANY_CNPJ, MOCK_COMPANY_NAME } from '@/mocks/onboardingCompany';
 import { DEFAULT_ONBOARDING_SOCIOS } from '@/mocks/onboardingDocumentSocios';
 import type { AccountType } from '@/types/dadosComplementares';
@@ -30,9 +29,16 @@ export const OnboardingDocumentUpload: React.FC<OnboardingDocumentUploadProps> =
   cnpj = MOCK_COMPANY_CNPJ,
   tipoEmpresa = 'Sociedade empresária limitada',
   hasProcurador = false,
+  documentsMode: documentsModeProp,
+  initialDocuments = null,
+  adjustmentRequestId = 0,
+  appliedAdjustmentRequestId = 0,
+  onDocumentsChange,
+  onAdjustmentApplied,
   onSubmitDocs,
   onBack,
 }) => {
+  const documentsMode = documentsModeProp ?? 'initial';
   const requiredDocumentsInput: RequiredDocumentsInput = {
     accountType,
     socios,
@@ -53,7 +59,14 @@ export const OnboardingDocumentUpload: React.FC<OnboardingDocumentUploadProps> =
     handleAttachAllDemo,
     handleDocumentNumberChange,
     dismissUploadError,
-  } = useDocumentUploads(buildDocuments, requiredDocumentsInput);
+  } = useDocumentUploads(buildDocuments, requiredDocumentsInput, {
+    initialDocuments,
+    onDocumentsChange,
+    mode: documentsMode,
+    adjustmentRequestId,
+    appliedAdjustmentRequestId,
+    onAdjustmentApplied,
+  });
 
   const {
     totalMandatory,
@@ -67,12 +80,9 @@ export const OnboardingDocumentUpload: React.FC<OnboardingDocumentUploadProps> =
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Envio de Documentos"
-      mainClassName="max-w-3xl w-full mx-auto my-auto py-8 space-y-6"
-      headerAction={<AttachAllDemoButton onClick={handleAttachAllDemo} />}
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-8 space-y-6"
+      footerAction={<AttachAllDemoButton onClick={handleAttachAllDemo} />}
     >
-      {/* Stepper Indicator: Dados -> Documentos -> Assinatura -> Análise */}
-      <OnboardingProgressSteps currentStep={2} />
-
       {/* Main Card */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
@@ -109,7 +119,7 @@ export const OnboardingDocumentUpload: React.FC<OnboardingDocumentUploadProps> =
           <DocumentUploadActionsBar
             isAllMandatoryUploaded={isAllMandatoryUploaded}
             hasPendingRegularization={hasPendingRegularization}
-            hasRegularization={hasRegularization}
+            hasRegularization={hasRegularization || documentsMode === 'adjustment'}
             onBack={onBack}
             onSubmit={() => onSubmitDocs('pending')}
           />

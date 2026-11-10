@@ -15,7 +15,7 @@ export const SignerList: React.FC<SignerListProps> = ({ reps, allSigned, onToggl
       <div className="flex items-center justify-between px-1">
         <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
           <Users size={15} className="text-gci" />
-          Representantes Legais Habilitados
+          Signatários
         </h3>
         <span className="text-[11px] text-slate-400">
           {allSigned ? 'Todas as assinaturas coletadas' : 'Aguardando formalização'}

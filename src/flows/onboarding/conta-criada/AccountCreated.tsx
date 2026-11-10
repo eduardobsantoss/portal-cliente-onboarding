@@ -35,7 +35,7 @@ export const AccountCreated: React.FC<AccountCreatedProps> = ({
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Conta Ativa"
-      mainClassName="max-w-2xl w-full mx-auto my-auto py-8"
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-8"
       beforeFooter={
         /* Modal Baixar App Ceres Agrofinance */
         isAppModalOpen && (

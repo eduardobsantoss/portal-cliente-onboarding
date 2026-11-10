@@ -2,6 +2,9 @@ import type { AccountType } from '@/types/dadosComplementares';
 import type { NonPartnerRepresentative } from '@/types/representante';
 import type { Socio } from '@/types/socio';
 
+/** `adjustment`: retorno simulado da análise pedindo reenvio de alguns documentos. */
+export type DocumentsMode = 'initial' | 'adjustment';
+
 export interface OnboardingDocumentUploadProps {
   accountType?: AccountType;
   socios?: Socio[];
@@ -10,6 +13,12 @@ export interface OnboardingDocumentUploadProps {
   cnpj?: string;
   tipoEmpresa?: string;
   hasProcurador?: boolean;
+  documentsMode?: DocumentsMode;
+  initialDocuments?: DocumentUploadItem[] | null;
+  adjustmentRequestId?: number;
+  appliedAdjustmentRequestId?: number;
+  onDocumentsChange?: (documents: DocumentUploadItem[]) => void;
+  onAdjustmentApplied?: (requestId: number) => void;
   onSubmitDocs: (outcome?: 'approved' | 'rejected' | 'pending') => void;
   onBack: () => void;
   onCancelRequest?: () => void;

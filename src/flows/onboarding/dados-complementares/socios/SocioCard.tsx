@@ -46,13 +46,13 @@ export const SocioCard: React.FC<SocioCardProps> = ({
           </p>
         </>
       }
-      actionsClassName="flex items-center gap-3 self-end sm:self-center"
+      actionsClassName="flex items-center gap-3 self-end sm:self-center shrink-0"
       actionsPrefix={
         /* Checkbox Representante Legal no card do sócio */
         <CheckboxField
           checked={Boolean(socio.isRepresentanteLegal)}
           onChange={() => onToggleRepresentante(socio.id)}
-          labelClassName="flex items-center gap-1.5 cursor-pointer px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-[11px] font-semibold text-slate-700 transition-colors"
+          labelClassName="flex items-center gap-1.5 cursor-pointer px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-[11px] font-semibold text-slate-700 transition-colors whitespace-nowrap shrink-0"
         >
           Representante legal
         </CheckboxField>

@@ -28,7 +28,7 @@ export const TermsAgreement: React.FC<TermsAgreementProps> = ({
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Onboarding"
-      mainClassName="max-w-2xl w-full mx-auto my-auto py-8"
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-8"
       headerAction={
         <button
           onClick={onBackToLogin}

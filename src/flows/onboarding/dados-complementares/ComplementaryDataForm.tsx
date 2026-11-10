@@ -23,7 +23,7 @@ export const ComplementaryDataForm: React.FC<ComplementaryDataFormProps> = ({ on
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Abertura de Conta"
-      mainClassName="max-w-3xl w-full mx-auto my-auto py-8"
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-8"
       beforeFooter={
         <>
           {/* SÓCIO MODAL */}

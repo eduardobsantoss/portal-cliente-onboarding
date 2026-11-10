@@ -18,8 +18,15 @@ import type { OnboardingFlow } from '@/hooks/useOnboardingFlow';
 export const OnboardingRouter: React.FC<OnboardingFlow> = ({
   currentView,
   formData,
+  documentsSnapshot,
+  documentsMode,
+  adjustmentRequestId,
+  appliedAdjustmentRequestId,
+  setDocumentsSnapshot,
+  setAppliedAdjustmentRequestId,
   goTo,
   handleComplementarySubmit,
+  openDocumentAdjustment,
 }) => {
   switch (currentView) {
     // Step 1: Confirmação do celular por SMS
@@ -74,9 +81,15 @@ export const OnboardingRouter: React.FC<OnboardingFlow> = ({
           companyName={formData?.companyName}
           cnpj={formData?.cnpj}
           tipoEmpresa={formData?.tipoEmpresa}
+          documentsMode={documentsMode}
+          initialDocuments={documentsSnapshot}
+          adjustmentRequestId={adjustmentRequestId}
+          appliedAdjustmentRequestId={appliedAdjustmentRequestId}
+          onDocumentsChange={setDocumentsSnapshot}
+          onAdjustmentApplied={setAppliedAdjustmentRequestId}
           onSubmitDocs={() => {
-            // O avanço do envio de documentos leva SEMPRE para a Assinatura da Abertura
-            goTo('account_opening_signature');
+            // Reenvio após ajuste volta direto para a análise, sem reassinar.
+            goTo(documentsMode === 'adjustment' ? 'analysis_pending' : 'account_opening_signature');
           }}
           onBack={() => goTo('complementary_form')}
           onCancelRequest={() => goTo('login')}
@@ -101,6 +114,7 @@ export const OnboardingRouter: React.FC<OnboardingFlow> = ({
         <AnalysisPending
           onSimulateApprove={() => goTo('account_created')}
           onSimulateReject={() => goTo('rejection_notice')}
+          onSimulateAdjustment={openDocumentAdjustment}
           onBackToLogin={() => goTo('login')}
         />
       );

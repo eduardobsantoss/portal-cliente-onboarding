@@ -38,7 +38,7 @@ export const AccountOpeningSignature: React.FC<AccountOpeningSignatureProps> = (
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Assinatura da Abertura de Conta"
-      mainClassName="max-w-2xl w-full mx-auto my-auto py-6 space-y-4"
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-6 space-y-4"
       headerAction={
         <button
           type="button"
@@ -69,7 +69,7 @@ export const AccountOpeningSignature: React.FC<AccountOpeningSignatureProps> = (
             Assinatura da abertura de conta
           </h1>
           <p className="text-xs sm:text-sm text-white/80 font-medium mt-2 leading-relaxed">
-            Enviamos o termo de abertura para assinatura dos representantes legais. A análise começa quando todos assinarem.
+            Enviamos o termo de abertura para assinatura dos sócios e representantes. A análise começa quando todos assinarem.
           </p>
         </div>
 

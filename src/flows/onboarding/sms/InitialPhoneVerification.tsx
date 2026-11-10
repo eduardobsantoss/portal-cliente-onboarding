@@ -19,7 +19,7 @@ export const InitialPhoneVerification: React.FC<InitialPhoneVerificationProps> =
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Ativação de Acesso"
-      mainClassName="max-w-2xl md:max-w-3xl w-full mx-auto my-auto py-8"
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-8"
       headerAction={
         <button
           type="button"

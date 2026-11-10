@@ -18,7 +18,7 @@ export const PreAnalysisSuccess: React.FC<PreAnalysisSuccessProps> = ({
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Pré-Análise"
-      mainClassName="max-w-2xl w-full mx-auto my-auto py-8"
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-8"
       headerAction={
         <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
           <CheckCircle2 size={14} className="text-emerald-600" />

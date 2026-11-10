@@ -24,7 +24,7 @@ export const MissingDocumentsNotice: React.FC<MissingDocumentsNoticeProps> = ({ 
           ))}
         </ul>
         <p className="text-[11px] text-amber-800 pt-1">
-          Anexe os arquivos pendentes acima ou utilize o botão <strong>&quot;Anexar Todos (Demo)&quot;</strong> no topo da página para avançar à Assinatura.
+          Anexe os arquivos pendentes acima ou utilize <strong>&quot;Anexar Todos (Demo)&quot;</strong> no rodapé para continuar.
         </p>
       </div>
     </div>

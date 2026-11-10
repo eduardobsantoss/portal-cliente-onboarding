@@ -11,18 +11,20 @@ import { AnalysisDemoControls } from './AnalysisDemoControls';
 interface AnalysisPendingProps {
   onSimulateApprove: () => void;
   onSimulateReject: () => void;
+  onSimulateAdjustment: () => void;
   onBackToLogin: () => void;
 }
 
 export const AnalysisPending: React.FC<AnalysisPendingProps> = ({
   onSimulateApprove,
   onSimulateReject,
+  onSimulateAdjustment,
   onBackToLogin,
 }) => {
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Status da Solicitação"
-      mainClassName="max-w-2xl w-full mx-auto my-auto py-8 space-y-4"
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-8 space-y-4"
       headerAction={
         <button
           onClick={onBackToLogin}
@@ -70,6 +72,7 @@ export const AnalysisPending: React.FC<AnalysisPendingProps> = ({
           <AnalysisDemoControls
             onSimulateApprove={onSimulateApprove}
             onSimulateReject={onSimulateReject}
+            onSimulateAdjustment={onSimulateAdjustment}
           />
         </div>
       </motion.div>

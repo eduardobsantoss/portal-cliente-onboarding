@@ -25,7 +25,7 @@ export const AnalysisLoading: React.FC<AnalysisLoadingProps> = ({
   return (
     <OnboardingPageShell
       sectionLabel="Portal do Cliente • Abertura de Conta"
-      mainClassName="max-w-2xl w-full mx-auto my-auto py-8"
+      mainClassName="max-w-5xl w-full mx-auto my-auto py-8"
       headerAction={
         <div className="flex items-center gap-2">
           <button
