@@ -1,3 +1,5 @@
+import type { PersonField } from '@/types/forms';
+
 export const REGIMES_DE_BENS = [
   'Comunhão parcial de bens',
   'Comunhão universal de bens',
@@ -41,3 +43,34 @@ export const PJ_STEP_LABELS: Record<1 | 2 | 3, string> = {
 };
 
 export const PJ_TOTAL_STEPS = 3;
+
+export const PF_PERSON_FIELDS: PersonField[] = [
+  'dataNascimento',
+  'genero',
+  'nacionalidade',
+  'nomeMae',
+  'profissao',
+  'renda',
+];
+
+export const PF_PERSON_LABELS: Partial<Record<PersonField, string>> = {
+  profissao: 'Profissão / Ocupação *',
+  renda: 'Renda Mensal Estimada (R$) *',
+};
+
+export const PF_PERSON_PLACEHOLDERS: Partial<Record<PersonField, string>> = {
+  nomeMae: 'Nome completo da mãe',
+  profissao: 'Ex: Produtor Rural / Administrador',
+  renda: 'Ex: 25.000,00',
+};
+
+export const PF_RENDA_NOTICE = 'Comprovação de renda compatível será solicitada na próxima etapa';
+
+export const SOCIO_PERSON_FIELDS: PersonField[] = [
+  'dataNascimento',
+  'nomeMae',
+  'profissao',
+  'renda',
+  'genero',
+  'nacionalidade',
+];
