@@ -27,7 +27,7 @@ import {
   QrCode
 } from 'lucide-react';
 import { SmsVerification } from '@/flows/onboarding/sms/SmsVerification';
-import { FacialVerification } from './FacialVerification';
+import { FacialVerification } from '@/flows/portal/verificacao-facial/FacialVerification';
 import { SupportFaqModal } from '@/components/support/SupportFaqModal';
 
 export type CompanyTier = 'middle_corporate' | 'simples_pme';
