@@ -25,7 +25,9 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
-import { AccountType, Socio, NonPartnerRepresentative } from './ComplementaryDataForm';
+import type { AccountType } from '@/types/dadosComplementares';
+import type { NonPartnerRepresentative } from '@/types/representante';
+import type { Socio } from '@/types/socio';
 
 export interface OnboardingDocumentUploadProps {
   accountType?: AccountType;

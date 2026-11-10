@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { ComplementaryFormSubmitPayload } from '@/components/ComplementaryDataForm';
+import type { ComplementaryFormSubmitPayload } from '@/types/dadosComplementares';
 import type { OnboardingViewState } from '@/types/onboarding';
 
 export function useOnboardingFlow() {

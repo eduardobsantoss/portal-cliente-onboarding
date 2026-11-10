@@ -25,95 +25,23 @@ import {
 } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 
-export interface NonPartnerRepresentative {
-  id: string;
-  nome: string;
-  cpf: string;
-  dataNascimento: string;
-  email: string;
-  telefone: string;
-  cargo: string;
-  vinculo: 'Administrador não sócio' | 'Procurador';
-  estadoCivil: string;
-  nomeConjuge?: string;
-  cpfConjuge?: string;
-  regimeBens?: string;
-  pep: boolean;
-}
-
-export interface ComplementaryFormSubmitPayload {
-  accountType: AccountType;
-  socios: Socio[];
-  nonPartnerRepresentatives?: NonPartnerRepresentative[];
-  companyName?: string;
-  cnpj?: string;
-  tipoEmpresa?: string;
-  capitalSocial?: string;
-  hasProcurador?: boolean;
-}
+import { REGIMES_DE_BENS, EMPRESA_TIPOS } from '@/constants/complementaryForm';
+import { INITIAL_PF_DATA } from '@/mocks/complementaryPf';
+import { INITIAL_PJ_COMPANY_DATA } from '@/mocks/complementaryCompany';
+import { INITIAL_SOCIOS } from '@/mocks/complementarySocios';
+import type {
+  AccountType,
+  ComplementaryFormSubmitPayload,
+  PfFormData,
+  PjCompanyFormData,
+} from '@/types/dadosComplementares';
+import type { NonPartnerRepresentative } from '@/types/representante';
+import type { Socio } from '@/types/socio';
 
 interface ComplementaryDataFormProps {
   onSubmit: (payload?: ComplementaryFormSubmitPayload) => void;
   onBack: () => void;
 }
-
-export type AccountType = 'pf' | 'pj';
-
-export const REGIMES_DE_BENS = [
-  'Comunhão parcial de bens',
-  'Comunhão universal de bens',
-  'Separação total de bens',
-  'Separação obrigatória de bens',
-  'Participação final nos aquestos',
-];
-
-export interface Socio {
-  id: string;
-  nome: string;
-  cpfCnpj: string;
-  email: string;
-  telefone: string;
-  isRepresentanteLegal?: boolean;
-  // Endereço do sócio
-  cep: string;
-  logradouro: string;
-  numero: string;
-  complemento?: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
-  // Dados pessoais do sócio
-  dataNascimento: string;
-  nomeMae: string;
-  profissao: string;
-  renda: string;
-  estadoCivil: string;
-  nomeConjuge?: string;
-  cpfConjuge?: string;
-  regimeBens?: string;
-  genero: string;
-  nacionalidade: string;
-  responsabilidade: 'Sócio' | 'Representante legal' | 'Procurador' | string;
-  cargo?: string;
-  pep: boolean;
-  // Opcionais do sócio
-  nomePai?: string;
-  rgNumero?: string;
-  rgDataEmissao?: string;
-  rgOrgao?: string;
-}
-
-const EMPRESA_TIPOS = [
-  'Sociedade empresária limitada',
-  'Sociedade limitada unipessoal',
-  'Sociedade anônima',
-  'Empresário individual',
-  'MEI',
-  'Sociedade simples',
-  'Sociedade cooperativa',
-  'Sociedade de associação privada',
-  'Condomínio edifício',
-];
 
 export const ComplementaryDataForm: React.FC<ComplementaryDataFormProps> = ({
   onSubmit,
@@ -127,166 +55,16 @@ export const ComplementaryDataForm: React.FC<ComplementaryDataFormProps> = ({
   const [dataErrorMessage, setDataErrorMessage] = useState('');
 
   // PF Form State
-  const [pfData, setPfData] = useState({
-    // Obrigatórios
-    cep: '38400-100',
-    logradouro: 'Avenida Rondon Pacheco',
-    numero: '4500',
-    complemento: 'Sala 804',
-    bairro: 'Tibery',
-    cidade: 'Uberlândia',
-    uf: 'MG',
-    // Endereço de Correspondência PF
-    correspondenciaMesmo: true,
-    correspondenciaCep: '',
-    correspondenciaLogradouro: '',
-    correspondenciaNumero: '',
-    correspondenciaComplemento: '',
-    correspondenciaBairro: '',
-    correspondenciaCidade: '',
-    correspondenciaUf: '',
-
-    dataNascimento: '1982-05-14',
-    genero: 'Masculino',
-    nacionalidade: 'Brasileira',
-    nomeMae: 'Maria Helena Santos',
-    profissao: 'Produtor Rural / Engenheiro Agrônomo',
-    renda: '45.000,00',
-    estadoCivil: 'Casado(a)',
-    nomeConjuge: 'Juliana Costa Santos',
-    cpfConjuge: '987.654.321-00',
-    regimeBens: 'Comunhão parcial de bens',
-    // Opcionais
-    nomePai: 'Antônio dos Santos',
-    pep: false,
-    docTipo: 'RG',
-    docNumero: 'MG-14.892.301',
-    docDataExpedicao: '2015-08-20',
-    docOrgao: 'SSP/MG',
-  });
+  const [pfData, setPfData] = useState<PfFormData>(INITIAL_PF_DATA);
 
   const [showPfOptionals, setShowPfOptionals] = useState(false);
 
   // PJ Form State
   const [pjStep, setPjStep] = useState<1 | 2 | 3>(1);
-  const [pjCompanyData, setPjCompanyData] = useState({
-    // Passo 1: Dados da Empresa
-    razaoSocial: 'AGRO INDUSTRIAL SOJA & MILHO LTDA',
-    cnpj: '12.345.678/0001-90',
-    dataAbertura: '2014-03-12',
-    capitalSocial: '1.500.000,00',
-    faturamentoAnual: '18.500.000,00',
-    tipoEmpresa: 'Sociedade empresária limitada',
-    cnae: '01.15-6/00 - Cultivo de soja',
-    // Passo 2: Endereço da Empresa
-    cep: '38400-100',
-    logradouro: 'Avenida Rondon Pacheco',
-    numero: '4500',
-    complemento: 'Bloco A, Sala 801 a 806',
-    bairro: 'Tibery',
-    cidade: 'Uberlândia',
-    uf: 'MG',
-    // Endereço de correspondência PJ
-    correspondenciaMesmo: true,
-    correspondenciaCep: '',
-    correspondenciaLogradouro: '',
-    correspondenciaNumero: '',
-    correspondenciaComplemento: '',
-    correspondenciaBairro: '',
-    correspondenciaCidade: '',
-    correspondenciaUf: '',
-  });
+  const [pjCompanyData, setPjCompanyData] = useState<PjCompanyFormData>(INITIAL_PJ_COMPANY_DATA);
 
   // Passo 3: Sócios
-  const [socios, setSocios] = useState<Socio[]>([
-    {
-      id: '1',
-      nome: 'Eduardo Santos',
-      cpfCnpj: '123.456.789-00',
-      email: 'eduardo.santos@ceresinvestimentos.com',
-      telefone: '(34) 99881-2233',
-      isRepresentanteLegal: true, // Eduardo Santos vem marcado como representante legal
-      cep: '38400-100',
-      logradouro: 'Avenida Rondon Pacheco',
-      numero: '4500',
-      bairro: 'Tibery',
-      cidade: 'Uberlândia',
-      uf: 'MG',
-      dataNascimento: '1982-05-14',
-      nomeMae: 'Maria Helena Santos',
-      profissao: 'Administrador / Produtor Rural',
-      renda: '65.000,00',
-      estadoCivil: 'Casado(a)',
-      nomeConjuge: 'Juliana Costa Santos',
-      cpfConjuge: '987.654.321-00',
-      regimeBens: 'Comunhão parcial de bens',
-      genero: 'Masculino',
-      nacionalidade: 'Brasileira',
-      responsabilidade: 'Representante legal',
-      pep: false,
-      nomePai: 'Antônio dos Santos',
-      rgNumero: 'MG-14.892.301',
-      rgDataEmissao: '2015-08-20',
-      rgOrgao: 'SSP/MG',
-    },
-    {
-      id: '2',
-      nome: 'Marcos Damasceno',
-      cpfCnpj: '234.567.890-12',
-      email: 'marcos.damasceno@ceresinvestimentos.com',
-      telefone: '(34) 99772-3344',
-      isRepresentanteLegal: false,
-      cep: '38400-100',
-      logradouro: 'Avenida Rondon Pacheco',
-      numero: '4500',
-      bairro: 'Tibery',
-      cidade: 'Uberlândia',
-      uf: 'MG',
-      dataNascimento: '1979-11-23',
-      nomeMae: 'Teresa Damasceno',
-      profissao: 'Diretor Comercial / Agrônomo',
-      renda: '58.000,00',
-      estadoCivil: 'Casado(a)',
-      nomeConjuge: 'Renata Prado Damasceno',
-      cpfConjuge: '876.543.210-99',
-      regimeBens: 'Comunhão parcial de bens',
-      genero: 'Masculino',
-      nacionalidade: 'Brasileira',
-      responsabilidade: 'Sócio',
-      pep: false,
-      nomePai: 'João Damasceno',
-      rgNumero: 'MG-12.784.551',
-      rgDataEmissao: '2012-04-10',
-      rgOrgao: 'SSP/MG',
-    },
-    {
-      id: '3',
-      nome: 'Cristiano Drigo',
-      cpfCnpj: '345.678.901-23',
-      email: 'cristiano.drigo@ceresinvestimentos.com',
-      telefone: '(34) 99663-4455',
-      isRepresentanteLegal: false,
-      cep: '38400-100',
-      logradouro: 'Avenida Rondon Pacheco',
-      numero: '4500',
-      bairro: 'Tibery',
-      cidade: 'Uberlândia',
-      uf: 'MG',
-      dataNascimento: '1984-08-30',
-      nomeMae: 'Lúcia de Fátima Drigo',
-      profissao: 'Diretor Financeiro / Contador',
-      renda: '52.000,00',
-      estadoCivil: 'Solteiro(a)',
-      genero: 'Masculino',
-      nacionalidade: 'Brasileira',
-      responsabilidade: 'Sócio',
-      pep: false,
-      nomePai: 'Roberto Drigo',
-      rgNumero: 'MG-16.329.804',
-      rgDataEmissao: '2016-09-18',
-      rgOrgao: 'SSP/MG',
-    },
-  ]);
+  const [socios, setSocios] = useState<Socio[]>(INITIAL_SOCIOS);
 
   // Representantes legais não sócios (item 3)
   const [nonPartnerReps, setNonPartnerReps] = useState<NonPartnerRepresentative[]>([]);

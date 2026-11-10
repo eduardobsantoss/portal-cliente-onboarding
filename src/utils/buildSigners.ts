@@ -1,4 +1,4 @@
-import type { ComplementaryFormSubmitPayload } from '@/components/ComplementaryDataForm';
+import type { ComplementaryFormSubmitPayload } from '@/types/dadosComplementares';
 import type { SignerRepresentative } from '@/types/signer';
 import {
   MOCK_SIGNER_EMAIL_DOMAIN,
