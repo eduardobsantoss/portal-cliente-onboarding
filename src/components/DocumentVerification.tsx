@@ -26,9 +26,9 @@ import {
   Edit2,
   QrCode
 } from 'lucide-react';
-import { SmsVerification } from './SmsVerification';
+import { SmsVerification } from '@/flows/onboarding/sms/SmsVerification';
 import { FacialVerification } from './FacialVerification';
-import { SupportFaqModal } from './SupportFaqModal';
+import { SupportFaqModal } from '@/components/support/SupportFaqModal';
 
 export type CompanyTier = 'middle_corporate' | 'simples_pme';
 export type PartnerPersonType = 'PF' | 'PJ';

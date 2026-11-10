@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { InitialPhoneVerification } from '@/components/InitialPhoneVerification';
+import { InitialPhoneVerification } from '@/flows/onboarding/sms/InitialPhoneVerification';
 import { CreatePasswordModal } from '@/components/CreatePasswordModal';
 import { Login } from '@/components/Login';
 import { TermsAgreement } from '@/components/TermsAgreement';
