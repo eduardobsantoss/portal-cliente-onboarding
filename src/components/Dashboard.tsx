@@ -56,7 +56,7 @@ import {
   Copy
 } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
-import { OperationRequestFlow } from './OperationRequestFlow';
+import { OperationRequestFlow } from '@/flows/portal/solicitacao-operacao/OperationRequestFlow';
 import { DocumentVerification } from '@/flows/portal/complete-cadastro/DocumentVerification';
 import { cn } from '@/utils/cn';
 import { 
