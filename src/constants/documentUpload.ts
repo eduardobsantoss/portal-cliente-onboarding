@@ -15,3 +15,6 @@ export const UPLOAD_SIMULATED_DELAY_MS = 500;
 
 export const UPLOAD_SIZE_ERROR_MESSAGE = 'O arquivo selecionado excede o limite máximo permitido de 12MB.';
 export const UPLOAD_FORMAT_ERROR_MESSAGE = 'Formato inválido. Os formatos aceitos são JPG, JPEG, PNG ou PDF.';
+
+/** Rótulo de data usado para arquivos enviados/anexados na sessão atual. */
+export const UPLOAD_DATE_NOW_LABEL = 'Agora';
