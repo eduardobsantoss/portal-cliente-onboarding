@@ -1,3 +1,5 @@
+import type { NonPartnerRepresentative } from '@/types/representante';
+import type { Socio } from '@/types/socio';
 import type { PersonField } from '@/types/forms';
 
 export const REGIMES_DE_BENS = [
@@ -74,3 +76,18 @@ export const SOCIO_PERSON_FIELDS: PersonField[] = [
   'genero',
   'nacionalidade',
 ];
+
+export const INITIAL_SOCIO_FORM: Partial<Socio> = {
+  responsabilidade: 'Sócio',
+  pep: false,
+  nacionalidade: 'Brasileira',
+  genero: 'Masculino',
+  estadoCivil: 'Casado(a)',
+};
+
+export const INITIAL_NON_PARTNER_FORM: Partial<NonPartnerRepresentative> = {
+  vinculo: 'Administrador não sócio',
+  cargo: 'Diretor Executivo',
+  estadoCivil: 'Solteiro(a)',
+  pep: false,
+};

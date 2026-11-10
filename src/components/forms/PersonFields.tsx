@@ -6,7 +6,7 @@ import { FIELD_VARIANT_STYLES, getRendaInputClass } from '@/constants/formStyles
 import type { FieldVariant, PersonField, PersonValues } from '@/types/forms';
 
 interface PersonFieldsProps {
-  values: PersonValues;
+  values: Partial<PersonValues>;
   onFieldChange: (field: PersonField, value: string) => void;
   /** campos a renderizar, na ordem em que devem aparecer */
   fields: PersonField[];
@@ -50,7 +50,7 @@ export const PersonFields: React.FC<PersonFieldsProps> = ({
           key={field}
           label={labelOf(field)}
           required={requireGenero}
-          value={values.genero}
+          value={values.genero ?? ''}
           options={generoOptions}
           onChange={(value) => onFieldChange('genero', value)}
           inputClassName={styles.input}
@@ -65,7 +65,7 @@ export const PersonFields: React.FC<PersonFieldsProps> = ({
           label={labelOf(field)}
           required
           placeholder={placeholders?.renda}
-          value={values.renda}
+          value={values.renda ?? ''}
           onChange={(value) => onFieldChange('renda', value)}
           inputClassName={getRendaInputClass(variant, Boolean(rendaNotice))}
           footer={
@@ -84,7 +84,7 @@ export const PersonFields: React.FC<PersonFieldsProps> = ({
         label={labelOf(field)}
         required
         placeholder={placeholders?.[field]}
-        value={values[field]}
+        value={values[field] ?? ''}
         onChange={(value) => onFieldChange(field, value)}
         inputClassName={styles.input}
       />
