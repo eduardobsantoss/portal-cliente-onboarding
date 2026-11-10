@@ -13,7 +13,7 @@ import {
   Info,
   LogOut
 } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 
 interface AnalysisPendingProps {
   onSimulateApprove: () => void;

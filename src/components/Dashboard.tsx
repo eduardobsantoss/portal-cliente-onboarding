@@ -55,10 +55,10 @@ import {
   Lock,
   Copy
 } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 import { OperationRequestFlow } from './OperationRequestFlow';
 import { DocumentVerification } from './DocumentVerification';
-import { cn } from '../lib/utils';
+import { cn } from '@/utils/cn';
 import { 
   BarChart,
   Bar,

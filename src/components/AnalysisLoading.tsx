@@ -8,7 +8,7 @@ import {
   Sparkles,
   ArrowRight
 } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 
 interface AnalysisLoadingProps {
   onComplete: () => void;

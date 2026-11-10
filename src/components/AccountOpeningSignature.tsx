@@ -14,7 +14,7 @@ import {
   Building2,
   FileSignature
 } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 
 export interface SignerRepresentative {
   id: string;

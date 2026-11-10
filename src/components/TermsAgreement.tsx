@@ -8,7 +8,7 @@ import {
   X,
   Download
 } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 
 interface TermsAgreementProps {
   onAccept: () => void;

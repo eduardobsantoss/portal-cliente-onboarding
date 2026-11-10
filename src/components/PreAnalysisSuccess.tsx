@@ -12,7 +12,7 @@ import {
   Layers,
   ArrowRight
 } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 
 interface PreAnalysisSuccessProps {
   onContinueToAccount: () => void;

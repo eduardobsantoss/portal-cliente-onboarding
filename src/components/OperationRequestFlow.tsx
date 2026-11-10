@@ -22,8 +22,8 @@ import {
   Zap,
   ArrowRight
 } from 'lucide-react';
-import { Logo } from './Logo';
-import { cn } from '../lib/utils';
+import { Logo } from '@/components/ui/Logo';
+import { cn } from '@/utils/cn';
 
 interface OperationRequestFlowProps {
   serviceName: string;

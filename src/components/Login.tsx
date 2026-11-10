@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ChevronRight, Lock, Mail, Eye, EyeOff } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 import { CreatePasswordModal } from './CreatePasswordModal';
 
 interface LoginProps {

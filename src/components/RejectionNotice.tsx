@@ -5,7 +5,7 @@ import {
   RotateCcw,
   AlertCircle
 } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 
 interface RejectionNoticeProps {
   onBackToLogin: () => void;

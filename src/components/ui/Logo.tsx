@@ -1,7 +1,7 @@
 import React from 'react';
-import { cn } from '../lib/utils';
-import logoNavbarWhite from '../assets/logos/logo-branca-sem-bg.png';
-import logoNavbarBlue from '../assets/logos/logo-azul-sem-bg.png';
+import { cn } from '@/utils/cn';
+import logoNavbarWhite from '@/assets/logos/logo-branca-sem-bg.png';
+import logoNavbarBlue from '@/assets/logos/logo-azul-sem-bg.png';
 
 interface LogoProps {
   variant?: 'light' | 'dark';

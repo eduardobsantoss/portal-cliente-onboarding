@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Smartphone, ShieldCheck, ArrowLeft, LogOut } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 import { SmsVerification } from './SmsVerification';
 
 interface InitialPhoneVerificationProps {

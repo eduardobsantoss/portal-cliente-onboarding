@@ -23,7 +23,7 @@ import {
   AlertTriangle,
   Check
 } from 'lucide-react';
-import { Logo } from './Logo';
+import { Logo } from '@/components/ui/Logo';
 
 export interface NonPartnerRepresentative {
   id: string;
