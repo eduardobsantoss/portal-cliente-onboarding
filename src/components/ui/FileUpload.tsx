@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface FileUploadProps {
-  id: string;
+  id?: string;
   accept: string;
   onFileSelect: (file: File) => void;
   inputRef?: React.Ref<HTMLInputElement>;

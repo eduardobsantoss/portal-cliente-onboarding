@@ -57,7 +57,7 @@ import {
 } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { OperationRequestFlow } from './OperationRequestFlow';
-import { DocumentVerification } from './DocumentVerification';
+import { DocumentVerification } from '@/flows/portal/complete-cadastro/DocumentVerification';
 import { cn } from '@/utils/cn';
 import { 
   BarChart,
