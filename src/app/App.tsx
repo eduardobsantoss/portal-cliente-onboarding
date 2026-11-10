@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { InitialPhoneVerification } from '@/flows/onboarding/sms/InitialPhoneVerification';
 import { CreatePasswordScreen } from '@/flows/onboarding/senha/CreatePasswordScreen';
 import { Login } from '@/flows/onboarding/login/Login';
-import { TermsAgreement } from '@/components/TermsAgreement';
+import { TermsAgreement } from '@/flows/onboarding/termos/TermsAgreement';
 import { ComplementaryDataForm, ComplementaryFormSubmitPayload } from '@/components/ComplementaryDataForm';
 import { OnboardingDocumentUpload } from '@/components/OnboardingDocumentUpload';
 import { AccountOpeningSignature, SignerRepresentative } from '@/components/AccountOpeningSignature';
