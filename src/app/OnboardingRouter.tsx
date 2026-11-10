@@ -4,7 +4,7 @@ import { CreatePasswordScreen } from '@/flows/onboarding/senha/CreatePasswordScr
 import { Login } from '@/flows/onboarding/login/Login';
 import { TermsAgreement } from '@/flows/onboarding/termos/TermsAgreement';
 import { ComplementaryDataForm } from '@/flows/onboarding/dados-complementares/ComplementaryDataForm';
-import { OnboardingDocumentUpload } from '@/components/OnboardingDocumentUpload';
+import { OnboardingDocumentUpload } from '@/flows/onboarding/documentos/OnboardingDocumentUpload';
 import { AccountOpeningSignature } from '@/flows/onboarding/assinatura/AccountOpeningSignature';
 import { AnalysisPending } from '@/flows/onboarding/analise/AnalysisPending';
 import { AccountCreated } from '@/flows/onboarding/conta-criada/AccountCreated';
