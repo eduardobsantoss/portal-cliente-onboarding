@@ -49,3 +49,10 @@ coverage/
 .vercel/
 .agenkit/memory/codemap.json
 .agenkit/memory/manifest.json
+
+# AgenKit / configuração local de agentes (não versionar)
+.claude/
+.cursor/
+AGENTS.md
+agenkit.lock.json
+.agenkit/
