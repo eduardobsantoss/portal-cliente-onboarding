@@ -9,7 +9,7 @@ import { AccountOpeningSignature } from '@/flows/onboarding/assinatura/AccountOp
 import { AnalysisPending } from '@/flows/onboarding/analise/AnalysisPending';
 import { AccountCreated } from '@/flows/onboarding/conta-criada/AccountCreated';
 import { RejectionNotice } from '@/flows/onboarding/analise/RejectionNotice';
-import { Dashboard } from '@/components/Dashboard';
+import { Dashboard } from '@/flows/portal/dashboard/Dashboard';
 import { SMS_DEFAULT_MASKED_PHONE } from '@/constants/sms';
 import { MOCK_COMPANY_CNPJ, MOCK_COMPANY_NAME } from '@/mocks/onboardingCompany';
 import { buildSigners } from '@/utils/buildSigners';
