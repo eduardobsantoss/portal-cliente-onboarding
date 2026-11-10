@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+
+# Build (GitHub Pages costuma publicar `dist/` via Actions; não versionar artefatos de build)
+dist/
+build/
+
+# Variáveis de ambiente e segredos (nunca commitar)
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# Testes / cobertura
+coverage/
+
+# TypeScript / cache
+*.tsbuildinfo
+.cache/
+
+# Ferramentas locais (opcional)
+.turbo/
+.vercel/
+.agenkit/memory/codemap.json
+.agenkit/memory/manifest.json

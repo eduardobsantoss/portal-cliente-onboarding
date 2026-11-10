@@ -1,0 +1,8 @@
+{
+  "name": "Remix Portal Cliente - Onboarding",
+  "description": "Plataforma financeira moderna para antecipação de títulos e gestão de carteira. Foco em conversão, jornada self-service e visual impactante para maximizar o fluxo de caixa do seu agronegócio.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

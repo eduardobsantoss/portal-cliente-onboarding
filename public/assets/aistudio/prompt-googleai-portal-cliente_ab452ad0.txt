@@ -1,0 +1,71 @@
+Você vai ALTERAR o protótipo existente de abertura de conta digital da GCI SCD (onboarding + "Complete o seu Cadastro"). NÃO reescreva o projeto. Aplique somente as mudanças listadas abaixo e preserve todo o resto: identidade visual, textos aprovados, componentes, mocks (Eduardo Santos, Marcos Damasceno, Cristiano Drigo), simulações de aprovação/reprovação e a estrutura de abas do Dashboard.
+
+Ao final, liste os arquivos alterados e um resumo de cada mudança.
+
+---
+
+## 1. Nova etapa inicial: confirmação do celular por SMS (antes da criação de senha)
+
+Contexto: o usuário se cadastra no site com nome e celular, o bot de WhatsApp envia o link do portal com o usuário já ativo, e ele cria a primeira senha no portal. Hoje o fluxo começa no modal de criar senha. A confirmação por SMS deve vir ANTES.
+
+- Ao recarregar a página ou reiniciar o fluxo, a ordem passa a ser: Confirmação do celular por SMS → Criação de senha → (fluxo atual segue igual: Termos → Dados complementares → ...).
+- Tela/modal "Confirme seu celular":
+  - Exibe o número cadastrado mascarado, ex.: (34) 9 ••••-1234 (vem do cadastro do bot, não editável).
+  - Link discreto "Não é o seu número? Fale com o suporte" (abre o modal de suporte que já existe).
+  - Botão "Enviar código". Após o envio: 6 campos de dígito (com colar código inteiro e avanço automático), contador de 60s para "Reenviar código", estado de erro para código inválido e estado de sucesso.
+  - Mock: o código válido é 123456. Qualquer outro mostra erro.
+  - Só após confirmar o código o usuário segue para criar a senha.
+- O Login (e-mail + senha) continua existindo para quem já criou a senha e está voltando.
+
+## 2. "Complete o seu Cadastro": validação do celular já concluída, com opção de refazer
+
+- O item de validação de telefone dentro de "Complete o seu Cadastro" NÃO deve ser removido.
+- Ele passa a vir preenchido com status "Concluído", exibindo o número mascarado e a data/hora da confirmação (mock).
+- Adicionar o botão secundário "Refazer validação", que abre o mesmo componente de SMS da etapa 1 (reutilizar o componente, não duplicar). Ao concluir, atualiza a data/hora exibida.
+
+## 3. Representante legal (Etapa 3 — Dados Complementares, PJ)
+
+- No Quadro Societário, cada sócio PF ganha a marcação "Representante legal" (checkbox ou toggle no card/linha do sócio e no formulário de edição). Mais de um sócio pode ser marcado.
+- Mock: Eduardo Santos vem marcado como representante legal. Os demais, desmarcados.
+- Adicionar a ação "Adicionar representante que não é sócio", para administrador não sócio ou procurador. Campos: nome completo, CPF, data de nascimento, e-mail, celular, cargo, tipo de vínculo (Administrador não sócio / Procurador), estado civil (com as regras de cônjuge do item 6) e PEP.
+- Esses representantes aparecem numa seção própria "Representantes legais não sócios", com editar e excluir.
+- Validação: não permitir avançar sem pelo menos um representante legal (sócio marcado ou representante não sócio). Mensagem: "Indique pelo menos um representante legal."
+- Se existir representante do tipo Procurador, o documento "Procuração" passa de opcional para OBRIGATÓRIO na Etapa 4 e no checklist da Seção 3.
+- Etapa 4 (Envio de documentos): representantes não sócios entram na lista de documentos de pessoas, com o mesmo padrão dos sócios (número do documento + Anexar arquivo), começando em branco.
+- Seção 6 do checklist ("Quadro Societário / Partes Relacionadas"): incluir também os representantes não sócios, exigindo Documento de Identidade e Comprovante de Residência.
+
+## 4. Capital social (PJ)
+
+- Em "Dados da Empresa", adicionar o campo "Capital social" (R$, preenchimento manual, máscara de moeda pt-BR, obrigatório), posicionado junto ao Faturamento Anual Estimado.
+
+## 5. Endereço de correspondência (PJ e PF)
+
+- Abaixo do endereço da sede (PJ) / endereço residencial (PF), adicionar a checkbox "O endereço de correspondência é o mesmo", marcada por padrão.
+- Ao desmarcar, exibir um bloco "Endereço de correspondência" com os mesmos campos do endereço (CEP, logradouro, número, complemento, bairro, cidade, UF), obrigatórios.
+
+## 6. Estado civil, cônjuge e regime de bens
+
+- Pessoa Física: estado civil, nome do cônjuge, CPF do cônjuge e regime de bens ficam em "Dados pessoais" (obrigatórios), e não em "Informações adicionais e complementares". Se ainda estiverem lá, mova.
+- Pessoa Jurídica: aplicar a mesma regra no formulário de CADA sócio PF e de cada representante não sócio.
+- Regra condicional (igual para PF e PJ): se o estado civil for Casado(a) ou União Estável, exibir e tornar obrigatórios: Nome do cônjuge, CPF do cônjuge e Regime de bens (select: Comunhão parcial de bens, Comunhão universal de bens, Separação total de bens, Separação obrigatória de bens, Participação final nos aquestos). Para os demais estados civis, os campos ficam ocultos e não são validados.
+
+## 7. Assinatura da abertura (placeholder)
+
+- O mecanismo real de assinatura ainda não está definido. Criar uma etapa simulada "Assinatura da abertura de conta" entre o Envio de documentos (Etapa 4) e a Análise (Etapa 5).
+- Listar todos os representantes legais (sócios marcados + não sócios), cada um com nome, e-mail mascarado e status "Pendente" ou "Assinado".
+- Texto: "Enviamos o termo de abertura para assinatura dos representantes legais. A análise começa quando todos assinarem."
+- Incluir no menu de simulação existente a ação "Simular assinaturas concluídas", que marca todos como Assinado e libera o avanço para a análise.
+- Adicionar um comentário no código: `// PLACEHOLDER: mecanismo de assinatura a definir`.
+
+## 8. Prazo de análise
+
+- Na tela de Análise Pendente (e em qualquer outro texto do protótipo que cite prazo de análise), usar "até 5 dias úteis".
+- Remover qualquer menção a "48 horas" e a "BMP" de todo o protótipo.
+
+---
+
+Regras gerais para estas mudanças:
+- Reutilize os componentes existentes (inputs, selects, cards de sócio, botões, modais). Não crie estilos novos se já houver um equivalente.
+- Mantenha as validações e mensagens de erro no mesmo padrão visual das já existentes.
+- Campos condicionais aparecem/desaparecem com transição suave e limpam o valor quando ocultados.
+- Não altere nada que não esteja nesta lista.
