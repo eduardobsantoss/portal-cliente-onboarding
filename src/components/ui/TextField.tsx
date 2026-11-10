@@ -34,10 +34,10 @@ export const TextField: React.FC<TextFieldProps> = ({
     <FormField label={label} wrapperClassName={wrapperClassName} labelClassName={labelClassName}>
       <input
         type={type}
+        maxLength={maxLength}
         required={required}
         readOnly={readOnly}
         placeholder={placeholder}
-        maxLength={maxLength}
         value={value}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         className={inputClassName}

@@ -3,7 +3,7 @@ import { InitialPhoneVerification } from '@/flows/onboarding/sms/InitialPhoneVer
 import { CreatePasswordScreen } from '@/flows/onboarding/senha/CreatePasswordScreen';
 import { Login } from '@/flows/onboarding/login/Login';
 import { TermsAgreement } from '@/flows/onboarding/termos/TermsAgreement';
-import { ComplementaryDataForm } from '@/components/ComplementaryDataForm';
+import { ComplementaryDataForm } from '@/flows/onboarding/dados-complementares/ComplementaryDataForm';
 import { OnboardingDocumentUpload } from '@/components/OnboardingDocumentUpload';
 import { AccountOpeningSignature } from '@/flows/onboarding/assinatura/AccountOpeningSignature';
 import { AnalysisPending } from '@/flows/onboarding/analise/AnalysisPending';
