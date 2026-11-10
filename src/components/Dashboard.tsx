@@ -1,116 +1,43 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  LogOut, 
-  Wallet, 
-  TrendingUp, 
-  CreditCard, 
-  Bell, 
-  Search,
-  ArrowUpRight,
-  ArrowDownRight,
-  MoreHorizontal,
-  AlertCircle,
-  Upload,
-  X,
-  FileText,
-  FileCheck,
-  Briefcase,
-  Building2,
-  Banknote,
-  Hourglass,
-  LayoutDashboard,
-  FileBarChart,
-  Settings,
-  HelpCircle,
-  Menu,
-  Download,
-  Trash2,
-  CheckCircle2,
-  AlertTriangle,
-  XCircle,
-  Clock,
-  Hand,
-  ShieldCheck,
-  Filter,
-  Plus,
-  Link,
-  ChevronRight,
-  ChevronLeft,
-  Info,
-  ChevronDown,
-  User,
-  Users,
-  Calendar,
-  Home,
-  UserCheck,
-  Zap,
-  Shield,
-  ExternalLink,
-  ArrowRight,
-  Image,
-  MessageSquare,
-  Mail,
-  Check,
-  Lock,
-  Copy
-} from 'lucide-react';
+import { AlertCircle, AlertTriangle, ArrowDownRight, ArrowRight, ArrowUpRight, Banknote, Bell, Building2, Calendar, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Clock, Copy, CreditCard, Download, ExternalLink, FileCheck, FileText, Filter, Hand, Hourglass, Image, Info, Link, Lock, LogOut, Mail, Menu, MessageSquare, Plus, Search, Shield, ShieldCheck, Trash2, TrendingUp, Upload, User, Wallet, X, Zap } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
+import { cn } from '@/utils/cn';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { OperationRequestFlow } from '@/flows/portal/solicitacao-operacao/OperationRequestFlow';
 import { DocumentVerification } from '@/flows/portal/complete-cadastro/DocumentVerification';
-import { cn } from '@/utils/cn';
-import { 
-  BarChart,
-  Bar,
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  ReferenceLine
-} from 'recharts';
-
-const portfolioData = [
-  { name: 'Duplicatas', value: 45, color: '#083C4A' },
-  { name: 'Crédito Rural', value: 30, color: '#F27D26' },
-  { name: 'Capital de Giro', value: 15, color: '#2D5A27' },
-  { name: 'Outros', value: 10, color: '#94A3B8' },
-];
+import { DASHBOARD_NAV_ITEMS } from '@/constants/dashboardNav';
+import { DELINQUENCY_CHART_DATA, ACCOUNT_TRANSACTIONS, PORTFOLIO_DISTRIBUTION } from '@/mocks/dashboardChart';
+import { CORPORATE_GROUPS, DEFAULT_CORPORATE_GROUP } from '@/mocks/economicGroups';
+import { FIRST_PENDING_NOTIFICATION, PORTAL_NOTIFICATIONS } from '@/mocks/portalNotifications';
+import { PORTAL_ACCOUNT_CLIPBOARD_TEXT } from '@/mocks/portalAccount';
+import { INITIAL_OPERATIONS, INITIAL_TITULOS } from '@/mocks/portalCollections';
+import { INITIAL_SACADO_CONTACTS } from '@/mocks/sacadoContacts';
+import type { DashboardTab } from '@/types/dashboard';
+import type { PendingTask } from '@/types/notification';
+import type { OperationCompletionData } from '@/types/operationRequest';
+import type { PortalOperation } from '@/types/portalOperation';
+import type { CanhotoFile, ConfirmacaoData, SacadoContact, Titulo, TituloDetails } from '@/types/titulo';
+import { createPortalOperation } from '@/utils/createPortalOperation';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
-const data = [
-  { name: 'Jan', value: 0 },
-  { name: 'Fev', value: 0 },
-  { name: 'Mar', value: 0 },
-  { name: 'Abr', value: 0 },
-  { name: 'Mai', value: 0 },
-  { name: 'Jun', value: 0 },
-  { name: 'Jul', value: 0 },
-];
-
-const transactions: any[] = [];
 
 export const Dashboard = ({ onLogout }: DashboardProps) => {
   const [showDocsModal, setShowDocsModal] = useState(false);
   const [showOperationRequest, setShowOperationRequest] = useState(false);
   const [selectedService, setSelectedService] = useState('');
-  const [operations, setOperations] = useState<any[]>([]);
+  const [operations, setOperations] = useState<PortalOperation[]>(INITIAL_OPERATIONS);
   const [isVerified, setIsVerified] = useState(false);
-  const [activeTab, setActiveTab] = useState<'home' | 'geral' | 'operacoes' | 'carteira' | 'documentos' | 'cadastro'>('documentos');
+  const [activeTab, setActiveTab] = useState<DashboardTab>('documentos');
   const [lockedTabNotice, setLockedTabNotice] = useState<string | null>(null);
   const [portalUnlockedToast, setPortalUnlockedToast] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Default closed for mobile
-  const [selectedOpDetails, setSelectedOpDetails] = useState<any>(null);
-  const [selectedTituloDetails, setSelectedTituloDetails] = useState<any>(null);
-  const [selectedTituloDetailsForResolution, setSelectedTituloDetailsForResolution] = useState<any>(null);
+  const [selectedOpDetails, setSelectedOpDetails] = useState<PortalOperation | null>(null);
+  const [selectedTituloDetails, setSelectedTituloDetails] = useState<TituloDetails | null>(null);
+  const [selectedTituloDetailsForResolution, setSelectedTituloDetailsForResolution] = useState<Titulo | null>(null);
   const [showLinkAssetsModal, setShowLinkAssetsModal] = useState(false);
   const [showAddXmlFlow, setShowAddXmlFlow] = useState(false);
   const [searchOperationId, setSearchOperationId] = useState('');
@@ -118,21 +45,20 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
   const [copiedAccountInfo, setCopiedAccountInfo] = useState(false);
 
   const handleCopyAccountInfo = () => {
-    navigator.clipboard.writeText('Banco: GCI SCD | Agência: 0001 | Conta Corrente: 84920-3 | Titular: AgroTech Soluções Agrícolas S.A. | CNPJ: 12.345.678/0001-90');
+    navigator.clipboard.writeText(PORTAL_ACCOUNT_CLIPBOARD_TEXT);
     setCopiedAccountInfo(true);
     setTimeout(() => setCopiedAccountInfo(false), 2000);
   };
-  const [selectedGroup, setSelectedGroup] = useState('Grupo AgroTech');
+  const [selectedGroup, setSelectedGroup] = useState(DEFAULT_CORPORATE_GROUP);
   const [isLoadingGroup, setIsLoadingGroup] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showLoginToast, setShowLoginToast] = useState(false);
-  const [selectedPendingTask, setSelectedPendingTask] = useState<any>(null);
-  const [emailSentForDocs, setEmailSentForDocs] = useState(false);
+  const [selectedPendingTask, setSelectedPendingTask] = useState<PendingTask | null>(null);
   const [showSuccessOperationToast, setShowSuccessOperationToast] = useState(false);
   const [selectedTitulos, setSelectedTitulos] = useState<number[]>([]);
   const [showConfirmacaoModal, setShowConfirmacaoModal] = useState(false);
-  const [confirmacaoData, setConfirmacaoData] = useState({ date: '', time: '', evidence: null as File | null, observacoes: '' });
+  const [confirmacaoData, setConfirmacaoData] = useState<ConfirmacaoData>({ date: '', time: '', evidence: null, observacoes: '' });
   const [hasPendingConfirmations, setHasPendingConfirmations] = useState(false);
   const [activePendingToastSource, setActivePendingToastSource] = useState<'header' | 'hero' | null>(null);
   const [isWaitingValidation, setIsWaitingValidation] = useState(false);
@@ -143,56 +69,14 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
   const [isShowingResolveScreen, setIsShowingResolveScreen] = useState(false);
   const [hasSeenResolveExplanation, setHasSeenResolveExplanation] = useState(false);
   const [showCanhotoModal, setShowCanhotoModal] = useState(false);
-  const [canhotoFiles, setCanhotoFiles] = useState<{ name: string; size: string }[]>([]);
+  const [canhotoFiles, setCanhotoFiles] = useState<CanhotoFile[]>([]);
   const [isUploadingCanhoto, setIsUploadingCanhoto] = useState(false);
   const [uploadCanhotoProgress, setUploadCanhotoProgress] = useState(0);
-  const [titulosList, setTitulosList] = useState<any[]>([]);
-  const [sacadoContacts, setSacadoContacts] = useState([
-    { id: '1', email: 'financeiro@agrosul.com.br', phone: '(11) 98877-6655', isPrincipal: true },
-    { id: '2', email: 'contato@agrosul.com.br', phone: '(11) 3344-5566', isPrincipal: false },
-  ]);
+  const [titulosList, setTitulosList] = useState<Titulo[]>(INITIAL_TITULOS);
+  const [sacadoContacts, setSacadoContacts] = useState<SacadoContact[]>(INITIAL_SACADO_CONTACTS);
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [newContactEmail, setNewContactEmail] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
-
-  const corporateGroups = [
-    'Grupo AgroTech',
-    'Fazendas Reunidas',
-    'Ceres Participações'
-  ];
-
-  const notifications = [
-    { 
-      id: 1, 
-      category: 'Pendências', 
-      title: 'Assinatura Pendente', 
-      description: 'Operação #8824 aguardando assinatura digital.', 
-      date: 'Há 10 min',
-      details: { total: 10, approved: 8, opId: '8824' }
-    },
-    { 
-      id: 2, 
-      category: 'Pendências', 
-      title: 'Termo de Registro', 
-      description: 'Novo termo disponível para aceite.', 
-      date: 'Há 1 hora',
-      details: { total: 5, approved: 5, opId: '9012' }
-    },
-    { 
-      id: 3, 
-      category: 'Notificações', 
-      title: 'Operação em Andamento', 
-      description: 'A operação #8750 saiu de análise para andamento.', 
-      date: 'Há 2 horas' 
-    },
-    { 
-      id: 4, 
-      category: 'Notificações', 
-      title: 'Limite Atualizado', 
-      description: 'Seu limite disponível foi aumentado em R$ 50k.', 
-      date: 'Ontem' 
-    },
-  ];
 
   // Auto-open sidebar on desktop
   React.useEffect(() => {
@@ -206,15 +90,8 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
     setTimeout(() => setLockedTabNotice(null), 4000);
   };
 
-  const handleCompleteOperation = (data: any) => {
-    const newOperation = {
-      id: Math.floor(Math.random() * 10000).toString(),
-      type: selectedService,
-      title: data?.grupoEmpresarial || selectedGroup || 'Operação',
-      value: 'R$ 498.750,00',
-      status: 'Em análise',
-      date: new Date().toLocaleDateString('pt-BR'),
-    };
+  const handleCompleteOperation = (data: OperationCompletionData) => {
+    const newOperation = createPortalOperation(data, selectedService, selectedGroup);
     setOperations([newOperation, ...operations]);
     setActiveTab('home');
     setShowOperationRequest(false);
@@ -330,14 +207,6 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
     </motion.div>
   );
 
-  const navItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'geral', label: 'Minhas Informações', icon: LayoutDashboard },
-    { id: 'carteira', label: 'Carteira', icon: Briefcase },
-    { id: 'operacoes', label: 'Operações', icon: FileBarChart },
-    { id: 'documentos', label: 'Compl. Cadastro', icon: ShieldCheck, badge: 'Novo' },
-  ];
-
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex">
       {/* Sidebar Overlay for Mobile */}
@@ -376,7 +245,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
         </div>
 
         <nav className="flex-1 px-4 mt-8 space-y-1">
-          {navItems.map((item) => {
+          {DASHBOARD_NAV_ITEMS.map((item) => {
             const isLocked = !isVerified && item.id !== 'documentos';
             return (
               <button
@@ -387,7 +256,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                     setTimeout(() => setLockedTabNotice(null), 4000);
                     return;
                   }
-                  setActiveTab(item.id as any);
+                  setActiveTab(item.id);
                   if (window.innerWidth < 1024) setIsSidebarOpen(false);
                 }}
                 className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
@@ -489,7 +358,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                             <div className="px-6 py-2">
                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{cat}</p>
                             </div>
-                            {notifications.filter(n => n.category === cat).map((n) => (
+                            {PORTAL_NOTIFICATIONS.filter(n => n.category === cat).map((n) => (
                               <button
                                 key={n.id}
                                 onClick={() => {
@@ -626,7 +495,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                         <div className="px-5 py-2">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Grupo Selecionado</p>
                         </div>
-                        {corporateGroups.map((group) => (
+                        {CORPORATE_GROUPS.map((group) => (
                           <button
                             key={group}
                             onClick={() => {
@@ -1302,7 +1171,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                     </div>
                     <div className="h-[320px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <BarChart data={DELINQUENCY_CHART_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                           <XAxis 
                             dataKey="name" 
@@ -1347,8 +1216,8 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                     <button className="text-[10px] font-black text-agro-orange uppercase tracking-widest hover:underline">Ver Tudo</button>
                   </div>
                   <div className="space-y-8 flex-1">
-                    {transactions.length > 0 ? (
-                      transactions.map((tx) => (
+                    {ACCOUNT_TRANSACTIONS.length > 0 ? (
+                      ACCOUNT_TRANSACTIONS.map((tx) => (
                         <div key={tx.id} className="flex items-center justify-between group cursor-pointer">
                           <div className="flex items-center gap-4">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${
@@ -1437,7 +1306,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                     <ResponsiveContainer width="100%" height={180}>
                       <PieChart>
                         <Pie
-                          data={portfolioData}
+                          data={PORTFOLIO_DISTRIBUTION}
                           cx="50%"
                           cy="50%"
                           innerRadius={60}
@@ -1445,7 +1314,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                           paddingAngle={5}
                           dataKey="value"
                         >
-                          {portfolioData.map((entry, index) => (
+                          {PORTFOLIO_DISTRIBUTION.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
@@ -1456,7 +1325,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                     </ResponsiveContainer>
                   </div>
                   <div className="grid grid-cols-2 gap-2 mt-4">
-                    {portfolioData.map((item) => (
+                    {PORTFOLIO_DISTRIBUTION.map((item) => (
                       <div key={item.name} className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
                         <span className="text-[10px] font-bold text-slate-500 truncate">{item.name}</span>
@@ -1946,7 +1815,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
                         </p>
                       </div>
                       <button 
-                        onClick={() => setSelectedPendingTask(notifications[0])}
+                        onClick={() => setSelectedPendingTask(FIRST_PENDING_NOTIFICATION)}
                         className="bg-gci text-white px-8 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gci-hover transition-all shadow-xl shadow-gci/10 active:scale-95"
                       >
                         Resolver Pendência
