@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { InitialPhoneVerification } from '@/flows/onboarding/sms/InitialPhoneVerification';
-import { CreatePasswordModal } from '@/components/CreatePasswordModal';
-import { Login } from '@/components/Login';
+import { CreatePasswordScreen } from '@/flows/onboarding/senha/CreatePasswordScreen';
+import { Login } from '@/flows/onboarding/login/Login';
 import { TermsAgreement } from '@/components/TermsAgreement';
 import { ComplementaryDataForm, ComplementaryFormSubmitPayload } from '@/components/ComplementaryDataForm';
 import { OnboardingDocumentUpload } from '@/components/OnboardingDocumentUpload';
@@ -44,13 +44,7 @@ export default function App() {
   // Step 2: Criação de Senha
   if (currentView === 'create_password') {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#083C4A_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
-        <CreatePasswordModal
-          isOpen={true}
-          onClose={() => setCurrentView('terms')}
-        />
-      </div>
+      <CreatePasswordScreen onClose={() => setCurrentView('terms')} />
     );
   }
 
