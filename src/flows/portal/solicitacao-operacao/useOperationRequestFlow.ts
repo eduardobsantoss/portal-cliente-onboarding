@@ -106,3 +106,5 @@ export function useOperationRequestFlow({ onClose }: UseOperationRequestFlowPara
     handleUploadMoreTitles,
   };
 }
+
+export type OperationRequestFlowState = ReturnType<typeof useOperationRequestFlow>;
