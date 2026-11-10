@@ -7,9 +7,9 @@ import { ComplementaryDataForm, ComplementaryFormSubmitPayload } from '@/compone
 import { OnboardingDocumentUpload } from '@/components/OnboardingDocumentUpload';
 import { AccountOpeningSignature } from '@/flows/onboarding/assinatura/AccountOpeningSignature';
 import type { SignerRepresentative } from '@/types/signer';
-import { AnalysisPending } from '@/components/AnalysisPending';
+import { AnalysisPending } from '@/flows/onboarding/analise/AnalysisPending';
 import { AccountCreated } from '@/components/AccountCreated';
-import { RejectionNotice } from '@/components/RejectionNotice';
+import { RejectionNotice } from '@/flows/onboarding/analise/RejectionNotice';
 import { Dashboard } from '@/components/Dashboard';
 
 export type OnboardingViewState = 
