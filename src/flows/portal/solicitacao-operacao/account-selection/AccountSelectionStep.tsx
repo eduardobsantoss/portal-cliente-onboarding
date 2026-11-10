@@ -1,5 +1,5 @@
 import { MOCK_DISBURSEMENT_ACCOUNTS } from '@/mocks/operationRequest';
-import { OperationTimeline } from '../OperationTimeline';
+import { OperationTimeline } from '@/flows/portal/solicitacao-operacao/OperationTimeline';
 import { AccountOption } from './AccountOption';
 import { NewAccountNotice } from './NewAccountNotice';
 

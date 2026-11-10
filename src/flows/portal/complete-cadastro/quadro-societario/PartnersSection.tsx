@@ -2,8 +2,8 @@ import React from 'react';
 import { Plus, Users } from 'lucide-react';
 import { PARTNERS_TOPIC_TEXT, TOPIC_CONTENT_PARTNERS_CLASS } from '@/constants/checklistTopics';
 import type { PartnerData, PartnerDocKey, PreviewDoc } from '@/types/documentChecklist';
-import { ChecklistTopic } from '../comum/ChecklistTopic';
-import { TopicCountBadge } from '../comum/TopicCountBadge';
+import { ChecklistTopic } from '@/flows/portal/complete-cadastro/comum/ChecklistTopic';
+import { TopicCountBadge } from '@/flows/portal/complete-cadastro/comum/TopicCountBadge';
 import { PartnerAccordionItem } from './PartnerAccordionItem';
 
 interface PartnersSectionProps {

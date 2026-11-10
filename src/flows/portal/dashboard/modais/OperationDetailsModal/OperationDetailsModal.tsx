@@ -4,8 +4,8 @@ import {
   OPERATION_DETAILS_TABS,
 } from '@/constants/operationDetails';
 import type { OperationDetailsTab, PortalOperation } from '@/types/portalOperation';
-import { DetailsTabBar } from '../comum/DetailsTabBar';
-import { FullscreenDetailsModal } from '../comum/FullscreenDetailsModal';
+import { DetailsTabBar } from '@/flows/portal/dashboard/modais/comum/DetailsTabBar';
+import { FullscreenDetailsModal } from '@/flows/portal/dashboard/modais/comum/FullscreenDetailsModal';
 import { OperationAssetsTab } from './OperationAssetsTab';
 import { OperationAttachmentsTab } from './OperationAttachmentsTab';
 import { OperationDetailsSidebar } from './OperationDetailsSidebar';

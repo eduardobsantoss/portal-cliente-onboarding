@@ -1,5 +1,5 @@
 import { TITLE_ATTACHMENTS } from '@/mocks/titleDetails';
-import { DocumentFileCard } from '../comum/DocumentFileCard';
+import { DocumentFileCard } from '@/flows/portal/dashboard/modais/comum/DocumentFileCard';
 
 export const TitleAttachmentsTab = () => (
   <div className="space-y-12">

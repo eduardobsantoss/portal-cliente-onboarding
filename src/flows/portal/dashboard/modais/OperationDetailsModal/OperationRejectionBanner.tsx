@@ -4,7 +4,7 @@ import {
   OPERATION_REJECTION_FALLBACK_REASON,
 } from '@/mocks/operationDetails';
 import type { PortalOperation } from '@/types/portalOperation';
-import { DetailsAlertBanner } from '../comum/DetailsAlertBanner';
+import { DetailsAlertBanner } from '@/flows/portal/dashboard/modais/comum/DetailsAlertBanner';
 
 interface OperationRejectionBannerProps {
   operation: PortalOperation;

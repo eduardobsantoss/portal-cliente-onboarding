@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react';
 import { MOCK_OPERATION_FINAL_REVIEW } from '@/mocks/operationRequest';
-import { OperationTimeline } from '../OperationTimeline';
+import { OperationTimeline } from '@/flows/portal/solicitacao-operacao/OperationTimeline';
 import { FinalReviewConfirmation } from './FinalReviewConfirmation';
 import { FinalReviewFigures } from './FinalReviewFigures';
 

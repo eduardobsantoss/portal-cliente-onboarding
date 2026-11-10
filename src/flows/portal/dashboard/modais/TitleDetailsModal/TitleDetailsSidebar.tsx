@@ -1,5 +1,5 @@
 import { Clock } from 'lucide-react';
-import { DetailsSidebarCard } from '../comum/DetailsSidebarCard';
+import { DetailsSidebarCard } from '@/flows/portal/dashboard/modais/comum/DetailsSidebarCard';
 
 interface TitleDetailsSidebarProps {
   status: string;

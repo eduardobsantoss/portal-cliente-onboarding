@@ -5,9 +5,9 @@ import { ModalFrame } from '@/components/ui/ModalFrame';
 import { ModalTitleBar } from '@/components/ui/ModalTitleBar';
 import type { CanhotoFile, Titulo } from '@/types/titulo';
 import { cn } from '@/utils/cn';
-import { NoticeCard } from '../comum/NoticeCard';
-import { UploadDropzone } from '../comum/UploadDropzone';
-import { UploadedFileRow } from '../comum/UploadedFileRow';
+import { NoticeCard } from '@/flows/portal/dashboard/modais/comum/NoticeCard';
+import { UploadDropzone } from '@/flows/portal/dashboard/modais/comum/UploadDropzone';
+import { UploadedFileRow } from '@/flows/portal/dashboard/modais/comum/UploadedFileRow';
 import { CanhotoUploadProgress } from './CanhotoUploadProgress';
 
 interface CanhotoUploadModalProps {

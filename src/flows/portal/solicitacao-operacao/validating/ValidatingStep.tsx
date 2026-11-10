@@ -1,5 +1,5 @@
 import { Clock } from 'lucide-react';
-import { OperationTimeline } from '../OperationTimeline';
+import { OperationTimeline } from '@/flows/portal/solicitacao-operacao/OperationTimeline';
 import { LongWaitWarning } from './LongWaitWarning';
 import { ValidationProgressBar } from './ValidationProgressBar';
 

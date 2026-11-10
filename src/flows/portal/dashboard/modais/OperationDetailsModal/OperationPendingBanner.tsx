@@ -1,5 +1,5 @@
 import { AlertCircle } from 'lucide-react';
-import { DetailsAlertBanner } from '../comum/DetailsAlertBanner';
+import { DetailsAlertBanner } from '@/flows/portal/dashboard/modais/comum/DetailsAlertBanner';
 
 interface OperationPendingBannerProps {
   onResolve: () => void;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Building2, ChevronDown } from 'lucide-react';
 import type { PartnerData } from '@/types/documentChecklist';
-import { ValidationBadge } from '../comum/ValidationBadge';
+import { ValidationBadge } from '@/flows/portal/complete-cadastro/comum/ValidationBadge';
 
 interface PartnerHeaderProps {
   partner: PartnerData;

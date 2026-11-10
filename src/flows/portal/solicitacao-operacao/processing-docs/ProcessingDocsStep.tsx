@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { FileText } from 'lucide-react';
 import { getProcessingOverallProgress, getProcessingStage } from '@/utils/operationProcessing';
-import { OperationTimeline } from '../OperationTimeline';
+import { OperationTimeline } from '@/flows/portal/solicitacao-operacao/OperationTimeline';
 
 interface ProcessingDocsStepProps {
   processingIndex: number;

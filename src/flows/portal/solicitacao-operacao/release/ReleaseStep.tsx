@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Shield, Zap } from 'lucide-react';
-import { OperationTimeline } from '../OperationTimeline';
+import { OperationTimeline } from '@/flows/portal/solicitacao-operacao/OperationTimeline';
 
 export const ReleaseStep = () => {
   return (

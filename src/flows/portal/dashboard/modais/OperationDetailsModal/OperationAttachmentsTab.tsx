@@ -1,6 +1,6 @@
 import { OPERATION_ATTACHMENTS } from '@/mocks/operationDetails';
 import { getDocumentTypeTone } from '@/utils/documentFileTone';
-import { DocumentFileCard } from '../comum/DocumentFileCard';
+import { DocumentFileCard } from '@/flows/portal/dashboard/modais/comum/DocumentFileCard';
 
 export const OperationAttachmentsTab = () => (
   <div className="space-y-8">

@@ -1,5 +1,5 @@
 import type { OperationXmlFile } from '@/types/operationRequest';
-import { OperationTimeline } from '../OperationTimeline';
+import { OperationTimeline } from '@/flows/portal/solicitacao-operacao/OperationTimeline';
 import { XmlDropzone } from './XmlDropzone';
 import { XmlFileList } from './XmlFileList';
 import { XmlUploadIntro } from './XmlUploadIntro';

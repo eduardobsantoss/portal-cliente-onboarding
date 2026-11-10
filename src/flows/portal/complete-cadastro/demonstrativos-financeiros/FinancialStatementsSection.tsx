@@ -1,7 +1,7 @@
 import React from 'react';
 import { FileText } from 'lucide-react';
 import { FINANCIAL_TOPIC_TITLE, getFinancialTopicSubtitle } from '@/constants/checklistTopics';
-import { DocumentSectionTopic, type DocumentSectionProps } from '../comum/DocumentSectionTopic';
+import { DocumentSectionTopic, type DocumentSectionProps } from '@/flows/portal/complete-cadastro/comum/DocumentSectionTopic';
 
 /** Seção 4: Demonstrativos Financeiros & Contábeis (balanço não obrigatório para Simples Nacional). */
 export const FinancialStatementsSection: React.FC<DocumentSectionProps> = (props) => {

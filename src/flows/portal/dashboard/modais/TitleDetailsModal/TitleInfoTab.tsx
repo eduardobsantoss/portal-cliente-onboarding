@@ -1,7 +1,7 @@
 import { Calendar, Info } from 'lucide-react';
 import type { Titulo } from '@/types/titulo';
 import { buildTituloPrazosInfo, buildTituloRegistroInfo } from '@/utils/titleDetails';
-import { InfoSectionCard } from '../comum/InfoSectionCard';
+import { InfoSectionCard } from '@/flows/portal/dashboard/modais/comum/InfoSectionCard';
 
 interface TitleInfoTabProps {
   titulo: Titulo;

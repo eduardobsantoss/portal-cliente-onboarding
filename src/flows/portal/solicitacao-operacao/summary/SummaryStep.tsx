@@ -1,6 +1,6 @@
 import { MOCK_OPERATION_SUMMARY, MOCK_REJECTED_TITLES } from '@/mocks/operationRequest';
 import type { OperationValueAttends } from '@/types/operationRequest';
-import { OperationTimeline } from '../OperationTimeline';
+import { OperationTimeline } from '@/flows/portal/solicitacao-operacao/OperationTimeline';
 import { SummaryAgreementNotice } from './SummaryAgreementNotice';
 import { SummaryFiguresCard } from './SummaryFiguresCard';
 import { ValueAttendsPanel } from './ValueAttendsPanel';

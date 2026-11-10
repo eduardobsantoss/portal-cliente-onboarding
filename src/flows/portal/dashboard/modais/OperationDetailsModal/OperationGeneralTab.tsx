@@ -1,7 +1,7 @@
 import { Info } from 'lucide-react';
 import type { PortalOperation } from '@/types/portalOperation';
 import { buildOperationInfo, buildOperationKpis } from '@/utils/operationDetails';
-import { InfoSectionCard } from '../comum/InfoSectionCard';
+import { InfoSectionCard } from '@/flows/portal/dashboard/modais/comum/InfoSectionCard';
 
 interface OperationGeneralTabProps {
   operation: PortalOperation;

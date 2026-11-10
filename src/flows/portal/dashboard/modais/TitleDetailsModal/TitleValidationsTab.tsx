@@ -1,7 +1,7 @@
 import { AlertTriangle, Clock, Info } from 'lucide-react';
 import { TITLE_VALIDATION_ERROR_CODE } from '@/mocks/titleDetails';
 import type { Titulo } from '@/types/titulo';
-import { DetailsAlertBanner } from '../comum/DetailsAlertBanner';
+import { DetailsAlertBanner } from '@/flows/portal/dashboard/modais/comum/DetailsAlertBanner';
 
 interface TitleValidationsTabProps {
   titulo: Titulo;

@@ -3,8 +3,8 @@ import { Smartphone } from 'lucide-react';
 import { SmsVerification } from '@/flows/onboarding/sms/SmsVerification';
 import { CHECKLIST_MASKED_PHONE } from '@/constants/documentChecklist';
 import { SMS_TOPIC_TEXT, TOPIC_CONTENT_BASE_CLASS } from '@/constants/checklistTopics';
-import { ChecklistTopic } from '../comum/ChecklistTopic';
-import { ValidationBadge } from '../comum/ValidationBadge';
+import { ChecklistTopic } from '@/flows/portal/complete-cadastro/comum/ChecklistTopic';
+import { ValidationBadge } from '@/flows/portal/complete-cadastro/comum/ValidationBadge';
 
 interface SmsTopicProps {
   phoneVerified: boolean;

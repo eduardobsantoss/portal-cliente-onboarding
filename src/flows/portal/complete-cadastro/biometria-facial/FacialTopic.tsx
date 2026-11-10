@@ -2,8 +2,8 @@ import React from 'react';
 import { QrCode } from 'lucide-react';
 import { FacialVerification } from '@/flows/portal/verificacao-facial/FacialVerification';
 import { FACIAL_TOPIC_TEXT, TOPIC_CONTENT_BASE_CLASS } from '@/constants/checklistTopics';
-import { ChecklistTopic } from '../comum/ChecklistTopic';
-import { ValidationBadge } from '../comum/ValidationBadge';
+import { ChecklistTopic } from '@/flows/portal/complete-cadastro/comum/ChecklistTopic';
+import { ValidationBadge } from '@/flows/portal/complete-cadastro/comum/ValidationBadge';
 
 interface FacialTopicProps {
   facialVerified: boolean;

@@ -1,5 +1,5 @@
 import type { OperationSignature } from '@/types/operationRequest';
-import { OperationTimeline } from '../OperationTimeline';
+import { OperationTimeline } from '@/flows/portal/solicitacao-operacao/OperationTimeline';
 import { SignatureCompleted } from './SignatureCompleted';
 import { SignaturePending } from './SignaturePending';
 
