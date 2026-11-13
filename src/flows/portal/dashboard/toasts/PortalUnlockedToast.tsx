@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { CheckCircle2, X } from 'lucide-react';
+import { LIMIT_AVAILABLE_LABEL } from '@/constants/analysis';
 
 /** Aviso de cadastro concluído / acesso ao portal liberado. */
 interface PortalUnlockedToastProps {
@@ -16,7 +17,7 @@ export const PortalUnlockedToast = ({ onClose }: PortalUnlockedToastProps) => (
     <div className="flex items-center gap-3">
       <CheckCircle2 size={20} className="shrink-0" />
       <span className="text-sm font-bold">
-        Cadastro concluído com sucesso! Documentos enviados para análise da mesa de crédito. Acesso ao portal liberado.
+        Análise de crédito concluída! Seu limite de {LIMIT_AVAILABLE_LABEL} já está disponível para antecipação.
       </span>
     </div>
     <button

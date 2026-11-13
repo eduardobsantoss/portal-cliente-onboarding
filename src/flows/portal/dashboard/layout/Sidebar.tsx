@@ -1,8 +1,7 @@
-import { Building2, Lock, LogOut, X } from 'lucide-react';
+import { Building2, LogOut, X } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { DASHBOARD_NAV_ITEMS } from '@/constants/dashboardNav';
 import type { DashboardNavItem, DashboardTab } from '@/types/dashboard';
-import { isNavItemLocked } from '@/utils/dashboardNav';
 
 /** Menu lateral de navegação do portal. */
 interface SidebarProps {
@@ -38,31 +37,26 @@ export const Sidebar = ({ isOpen, isVerified, activeTab, onSelectItem, onClose, 
 
     <nav className="flex-1 px-4 mt-8 space-y-1">
       {DASHBOARD_NAV_ITEMS.map((item) => {
-        const isLocked = isNavItemLocked(isVerified, item.id);
+        const showBadge = Boolean(item.badge) && !isVerified;
         return (
           <button
             key={item.id}
             onClick={() => onSelectItem(item)}
             className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
-              isLocked
-                ? 'opacity-45 hover:opacity-75 cursor-not-allowed text-white/50'
-                : activeTab === item.id 
+              activeTab === item.id 
                 ? 'bg-white/10 text-white' 
                 : 'text-white/60 hover:text-white hover:bg-white/5'
             }`}
-            title={isLocked ? 'Disponível após completar o cadastro' : item.label}
           >
             <div className="flex items-center gap-4">
               <item.icon size={20} className={activeTab === item.id ? 'text-agro-orange' : 'shrink-0'} />
               {(isOpen || window.innerWidth < 1024) && <span className="font-semibold text-sm">{item.label}</span>}
             </div>
 
-            {(isOpen || window.innerWidth < 1024) && (
-              <div>
-                {isLocked && (
-                  <Lock size={14} className="text-white/30" />
-                )}
-              </div>
+            {(isOpen || window.innerWidth < 1024) && showBadge && (
+              <span className="text-[9px] font-black uppercase tracking-wider bg-agro-orange text-white px-2 py-0.5 rounded-full">
+                {item.badge}
+              </span>
             )}
           </button>
         );

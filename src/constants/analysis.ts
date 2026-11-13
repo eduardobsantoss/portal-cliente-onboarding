@@ -2,6 +2,11 @@ import type { AnalysisProgressStage, AnalysisStepItem } from '@/types/analysis';
 
 export const PRE_APPROVED_LIMIT_LABEL = 'R$ 2.000.000,00';
 
+/** Limite exibido no portal depois da análise de crédito. Reusa o valor da pré-análise. */
+export const LIMIT_AVAILABLE_LABEL = PRE_APPROVED_LIMIT_LABEL;
+
+export const LIMIT_EMPTY_LABEL = 'R$ 0,00';
+
 export const ANALYSIS_STEPS: AnalysisStepItem[] = [
   {
     id: 1,
@@ -20,7 +25,7 @@ export const ANALYSIS_STEPS: AnalysisStepItem[] = [
   },
   {
     id: 4,
-    label: 'Checagem de conformidade e compliance anticorrupção/PLD',
+    label: 'Checagem de conformidade anticorrupção/PLD',
     detail: 'Auditoria de pessoas politicamente expostas (PEP) e sanções',
   },
   {

@@ -89,8 +89,10 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
           <PageHeader
             activeTab={nav.activeTab}
             selectedGroup={group.selectedGroup}
+            isLimitReleased={nav.isVerified}
             activePendingToastSource={overlays.activePendingToastSource}
             onAnticipate={nav.onAnticipateClick}
+            onStartCreditAnalysis={nav.startCreditAnalysis}
             onDismissPendingToast={() => overlays.setActivePendingToastSource(null)}
             onGoToCarteira={goToCarteira}
           />

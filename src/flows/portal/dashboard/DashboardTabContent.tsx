@@ -1,3 +1,4 @@
+import { LIMIT_AVAILABLE_LABEL, LIMIT_EMPTY_LABEL } from '@/constants/analysis';
 import { DocumentVerification } from '@/flows/portal/complete-cadastro/DocumentVerification';
 import { CarteiraTab } from '@/flows/portal/dashboard/carteira/CarteiraTab';
 import { HomeTab } from '@/flows/portal/dashboard/home/HomeTab';
@@ -18,7 +19,7 @@ interface DashboardTabContentProps {
   onGoToCarteira: () => void;
 }
 
-/** Conteúdo da aba ativa; qualquer aba desconhecida cai em "Compl. Cadastro" (como no original). */
+/** Conteúdo da aba ativa; qualquer aba desconhecida cai na Análise de Crédito. */
 export const DashboardTabContent = ({
   nav,
   ops,
@@ -34,6 +35,7 @@ export const DashboardTabContent = ({
           operations={ops.operations}
           hasPendingConfirmations={carteira.hasPendingConfirmations}
           isWaitingValidation={resolveScreen.isWaitingValidation}
+          isLimitReleased={nav.isVerified}
           activePendingToastSource={overlays.activePendingToastSource}
           onNavigate={nav.setActiveTab}
           onOpenOperation={(op) => {
@@ -41,12 +43,18 @@ export const DashboardTabContent = ({
             nav.setActiveTab('operacoes');
           }}
           onAnticipate={nav.onAnticipateClick}
+          onStartCreditAnalysis={nav.startCreditAnalysis}
           onDismissPendingToast={() => overlays.setActivePendingToastSource(null)}
           onGoToCarteira={onGoToCarteira}
         />
       );
     case 'geral':
-      return <GeralTab onSelectService={nav.handleOpenOperationRequest} />;
+      return (
+        <GeralTab
+          limitLabel={nav.isVerified ? LIMIT_AVAILABLE_LABEL : LIMIT_EMPTY_LABEL}
+          onSelectService={nav.handleOpenOperationRequest}
+        />
+      );
     case 'carteira':
       return (
         <CarteiraTab

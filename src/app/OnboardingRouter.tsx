@@ -136,7 +136,7 @@ export const OnboardingRouter: React.FC<OnboardingFlow> = ({
         />
       );
 
-    // Step 10: Dashboard - "Complete o seu Cadastro"
+    // Step 10: Dashboard — Home, com a Análise de Crédito disponível no menu
     default:
       return <Dashboard onLogout={() => goTo('login')} />;
   }

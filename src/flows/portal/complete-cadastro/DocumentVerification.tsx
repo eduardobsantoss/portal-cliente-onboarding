@@ -28,7 +28,7 @@ interface DocumentVerificationProps {
   onResetVerification?: () => void;
 }
 
-/** Checklist oficial "Complete o seu Cadastro": orquestra as 6 seções, progresso, modais e simulações. */
+/** Checklist da Análise de Crédito: orquestra as 6 seções, progresso, modais e simulações. */
 export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
   onCompleteVerification,
   onResetVerification

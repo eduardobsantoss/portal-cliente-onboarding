@@ -8,6 +8,8 @@ export const HOME_HEADING: DashboardHeadingTexts = {
   subtitle: 'Acelere seu fluxo de caixa agora mesmo.',
 };
 
+export const HOME_SUBTITLE_WITHOUT_LIMIT = 'Falta pouco para liberar o seu limite de crédito.';
+
 export const CARTEIRA_HEADING: DashboardHeadingTexts = {
   title: 'Minha Carteira',
   subtitle: 'Acompanhe o desempenho e os títulos da sua carteira ativa.',
@@ -19,8 +21,8 @@ export const OPERACOES_HEADING: DashboardHeadingTexts = {
 };
 
 export const CADASTRO_HEADING: DashboardHeadingTexts = {
-  title: 'Complete o seu Cadastro',
-  subtitle: 'Complete a sua jornada cadastral para liberação do seu limite de crédito.',
+  title: 'Conclua sua Análise de Crédito',
+  subtitle: 'Envie as informações e documentos para liberarmos o seu limite de crédito.',
 };
 
 export const GERAL_TITLE = 'Minhas Informações';

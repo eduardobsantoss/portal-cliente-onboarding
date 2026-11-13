@@ -38,6 +38,6 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: 'faq-6',
     category: 'Prazos & Limite',
     question: 'Qual o prazo de análise e liberação após o envio dos arquivos?',
-    answer: 'A leitura e pré-conferência via OCR ocorrem em poucos segundos. A validação final pela equipe de compliance e liberação do limite operacional para antecipação de recebíveis ocorre em até 5 dias úteis.'
+    answer: 'A leitura e pré-conferência via OCR ocorrem em poucos segundos. A validação final pela nossa equipe e a liberação do limite operacional para antecipação de recebíveis ocorre em até 5 dias úteis.'
   }
 ];

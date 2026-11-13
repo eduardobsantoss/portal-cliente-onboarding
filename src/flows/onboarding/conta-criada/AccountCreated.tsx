@@ -84,7 +84,7 @@ export const AccountCreated: React.FC<AccountCreatedProps> = ({
               onClick={onContinueToCompleteRegistration}
               className="w-full py-4 bg-gci hover:bg-gci-hover text-white font-bold text-sm rounded-xl transition-all shadow-xl shadow-gci/15 flex items-center justify-center gap-2 active:scale-95 group"
             >
-              Continuar para completar meu cadastro
+              Acessar meu portal
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </div>

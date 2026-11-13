@@ -1,8 +1,13 @@
 import { motion } from 'motion/react';
 import { ArrowUpRight, CreditCard, TrendingUp, Wallet } from 'lucide-react';
+import { LIMIT_EMPTY_LABEL } from '@/constants/analysis';
 
 /** Cartões de Limite Total, Risco e Disponível. */
-export const GeralKpiGrid = () => (
+interface GeralKpiGridProps {
+  limitLabel: string;
+}
+
+export const GeralKpiGrid = ({ limitLabel }: GeralKpiGridProps) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
@@ -18,7 +23,7 @@ export const GeralKpiGrid = () => (
         </span>
       </div>
       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Limite Total</p>
-      <h3 className="text-2xl font-bold text-gci">R$ 0,00</h3>
+      <h3 className="text-2xl font-bold text-gci">{limitLabel}</h3>
     </motion.div>
 
     <motion.div 
@@ -34,7 +39,7 @@ export const GeralKpiGrid = () => (
         </div>
       </div>
       <p className="text-[10px] text-white/60 font-bold uppercase tracking-wider mb-1 relative z-10">Risco</p>
-      <h3 className="text-2xl font-bold text-white relative z-10">R$ 0,00</h3>
+      <h3 className="text-2xl font-bold text-white relative z-10">{LIMIT_EMPTY_LABEL}</h3>
     </motion.div>
 
     <motion.div 
@@ -49,7 +54,7 @@ export const GeralKpiGrid = () => (
         </div>
       </div>
       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Disponível</p>
-      <h3 className="text-2xl font-bold text-gci">R$ 0,00</h3>
+      <h3 className="text-2xl font-bold text-gci">{limitLabel}</h3>
     </motion.div>
   </div>
 );

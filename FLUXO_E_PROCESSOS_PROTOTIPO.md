@@ -10,8 +10,8 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 1. **Jornada de Onboarding & Abertura da Conta Digital** (Passos 1 a 6):
    - Desde a autenticação inicial até a liberação do número de agência e conta corrente digital GCI.
-2. **Portal do Cliente & "Complete o seu Cadastro" (Middle Corporate e Simples/PME)**:
-   - Acesso ao Dashboard com restrição preventiva de movimentação e operações até o envio e validação documental profunda (Checklist Oficial GCI).
+2. **Portal do Cliente & Análise de Crédito (Middle Corporate e Simples/PME)**:
+   - Após a abertura da conta, o cliente entra na Home com o menu liberado. A antecipação permanece em R$ 0,00 até a conclusão da Análise de Crédito (checklist documental), que libera R$ 2.000.000,00.
 
 ---
 
@@ -40,12 +40,12 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 [Sua Conta Digital GCI está aberta!]
    │ ├─ Dados da conta (Banco 414 - GCI SCD, Agência 0001, Conta Corrente)
    │ ├─ Bloco discreto para download do app Ceres Agrofinance (sem tags chamativas)
-   │ └─ CTA: "Continuar para completar meu cadastro"
+   │ └─ CTA: "Acessar meu portal"
    ▼
-[Dashboard do Cliente / Portal GCI]
-   ├─ Abas bloqueadas preventivamente (Home, Minhas Informações, Carteira, Operações) com aviso:
-   │  "Conclua o preenchimento do seu cadastro para liberar o acesso ao portal."
-   └─ Aba Ativa: "Compl. Cadastro" (Documentos e Checklist Oficial GCI)
+[Dashboard do Cliente / Portal GCI — Home]
+   ├─ Menu liberado (Home, Minhas Informações, Carteira, Operações, Análise de Crédito)
+   ├─ Limite em R$ 0,00 e chamadas "Liberar meu limite" / "Iniciar análise de crédito"
+   └─ Aba "Análise de Crédito" (Documentos e Checklist Oficial GCI)
         ├─ Seção 3: Documentos Cadastrais da Empresa
         ├─ Seção 4: Demonstrativos Financeiros & Contábeis (Regra Simples Nacional)
         ├─ Seção 5: Crédito & Relacionamento Bancário
@@ -144,19 +144,20 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
   - Sem tags ou menções chamativas de iOS e Android.
   - Botão secundário: *"Baixar app Ceres Agrofinance"*, que abre modal explicativo com QR Code e links oficiais da App Store e Google Play.
 - **CTA Principal**: Botão de destaque direcionando para:
-  - *"Continuar para completar meu cadastro"* (encaminha diretamente para o Dashboard).
+  - *"Acessar meu portal"* (encaminha para a Home do Dashboard).
 
 ---
 
-### Etapa 7: Dashboard e Checklist Oficial "Complete o seu Cadastro" (`Dashboard.tsx` e `DocumentVerification.tsx`)
+### Etapa 7: Dashboard e Checklist da Análise de Crédito (`Dashboard.tsx` e `DocumentVerification.tsx`)
 
 #### Comportamento das Abas do Dashboard:
-- Ao ingressar no Dashboard pela primeira vez, o cliente entra com status cadastral **não verificado / preliminar**.
-- **Abas Bloqueadas**:
-  - *Home*, *Minhas Informações*, *Carteira*, *Operações*.
-  - Ao clicar em qualquer aba bloqueada, é exibido um aviso elegante: *"Conclua o preenchimento do seu cadastro para liberar o acesso ao portal."*
-- **Aba Destacada e Ativa**:
-  - **"Compl. Cadastro"** (Documentos e Checklist Oficial GCI).
+- Ao ingressar no Dashboard pela primeira vez, o cliente cai na **Home**, com a conta aberta e o limite ainda não liberado.
+- **Menu liberado**:
+  - *Home*, *Minhas Informações*, *Carteira* e *Operações* abrem normalmente. Carteira e operações seguem vazias e os valores de limite aparecem como R$ 0,00.
+  - A Home troca o texto de boas-vindas e os botões de antecipação por chamadas para a análise de crédito ("Liberar meu limite" e "Iniciar análise de crédito").
+  - Serviços de crédito, enquanto o limite não existe, exibem o aviso de que a solicitação fica disponível após a análise, com o atalho "Liberar meu limite".
+- **Aba da análise**:
+  - **"Análise de Crédito"** (Documentos e Checklist Oficial GCI), com o selo "Novo" até o limite ser liberado.
 
 #### O Checklist Documental Oficial da GCI (`DocumentVerification.tsx`):
 Construído rigorosamente sobre as especificações do documento oficial da instituição, dividido em:
@@ -204,10 +205,10 @@ Auditoria completa para sócios, representantes, avalistas e cônjuges:
 ---
 
 ## 4. Liberação do Portal e Próximos Passos Operacionais
-Quando todos os documentos do "Complete o seu Cadastro" são submetidos e validados:
-1. O status da empresa muda para **Verificado / Limite Liberado**.
-2. Todas as abas do portal são desbloqueadas:
-   - **Home**: Resumo financeiro, limites disponíveis e antecipação de duplicatas (sem bordas alaranjadas indesejadas no card).
+Quando todos os documentos da Análise de Crédito são submetidos e validados:
+1. O status da empresa muda para **Verificado / Limite Liberado** (R$ 2.000.000,00 disponíveis para antecipação).
+2. O portal permanece com o menu liberado e passa a exibir o limite:
+   - **Home**: Resumo financeiro, R$ 2.000.000,00 disponíveis e os botões de antecipação.
    - **Carteira**: Gestão de títulos, confirmações de entrega, canhoto digital e cessões de recebíveis.
    - **Operações**: Histórico de esteira de crédito, contratações de CPR, Capital de Giro e Duplicatas.
    - **Minhas Informações**: Dados cadastrais da empresa e QSA atualizados.

@@ -7,10 +7,10 @@ export const NextStepNotice: React.FC = () => {
       <ShieldCheck size={20} className="text-amber-600 shrink-0 mt-0.5" />
       <div className="text-xs text-amber-950 space-y-1 leading-relaxed">
         <p className="font-bold text-slate-900">
-          Próximo passo: Complete o seu cadastro
+          Próximo passo: libere o seu limite de crédito
         </p>
         <p className="text-slate-600">
-          Sua conta já foi aberta. Para liberar a movimentação na sua conta, complete as etapas cadastrais e documentais.
+          Sua conta já está aberta e pronta para uso. Para liberar o limite de antecipação, conclua a análise de crédito no portal.
         </p>
       </div>
     </div>

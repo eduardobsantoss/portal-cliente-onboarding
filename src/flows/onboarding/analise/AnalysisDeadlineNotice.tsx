@@ -10,7 +10,7 @@ export const AnalysisDeadlineNotice: React.FC = () => {
         <span>Prazo de Análise Cadastral: <strong>até 5 dias úteis</strong></span>
       </div>
       <p className="text-xs text-slate-600 leading-relaxed">
-        Nossa equipe de compliance e crédito está validando as informações fornecidas. Avisaremos você no e-mail <strong className="text-slate-900 font-bold">{MOCK_USER_EMAIL}</strong> assim que a análise for concluída.
+        Agradecemos por escolher a Ceres para abrir a sua conta. Dentro deste prazo, enviaremos a devolutiva sobre a abertura da sua conta no e-mail <strong className="text-slate-900 font-bold">{MOCK_USER_EMAIL}</strong>.
       </p>
     </div>
   );

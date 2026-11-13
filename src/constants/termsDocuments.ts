@@ -17,7 +17,7 @@ export const TERMS_DOCUMENTS: Record<TermsDocumentType, TermsDocument> = {
       { kind: 'heading', text: '3. SEGURANÇA DAS CREDENCIAIS E ACESSO' },
       { kind: 'paragraph', text: 'As credenciais de acesso, assinaturas eletrônicas e validações biométricas faciais são de uso exclusivo e intransferível, sendo de responsabilidade do cliente a confidencialidade de seus acessos.' },
       { kind: 'heading', text: '4. ANÁLISE DE CRÉDITO E LIMITES' },
-      { kind: 'paragraph', text: 'A submissão de cadastro não vincula a concessão compulsória de limites, ficando condicionada à avaliação técnica e aprovação dos comitês de risco e compliance do Grupo Ceres Investimentos.' },
+      { kind: 'paragraph', text: 'A submissão de cadastro não vincula a concessão compulsória de limites, ficando condicionada à avaliação técnica e aprovação dos comitês de risco e crédito do Grupo Ceres Investimentos.' },
     ],
   },
   privacy: {

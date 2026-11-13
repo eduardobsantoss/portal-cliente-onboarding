@@ -1,50 +1,55 @@
 import { useEffect, useState } from 'react';
-import {
-  ANTICIPATION_LOCKED_NOTICE,
-  PORTAL_LOCKED_NOTICE,
-  getServiceLockedNotice,
-} from '@/constants/dashboardMessages';
+import { ANTICIPATION_LOCKED_NOTICE, getServiceLockedNotice } from '@/constants/dashboardMessages';
 import { DESKTOP_BREAKPOINT_PX } from '@/constants/dashboardNav';
 import { LOCKED_NOTICE_MS, PORTAL_UNLOCKED_TOAST_MS } from '@/constants/dashboardTimings';
 import type { DashboardNavItem, DashboardTab, PendingToastSource } from '@/types/dashboard';
-import { isNavItemLocked } from '@/utils/dashboardNav';
 
-/** Aba ativa, sidebar, verificação cadastral e avisos de funcionalidade bloqueada. */
+export interface LockedNotice {
+  message: string;
+  offerCreditAction: boolean;
+}
+
+/** Aba ativa, sidebar e avisos. `isVerified` indica que o limite de crédito já foi liberado. */
 export function useDashboardNavigation() {
   const [isVerified, setIsVerified] = useState(false);
-  const [activeTab, setActiveTab] = useState<DashboardTab>('documentos');
-  const [lockedTabNotice, setLockedTabNotice] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<DashboardTab>('home');
+  const [lockedNotice, setLockedNotice] = useState<LockedNotice | null>(null);
   const [portalUnlockedToast, setPortalUnlockedToast] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Default closed for mobile
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Auto-open sidebar on desktop
   useEffect(() => {
     if (window.innerWidth >= DESKTOP_BREAKPOINT_PX) {
       setIsSidebarOpen(true);
     }
   }, []);
 
-  const showLockedNotice = (message: string) => {
-    setLockedTabNotice(message);
-    setTimeout(() => setLockedTabNotice(null), LOCKED_NOTICE_MS);
+  const showLockedNotice = (message: string, offerCreditAction = false) => {
+    setLockedNotice({ message, offerCreditAction });
+    setTimeout(() => setLockedNotice(null), LOCKED_NOTICE_MS);
   };
 
+  const dismissLockedNotice = () => setLockedNotice(null);
+
   const handleSelectNavItem = (item: DashboardNavItem) => {
-    if (isNavItemLocked(isVerified, item.id)) {
-      showLockedNotice(PORTAL_LOCKED_NOTICE);
-      return;
-    }
     setActiveTab(item.id);
     if (window.innerWidth < DESKTOP_BREAKPOINT_PX) setIsSidebarOpen(false);
   };
 
-  const handleOpenOperationRequest = (serviceName: string) => {
-    showLockedNotice(getServiceLockedNotice(serviceName));
+  const startCreditAnalysis = () => {
+    setLockedNotice(null);
+    setActiveTab('documentos');
+    if (window.innerWidth < DESKTOP_BREAKPOINT_PX) setIsSidebarOpen(false);
   };
 
-  // O parâmetro `source` não é usado no original (o aviso é o mesmo para ambos os botões).
+  const handleOpenOperationRequest = (serviceName: string) => {
+    if (isVerified) return;
+    showLockedNotice(getServiceLockedNotice(serviceName), true);
+  };
+
   const onAnticipateClick = (_source: PendingToastSource) => {
-    showLockedNotice(ANTICIPATION_LOCKED_NOTICE);
+    if (!isVerified) {
+      showLockedNotice(ANTICIPATION_LOCKED_NOTICE);
+    }
   };
 
   const handleCompleteVerification = () => {
@@ -56,15 +61,15 @@ export function useDashboardNavigation() {
 
   const handleResetVerification = () => {
     setIsVerified(false);
-    setActiveTab('documentos');
+    setActiveTab('home');
   };
 
   return {
     isVerified,
     activeTab,
     setActiveTab,
-    lockedTabNotice,
-    setLockedTabNotice,
+    lockedNotice,
+    dismissLockedNotice,
     portalUnlockedToast,
     setPortalUnlockedToast,
     isSidebarOpen,
@@ -72,6 +77,7 @@ export function useDashboardNavigation() {
     handleSelectNavItem,
     handleOpenOperationRequest,
     onAnticipateClick,
+    startCreditAnalysis,
     handleCompleteVerification,
     handleResetVerification,
   };

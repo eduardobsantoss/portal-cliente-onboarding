@@ -36,14 +36,14 @@ export const CONTRACT_DOC_DESCRIPTION =
 
 export const ELECTION_MINUTES_DOC_ID = 'pj-ata-eleicao';
 export const ELECTION_MINUTES_DOC_TYPE = 'Ata de Eleição de Diretoria';
-export const ELECTION_MINUTES_DOC_TITLE = 'Ata de Eleição de Diretoria (quando for Estatuto)';
+export const ELECTION_MINUTES_DOC_TITLE = 'Ata de Eleição de Diretoria';
 export const ELECTION_MINUTES_DOC_DESCRIPTION =
-  'Documento societário de eleição e posse da diretoria atual registrada (obrigatório para sociedades anônimas ou regidas por estatuto).';
+  'Documento societário de eleição e posse da diretoria atual registrada. Este documento só aparece quando a empresa for Sociedade Anônima (S/A).';
 
 export const POWER_OF_ATTORNEY_DOC_ID = 'pj-procuracao';
 export const POWER_OF_ATTORNEY_DOC_TYPE = 'Procuração';
 export const POWER_OF_ATTORNEY_TITLE_REQUIRED = 'Procuração Vigente (Obrigatória)';
-export const POWER_OF_ATTORNEY_TITLE_OPTIONAL = 'Procuração (quando houver)';
+export const POWER_OF_ATTORNEY_TITLE_OPTIONAL = 'Procuração';
 export const POWER_OF_ATTORNEY_DESCRIPTION_REQUIRED =
   'Instrumento público ou particular com outorga de poderes de representação (obrigatório para representantes do tipo Procurador).';
 export const POWER_OF_ATTORNEY_DESCRIPTION_OPTIONAL =

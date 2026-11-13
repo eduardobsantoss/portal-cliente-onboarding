@@ -24,8 +24,13 @@ export const DashboardNotices = ({ nav, resolveScreen, canhoto, link, titulosLis
     {/* Unlocked Portal Toast */}
     <AnimatePresence>
       {nav.portalUnlockedToast && <PortalUnlockedToast onClose={() => nav.setPortalUnlockedToast(false)} />}
-      {nav.lockedTabNotice && (
-        <LockedNoticeToast message={nav.lockedTabNotice} onClose={() => nav.setLockedTabNotice(null)} />
+      {nav.lockedNotice && (
+        <LockedNoticeToast
+          message={nav.lockedNotice.message}
+          onClose={nav.dismissLockedNotice}
+          actionLabel={nav.lockedNotice.offerCreditAction ? 'Liberar meu limite' : undefined}
+          onAction={nav.lockedNotice.offerCreditAction ? nav.startCreditAnalysis : undefined}
+        />
       )}
     </AnimatePresence>
 

@@ -6,7 +6,7 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
   { id: 'geral', label: 'Minhas Informações', icon: LayoutDashboard },
   { id: 'carteira', label: 'Carteira', icon: Briefcase },
   { id: 'operacoes', label: 'Operações', icon: FileBarChart },
-  { id: 'documentos', label: 'Compl. Cadastro', icon: ShieldCheck, badge: 'Novo' },
+  { id: 'documentos', label: 'Análise de Crédito', icon: ShieldCheck, badge: 'Novo' },
 ];
 
 /** Largura (px) a partir da qual a sidebar abre sozinha e o layout é "desktop". */

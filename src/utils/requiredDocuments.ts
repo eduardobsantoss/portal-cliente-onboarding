@@ -16,10 +16,7 @@ import {
   POWER_OF_ATTORNEY_TITLE_OPTIONAL,
   POWER_OF_ATTORNEY_TITLE_REQUIRED,
 } from '@/constants/requiredDocuments';
-import {
-  MOCK_CONTRACT_UPLOADED_FILE,
-  MOCK_ELECTION_MINUTES_UPLOADED_FILE,
-} from '@/mocks/onboardingDocumentFiles';
+import { MOCK_CONTRACT_UPLOADED_FILE } from '@/mocks/onboardingDocumentFiles';
 import { DEFAULT_ONBOARDING_SOCIOS } from '@/mocks/onboardingDocumentSocios';
 import type { AccountType } from '@/types/dadosComplementares';
 import type { DocumentUploadItem } from '@/types/documentUpload';
@@ -83,11 +80,8 @@ function buildCompanyDocuments(
       documentType: ELECTION_MINUTES_DOC_TYPE,
       title: ELECTION_MINUTES_DOC_TITLE,
       description: ELECTION_MINUTES_DOC_DESCRIPTION,
-      isRequired: isEstatuto,
-      uploaded: isEstatuto,
-      fileName: isEstatuto ? MOCK_ELECTION_MINUTES_UPLOADED_FILE.fileName : undefined,
-      fileSize: isEstatuto ? MOCK_ELECTION_MINUTES_UPLOADED_FILE.fileSize : undefined,
-      uploadDate: isEstatuto ? MOCK_ELECTION_MINUTES_UPLOADED_FILE.uploadDate : undefined,
+      isRequired: true,
+      uploaded: false,
     },
     {
       id: POWER_OF_ATTORNEY_DOC_ID,
@@ -106,7 +100,7 @@ function buildCompanyDocuments(
 
 /**
  * Monta a lista de documentos da etapa conforme o tipo de conta:
- * - PJ: Contrato/Estatuto; Ata de Eleição (se Estatuto); Procuração (se houver Procurador);
+ * - PJ: Contrato/Estatuto; Ata de Eleição (sempre visível no protótipo; na regra, só S/A); Procuração (se houver Procurador);
  *   + identificação (e estado civil) de cada sócio e de cada representante não sócio.
  * - PF: identificação do titular + sócios/co-titulares relacionados.
  */

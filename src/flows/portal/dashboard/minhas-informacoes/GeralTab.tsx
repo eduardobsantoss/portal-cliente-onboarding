@@ -4,13 +4,14 @@ import { GeralKpiGrid } from './GeralKpiGrid';
 import { ServiceQuickActions } from './ServiceQuickActions';
 
 interface GeralTabProps {
+  limitLabel: string;
   onSelectService: (serviceLabel: string) => void;
 }
 
-export const GeralTab = ({ onSelectService }: GeralTabProps) => (
+export const GeralTab = ({ limitLabel, onSelectService }: GeralTabProps) => (
   <div className="space-y-8">
     {/* KPI Grid */}
-    <GeralKpiGrid />
+    <GeralKpiGrid limitLabel={limitLabel} />
 
     {/* Quick Actions */}
     <ServiceQuickActions onSelectService={onSelectService} />

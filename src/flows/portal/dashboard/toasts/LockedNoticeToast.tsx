@@ -1,13 +1,15 @@
 import { motion } from 'motion/react';
 import { Lock, X } from 'lucide-react';
 
-/** Aviso de funcionalidade bloqueada. */
+/** Aviso de funcionalidade ainda indisponível, com atalho opcional para a análise de crédito. */
 interface LockedNoticeToastProps {
   message: string;
   onClose: () => void;
+  actionLabel?: string;
+  onAction?: () => void;
 }
 
-export const LockedNoticeToast = ({ message, onClose }: LockedNoticeToastProps) => (
+export const LockedNoticeToast = ({ message, onClose, actionLabel, onAction }: LockedNoticeToastProps) => (
   <motion.div
     initial={{ opacity: 0, y: -20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -20,11 +22,22 @@ export const LockedNoticeToast = ({ message, onClose }: LockedNoticeToastProps) 
         {message}
       </span>
     </div>
-    <button
-      onClick={onClose}
-      className="p-1 hover:bg-white/20 rounded-lg text-white/60 hover:text-white"
-    >
-      <X size={16} />
-    </button>
+    <div className="flex items-center gap-2 shrink-0">
+      {actionLabel && onAction && (
+        <button
+          type="button"
+          onClick={onAction}
+          className="text-[11px] font-bold uppercase tracking-wider bg-agro-orange text-white px-3 py-2 rounded-xl hover:bg-agro-orange/90"
+        >
+          {actionLabel}
+        </button>
+      )}
+      <button
+        onClick={onClose}
+        className="p-1 hover:bg-white/20 rounded-lg text-white/60 hover:text-white"
+      >
+        <X size={16} />
+      </button>
+    </div>
   </motion.div>
 );

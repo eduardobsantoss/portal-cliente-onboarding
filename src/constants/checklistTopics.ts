@@ -1,5 +1,7 @@
 import type { CompanyTier } from '@/types/documentChecklist';
 
+/** Tópicos do checklist da Análise de Crédito (liberação de limite). */
+
 export interface ChecklistTopicText {
   title: string;
   subtitle: string;
