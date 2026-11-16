@@ -1,47 +1,51 @@
-import { useRef, useState } from 'react';
+import { computed, ref, type UnwrapNestedRefs } from 'vue';
 import type { ComplementaryFormSubmitPayload } from '@/types/dadosComplementares';
 import type { DocumentUploadItem, DocumentsMode } from '@/types/documentUpload';
 import type { OnboardingViewState } from '@/types/onboarding';
 
 export function useOnboardingFlow() {
-  // Requirement 1: Ao recarregar a página ou reiniciar o fluxo, a ordem passa a ser:
-  // Confirmação do celular por SMS → Criação de senha → Termos → Dados complementares...
-  const [currentView, setCurrentView] = useState<OnboardingViewState>('phone_verification');
-  const [history, setHistory] = useState<OnboardingViewState[]>([]);
-  const [formData, setFormData] = useState<ComplementaryFormSubmitPayload | null>(null);
-  const [documentsSnapshot, setDocumentsSnapshot] = useState<DocumentUploadItem[] | null>(null);
-  const [documentsMode, setDocumentsMode] = useState<DocumentsMode>('initial');
-  const [adjustmentRequestId, setAdjustmentRequestId] = useState(0);
-  const [appliedAdjustmentRequestId, setAppliedAdjustmentRequestId] = useState(0);
-  const currentViewRef = useRef(currentView);
-  currentViewRef.current = currentView;
-  const historyRef = useRef(history);
-  historyRef.current = history;
+  // A jornada começa na landing page do GCI e segue:
+  // Landing → Confirmação do celular por SMS → Criação de senha → Termos → Dados complementares...
+  const currentView = ref<OnboardingViewState>('landing');
+  const history = ref<OnboardingViewState[]>([]);
+  const formData = ref<ComplementaryFormSubmitPayload | null>(null);
+  const documentsSnapshot = ref<DocumentUploadItem[] | null>(null);
+  const documentsMode = ref<DocumentsMode>('initial');
+  const adjustmentRequestId = ref(0);
+  const appliedAdjustmentRequestId = ref(0);
 
   const goTo = (view: OnboardingViewState) => {
-    setHistory((prev) => [...prev, currentViewRef.current]);
-    setCurrentView(view);
+    history.value = [...history.value, currentView.value];
+    currentView.value = view;
   };
 
   const goBack = () => {
-    const prev = historyRef.current;
+    const prev = history.value;
     if (prev.length === 0) return;
-    setCurrentView(prev[prev.length - 1]);
-    setHistory(prev.slice(0, -1));
+    currentView.value = prev[prev.length - 1];
+    history.value = prev.slice(0, -1);
+  };
+
+  const setDocumentsSnapshot = (items: DocumentUploadItem[] | null) => {
+    documentsSnapshot.value = items;
+  };
+
+  const setAppliedAdjustmentRequestId = (id: number) => {
+    appliedAdjustmentRequestId.value = id;
   };
 
   const handleComplementarySubmit = (payload?: ComplementaryFormSubmitPayload) => {
     if (payload) {
-      setFormData(payload);
+      formData.value = payload;
     }
-    setDocumentsSnapshot(null);
-    setDocumentsMode('initial');
+    documentsSnapshot.value = null;
+    documentsMode.value = 'initial';
     goTo('document_upload');
   };
 
   const openDocumentAdjustment = () => {
-    setDocumentsMode('adjustment');
-    setAdjustmentRequestId((current) => current + 1);
+    documentsMode.value = 'adjustment';
+    adjustmentRequestId.value += 1;
     goTo('document_upload');
   };
 
@@ -54,7 +58,7 @@ export function useOnboardingFlow() {
     appliedAdjustmentRequestId,
     setDocumentsSnapshot,
     setAppliedAdjustmentRequestId,
-    canGoBack: history.length > 0,
+    canGoBack: computed(() => history.value.length > 0),
     goTo,
     goBack,
     handleComplementarySubmit,
@@ -62,4 +66,5 @@ export function useOnboardingFlow() {
   };
 }
 
-export type OnboardingFlow = ReturnType<typeof useOnboardingFlow>;
+/** Fluxo já "desembrulhado" (via `reactive`), como é consumido nos templates. */
+export type OnboardingFlow = UnwrapNestedRefs<ReturnType<typeof useOnboardingFlow>>;

@@ -1,42 +1,43 @@
+import { computed, toValue, type MaybeRefOrGetter } from 'vue';
 import { TOTAL_CHECKLIST_TOPICS } from '@/constants/documentChecklist';
 import type { CompanyTier, DocumentItem, PartnerData } from '@/types/documentChecklist';
 import { getSectionStats } from '@/utils/checklistProgress';
 
 interface ChecklistProgressInput {
-  companyTier: CompanyTier;
-  pjDocs: DocumentItem[];
-  finDocs: DocumentItem[];
-  credDocs: DocumentItem[];
-  partners: PartnerData[];
-  phoneVerified: boolean;
-  facialVerified: boolean;
+  companyTier: MaybeRefOrGetter<CompanyTier>;
+  pjDocs: MaybeRefOrGetter<DocumentItem[]>;
+  finDocs: MaybeRefOrGetter<DocumentItem[]>;
+  credDocs: MaybeRefOrGetter<DocumentItem[]>;
+  partners: MaybeRefOrGetter<PartnerData[]>;
+  phoneVerified: MaybeRefOrGetter<boolean>;
+  facialVerified: MaybeRefOrGetter<boolean>;
 }
 
 /** Contadores por seção e total de tópicos concluídos (barra de progresso). */
-export function useChecklistProgress({
-  companyTier,
-  pjDocs,
-  finDocs,
-  credDocs,
-  partners,
-  phoneVerified,
-  facialVerified,
-}: ChecklistProgressInput) {
-  const pjStats = getSectionStats(pjDocs, companyTier);
-  const finStats = getSectionStats(finDocs, companyTier);
-  const credStats = getSectionStats(credDocs, companyTier);
-  const partnersValidCount = partners.filter((p) => p.status === 'validado').length;
-  const partnersDone = partners.length > 0 && partnersValidCount === partners.length;
+export function useChecklistProgress(input: ChecklistProgressInput) {
+  const pjStats = computed(() => getSectionStats(toValue(input.pjDocs), toValue(input.companyTier)));
+  const finStats = computed(() => getSectionStats(toValue(input.finDocs), toValue(input.companyTier)));
+  const credStats = computed(() => getSectionStats(toValue(input.credDocs), toValue(input.companyTier)));
+  const partnersValidCount = computed(
+    () => toValue(input.partners).filter((p) => p.status === 'validado').length
+  );
+  const partnersDone = computed(() => {
+    const partners = toValue(input.partners);
+    return partners.length > 0 && partnersValidCount.value === partners.length;
+  });
 
   // Global completed count (6 topics)
-  const completedTopicsCount = [
-    phoneVerified,
-    facialVerified,
-    pjStats.isDone,
-    finStats.isDone,
-    credStats.isDone,
-    partnersDone,
-  ].filter(Boolean).length;
+  const completedTopicsCount = computed(
+    () =>
+      [
+        toValue(input.phoneVerified),
+        toValue(input.facialVerified),
+        pjStats.value.isDone,
+        finStats.value.isDone,
+        credStats.value.isDone,
+        partnersDone.value,
+      ].filter(Boolean).length
+  );
 
   return {
     pjStats,

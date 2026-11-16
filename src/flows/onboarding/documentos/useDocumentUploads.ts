@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { computed, onMounted, ref, shallowRef, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import { UPLOAD_ERROR_DISMISS_MS, UPLOAD_SIMULATED_DELAY_MS } from '@/constants/documentUpload';
 import type { DocumentUploadItem, DocumentsMode } from '@/types/documentUpload';
 import {
@@ -38,104 +38,131 @@ function inputKeyOf(input: RequiredDocumentsInput): string {
   ].join('|');
 }
 
-/** Estado da lista de documentos, números digitados, upload em andamento e erro de validação. */
+/**
+ * Estado da lista de documentos, números digitados, upload em andamento e erro de validação.
+ * `input` e `options` devem ser getters/refs para manter a reatividade das props.
+ */
 export function useDocumentUploads(
   buildDocuments: () => DocumentUploadItem[],
-  input: RequiredDocumentsInput,
-  options: DocumentUploadsOptions = {}
+  input: MaybeRefOrGetter<RequiredDocumentsInput>,
+  options: MaybeRefOrGetter<DocumentUploadsOptions> = {}
 ) {
-  const {
-    initialDocuments,
-    onDocumentsChange,
-    mode = 'initial',
-    adjustmentRequestId = 0,
-    appliedAdjustmentRequestId = 0,
-    onAdjustmentApplied,
-  } = options;
-
+  const initialOptions = toValue(options);
   const shouldApplyAdjustment =
-    mode === 'adjustment' && adjustmentRequestId !== appliedAdjustmentRequestId;
+    (initialOptions.mode ?? 'initial') === 'adjustment' &&
+    (initialOptions.adjustmentRequestId ?? 0) !== (initialOptions.appliedAdjustmentRequestId ?? 0);
 
-  const [documentList, setDocumentList] = useState<DocumentUploadItem[]>(() => {
-    const base = initialDocuments?.length ? initialDocuments : buildDocuments();
-    return shouldApplyAdjustment ? applyDocumentAdjustment(base) : base;
-  });
-  const [docNumbers, setDocNumbers] = useState<Record<string, string>>(() =>
+  const initialBase = initialOptions.initialDocuments?.length
+    ? initialOptions.initialDocuments
+    : buildDocuments();
+
+  const documentList = shallowRef<DocumentUploadItem[]>(
+    shouldApplyAdjustment ? applyDocumentAdjustment(initialBase) : initialBase
+  );
+  const docNumbers = ref<Record<string, string>>(
     documentNumbersFrom(
       shouldApplyAdjustment
-        ? applyDocumentAdjustment(initialDocuments?.length ? initialDocuments : buildDocuments())
-        : initialDocuments?.length
-          ? initialDocuments
+        ? applyDocumentAdjustment(
+            initialOptions.initialDocuments?.length
+              ? initialOptions.initialDocuments
+              : buildDocuments()
+          )
+        : initialOptions.initialDocuments?.length
+          ? initialOptions.initialDocuments
           : buildDocuments()
     )
   );
-  const [activeUploadingId, setActiveUploadingId] = useState<string | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const activeUploadingId = ref<string | null>(null);
+  const uploadError = ref<string | null>(null);
 
-  const inputKey = inputKeyOf(input);
-  const seenInputKey = useRef(inputKey);
-  const inputRef = useRef(input);
-  inputRef.current = input;
+  const inputKey = computed(() => inputKeyOf(toValue(input)));
+  let seenInputKey = inputKey.value;
 
   // Rebuild only when the account/partners actually change, so a saved snapshot survives remounts.
-  useEffect(() => {
-    if (seenInputKey.current === inputKey) return;
-    seenInputKey.current = inputKey;
-    setDocumentList(buildRequiredDocuments(inputRef.current));
-  }, [inputKey]);
+  watch(inputKey, (key) => {
+    if (seenInputKey === key) return;
+    seenInputKey = key;
+    documentList.value = buildRequiredDocuments(toValue(input));
+  });
 
-  useEffect(() => {
-    onDocumentsChange?.(documentList);
-  }, [documentList, onDocumentsChange]);
+  const notifyDocumentsChange = () => {
+    toValue(options).onDocumentsChange?.(documentList.value);
+  };
+  watch(documentList, notifyDocumentsChange, { flush: 'post' });
 
-  useEffect(() => {
+  const notifyAdjustmentApplied = () => {
+    const { mode = 'initial', adjustmentRequestId = 0, appliedAdjustmentRequestId = 0, onAdjustmentApplied } =
+      toValue(options);
     if (mode === 'adjustment' && adjustmentRequestId !== appliedAdjustmentRequestId) {
       onAdjustmentApplied?.(adjustmentRequestId);
     }
-  }, [mode, adjustmentRequestId, appliedAdjustmentRequestId, onAdjustmentApplied]);
+  };
+  watch(
+    () => {
+      const { mode = 'initial', adjustmentRequestId = 0, appliedAdjustmentRequestId = 0 } =
+        toValue(options);
+      return `${mode}|${adjustmentRequestId}|${appliedAdjustmentRequestId}`;
+    },
+    notifyAdjustmentApplied,
+    { flush: 'post' }
+  );
 
-  const hasRegularization = documentList.some((doc) => doc.isRegularizationNeeded);
+  // Equivalente ao efeito inicial (executa uma vez após a montagem).
+  onMounted(() => {
+    notifyDocumentsChange();
+    notifyAdjustmentApplied();
+  });
+
+  const hasRegularization = computed(() =>
+    documentList.value.some((doc) => doc.isRegularizationNeeded)
+  );
 
   // File upload handler with 12MB and JPG/JPEG/PNG/PDF base64 validation
   const handleFileUpload = (docId: string, file: File) => {
     const validationError = validateUploadFile(file);
     if (validationError) {
-      setUploadError(validationError);
-      setTimeout(() => setUploadError(null), UPLOAD_ERROR_DISMISS_MS);
+      uploadError.value = validationError;
+      setTimeout(() => {
+        uploadError.value = null;
+      }, UPLOAD_ERROR_DISMISS_MS);
       return;
     }
 
-    setActiveUploadingId(docId);
-    setUploadError(null);
+    activeUploadingId.value = docId;
+    uploadError.value = null;
 
     readFileAsDataUrl(file, (base64Data) => {
       setTimeout(() => {
-        setDocumentList((prev) =>
-          prev.map((doc) => (doc.id === docId ? markDocumentUploaded(doc, file, base64Data) : doc))
+        documentList.value = documentList.value.map((doc) =>
+          doc.id === docId ? markDocumentUploaded(doc, file, base64Data) : doc
         );
-        setActiveUploadingId(null);
+        activeUploadingId.value = null;
       }, UPLOAD_SIMULATED_DELAY_MS);
     });
   };
 
   // Remove uploaded file
   const handleRemoveFile = (docId: string) => {
-    setDocumentList((prev) => prev.map((doc) => (doc.id === docId ? clearDocumentUpload(doc) : doc)));
+    documentList.value = documentList.value.map((doc) =>
+      doc.id === docId ? clearDocumentUpload(doc) : doc
+    );
   };
 
   // Fast-forward demo helper
   const handleAttachAllDemo = () => {
-    setDocumentList((prev) => prev.map(attachDemoFile));
+    documentList.value = documentList.value.map(attachDemoFile);
   };
 
   const handleDocumentNumberChange = (docId: string, value: string) => {
-    setDocNumbers((prev) => ({ ...prev, [docId]: value }));
-    setDocumentList((prev) =>
-      prev.map((d) => (d.id === docId ? { ...d, documentNumber: value } : d))
+    docNumbers.value = { ...docNumbers.value, [docId]: value };
+    documentList.value = documentList.value.map((d) =>
+      d.id === docId ? { ...d, documentNumber: value } : d
     );
   };
 
-  const dismissUploadError = () => setUploadError(null);
+  const dismissUploadError = () => {
+    uploadError.value = null;
+  };
 
   return {
     documentList,

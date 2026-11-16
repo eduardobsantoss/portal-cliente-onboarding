@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { ref } from 'vue';
 import { TERMS_DOCUMENTS } from '@/constants/termsDocuments';
 import type { TermsDocumentType } from '@/types/terms';
 import { downloadTextFile } from '@/utils/downloadTextFile';
@@ -8,12 +8,20 @@ interface UseTermsAgreementParams {
 }
 
 export function useTermsAgreement({ onAccept }: UseTermsAgreementParams) {
-  const [accepted, setAccepted] = useState(false);
-  const [activeDocModal, setActiveDocModal] = useState<TermsDocumentType | null>(null);
+  const accepted = ref(false);
+  const activeDocModal = ref<TermsDocumentType | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const setAccepted = (value: boolean) => {
+    accepted.value = value;
+  };
+
+  const setActiveDocModal = (value: TermsDocumentType | null) => {
+    activeDocModal.value = value;
+  };
+
+  const handleSubmit = (e: Event) => {
     e.preventDefault();
-    if (accepted) {
+    if (accepted.value) {
       onAccept();
     }
   };

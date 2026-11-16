@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ref, toValue, type MaybeRefOrGetter, type UnwrapNestedRefs } from 'vue';
 import { SUCCESS_OPERATION_TOAST_MS } from '@/constants/dashboardTimings';
 import { INITIAL_OPERATIONS } from '@/mocks/portalCollections';
 import type { DashboardTab } from '@/types/dashboard';
@@ -7,42 +7,39 @@ import type { PortalOperation } from '@/types/portalOperation';
 import { createPortalOperation } from '@/utils/createPortalOperation';
 
 interface UseOperationsParams {
-  selectedGroup: string;
+  selectedGroup: MaybeRefOrGetter<string>;
   setActiveTab: (tab: DashboardTab) => void;
 }
 
 /** Operações do portal: lista, detalhes, busca, solicitação de nova operação e aviso de sucesso. */
 export function useOperations({ selectedGroup, setActiveTab }: UseOperationsParams) {
-  const [showOperationRequest, setShowOperationRequest] = useState(false);
+  const showOperationRequest = ref(false);
   // O original nunca altera o serviço selecionado (permanece vazio).
-  const [selectedService] = useState('');
-  const [operations, setOperations] = useState<PortalOperation[]>(INITIAL_OPERATIONS);
-  const [selectedOpDetails, setSelectedOpDetails] = useState<PortalOperation | null>(null);
-  const [searchOperationId, setSearchOperationId] = useState('');
-  const [showSuccessOperationToast, setShowSuccessOperationToast] = useState(false);
+  const selectedService = ref('');
+  const operations = ref<PortalOperation[]>(INITIAL_OPERATIONS);
+  const selectedOpDetails = ref<PortalOperation | null>(null);
+  const searchOperationId = ref('');
+  const showSuccessOperationToast = ref(false);
 
   const handleCompleteOperation = (data: OperationCompletionData) => {
-    const newOperation = createPortalOperation(data, selectedService, selectedGroup);
-    setOperations([newOperation, ...operations]);
+    const newOperation = createPortalOperation(data, selectedService.value, toValue(selectedGroup));
+    operations.value = [newOperation, ...operations.value];
     setActiveTab('home');
-    setShowOperationRequest(false);
-    setShowSuccessOperationToast(true);
-    setTimeout(() => setShowSuccessOperationToast(false), SUCCESS_OPERATION_TOAST_MS);
+    showOperationRequest.value = false;
+    showSuccessOperationToast.value = true;
+    setTimeout(() => (showSuccessOperationToast.value = false), SUCCESS_OPERATION_TOAST_MS);
   };
 
   return {
     operations,
     selectedService,
     selectedOpDetails,
-    setSelectedOpDetails,
     searchOperationId,
-    setSearchOperationId,
     showOperationRequest,
-    setShowOperationRequest,
     showSuccessOperationToast,
-    setShowSuccessOperationToast,
     handleCompleteOperation,
   };
 }
 
-export type OperationsState = ReturnType<typeof useOperations>;
+/** Estado desembrulhado (use `reactive(useOperations(...))` para repassar aos componentes filhos). */
+export type OperationsState = UnwrapNestedRefs<ReturnType<typeof useOperations>>;

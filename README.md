@@ -1,20 +1,31 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Portal do Cliente GCI — Onboarding
 
-# Run and deploy your AI Studio app
+Protótipo da jornada de abertura de conta digital e do portal do cliente do Grupo Ceres Investimentos (GCI SCD).
+Stack: **Vue 3** (`<script setup lang="ts">`), **Vite**, **Tailwind CSS 4**, `motion-v` e `lucide-vue-next`.
 
-This contains everything you need to run your app locally.
+O fluxo começa na **landing page GCI** e segue para a confirmação do celular. Detalhes das telas e regras em
+[FLUXO_E_PROCESSOS_PROTOTIPO.md](FLUXO_E_PROCESSOS_PROTOTIPO.md).
 
-View your app in AI Studio: https://ai.studio/apps/44e0b085-5ec9-4ea1-98b4-319111e7e9b1
+## Rodar localmente
 
-## Run Locally
+**Pré-requisito:** Node.js 22+
 
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
+1. Instale as dependências:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. (Opcional) Copie `.env.example` para `.env.local` e ajuste as variáveis (GA4 e newsletter da landing).
+3. Rode o app:
    `npm run dev`
+
+## Scripts
+
+- `npm run dev` — servidor de desenvolvimento (porta 3000)
+- `npm run build` — build de produção
+- `npm run lint` — checagem de tipos com `vue-tsc`
+
+## Estrutura
+
+- `src/app` — `App.vue` e `OnboardingRouter.vue` (roteamento do fluxo por estado)
+- `src/hooks/useOnboardingFlow.ts` — composable com o estado e a navegação do fluxo
+- `src/flows/onboarding/*` — telas da jornada (landing, SMS, senha, login, termos, dados complementares, documentos, assinatura, análise, conta criada)
+- `src/flows/portal/*` — portal do cliente (dashboard, solicitação de operação, cadastro complementar, verificação facial)
+- `src/components` — componentes compartilhados

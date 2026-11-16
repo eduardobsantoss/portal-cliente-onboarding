@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { ref } from 'vue';
+import { createSetter } from '@/flows/onboarding/dados-complementares/stateSetter';
 import { INITIAL_PF_DATA } from '@/mocks/complementaryPf';
 import type { PfFormData } from '@/types/dadosComplementares';
 
 export function usePfForm() {
-  const [pfData, setPfData] = useState<PfFormData>(INITIAL_PF_DATA);
-  const [showOptionals, setShowOptionals] = useState(false);
+  const pfData = ref<PfFormData>(INITIAL_PF_DATA);
+  const showOptionals = ref(false);
 
   return {
     pfData,
-    setPfData,
+    setPfData: createSetter(pfData),
     showOptionals,
-    toggleOptionals: () => setShowOptionals(!showOptionals),
+    toggleOptionals: () => {
+      showOptionals.value = !showOptionals.value;
+    },
   };
 }

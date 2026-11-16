@@ -1,0 +1,29 @@
+<template>
+  <div class="space-y-3">
+    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+      Próximas Etapas da Sua Jornada
+    </h4>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="p-3.5 rounded-2xl border border-emerald-200 bg-emerald-50/50 flex items-start gap-3">
+        <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">
+          1
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-900">Conta Digital GCI</p>
+          <p class="text-[11px] text-slate-600 mt-0.5">Sua conta corrente empresarial já foi gerada e está ativa.</p>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-2xl border border-slate-200 bg-slate-50 flex items-start gap-3">
+        <div class="w-7 h-7 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0">
+          2
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-900">Checklist Cadastral</p>
+          <p class="text-[11px] text-slate-600 mt-0.5">Envio de documentos para ativação plena do limite operacional.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { ref } from 'vue';
 import { PASSWORD_FALLBACK_VALUE } from '@/constants/password';
 
 interface UseCreatePasswordParams {
@@ -6,17 +6,30 @@ interface UseCreatePasswordParams {
 }
 
 export function useCreatePassword({ onClose }: UseCreatePasswordParams) {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const password = ref('');
+  const confirmPassword = ref('');
+  const showPassword = ref(false);
+  const showConfirmPassword = ref(false);
+  const isSuccess = ref(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const setPassword = (value: string) => {
+    password.value = value;
+  };
+  const setConfirmPassword = (value: string) => {
+    confirmPassword.value = value;
+  };
+  const setShowPassword = (value: boolean) => {
+    showPassword.value = value;
+  };
+  const setShowConfirmPassword = (value: boolean) => {
+    showConfirmPassword.value = value;
+  };
+
+  const handleSubmit = (e: Event) => {
     e.preventDefault();
-    setIsSuccess(true);
+    isSuccess.value = true;
     setTimeout(() => {
-      onClose(password || PASSWORD_FALLBACK_VALUE);
+      onClose(password.value || PASSWORD_FALLBACK_VALUE);
     }, 900);
   };
 

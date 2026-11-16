@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { ref } from 'vue';
 import { MOCK_USER_EMAIL } from '@/mocks/onboardingUser';
 
 interface UseLoginFormParams {
@@ -6,12 +6,25 @@ interface UseLoginFormParams {
 }
 
 export function useLoginForm({ onLogin }: UseLoginFormParams) {
-  const [email, setEmail] = useState(MOCK_USER_EMAIL);
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isCreatePasswordOpen, setIsCreatePasswordOpen] = useState(false);
+  const email = ref(MOCK_USER_EMAIL);
+  const password = ref('');
+  const showPassword = ref(false);
+  const isCreatePasswordOpen = ref(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const setEmail = (value: string) => {
+    email.value = value;
+  };
+  const setPassword = (value: string) => {
+    password.value = value;
+  };
+  const setShowPassword = (value: boolean) => {
+    showPassword.value = value;
+  };
+  const setIsCreatePasswordOpen = (value: boolean) => {
+    isCreatePasswordOpen.value = value;
+  };
+
+  const handleSubmit = (e: Event) => {
     e.preventDefault();
     onLogin();
   };

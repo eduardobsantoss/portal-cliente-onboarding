@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ref } from 'vue';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { buildMockXmlFiles, INITIAL_OPERATION_SIGNATURES } from '@/mocks/operationRequest';
 import type {
@@ -22,24 +22,37 @@ interface UseOperationRequestFlowParams {
 }
 
 export function useOperationRequestFlow({ onClose }: UseOperationRequestFlowParams) {
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [valueAttends, setValueAttends] = useState<OperationValueAttends>(null);
-  const [step, setStep] = useState<OperationStep>('XML_UPLOAD');
-  const [files, setFiles] = useState<OperationXmlFile[]>([]);
-  const [selectedAccount, setSelectedAccount] = useState('');
-  const [skippingAccountStep, setSkippingAccountStep] = useState(false);
-  const [isSigned, setIsSigned] = useState(false);
-  const [signatures, setSignatures] = useState<OperationSignature[]>(INITIAL_OPERATION_SIGNATURES);
+  const termsAccepted = ref(false);
+  const valueAttends = ref<OperationValueAttends>(null);
+  const step = ref<OperationStep>('XML_UPLOAD');
+  const files = ref<OperationXmlFile[]>([]);
+  const selectedAccount = ref('');
+  const skippingAccountStep = ref(false);
+  const isSigned = ref(false);
+  const signatures = ref<OperationSignature[]>(INITIAL_OPERATION_SIGNATURES);
+
+  const setStep = (value: OperationStep) => {
+    step.value = value;
+  };
+  const setSelectedAccount = (value: string) => {
+    selectedAccount.value = value;
+  };
+  const setValueAttends = (value: OperationValueAttends) => {
+    valueAttends.value = value;
+  };
+  const setTermsAccepted = (value: boolean) => {
+    termsAccepted.value = value;
+  };
 
   const nextStep = () => {
-    const target = getNextOperationStep(step, skippingAccountStep);
+    const target = getNextOperationStep(step.value, skippingAccountStep.value);
     if (target) {
       setStep(target);
     }
   };
 
   const prevStep = () => {
-    const target = getPreviousOperationStep(step);
+    const target = getPreviousOperationStep(step.value);
     if (target) {
       setStep(target);
     }
@@ -52,7 +65,7 @@ export function useOperationRequestFlow({ onClose }: UseOperationRequestFlowPara
   const showLongWaitWarning = useLongWaitWarning(timer);
 
   const handleFileUpload = () => {
-    setFiles(buildMockXmlFiles());
+    files.value = buildMockXmlFiles();
   };
 
   const handleRecusar = () => {
@@ -62,24 +75,24 @@ export function useOperationRequestFlow({ onClose }: UseOperationRequestFlowPara
   };
 
   const handleSignFirst = () => {
-    setSignatures(signatures.map(s => s.id === 1 ? { ...s, status: 'Assinado' } : s));
+    signatures.value = signatures.value.map(s => s.id === 1 ? { ...s, status: 'Assinado' } : s);
   };
 
   const handleContinueAfterSignatures = () => {
-    setIsSigned(true);
+    isSigned.value = true;
     nextStep();
   };
 
   const handleUploadMoreTitles = () => {
-    setSkippingAccountStep(true);
+    skippingAccountStep.value = true;
     setStep('XML_UPLOAD');
   };
 
-  const canContinue = () => canContinueOperation(step, {
-    filesCount: files.length,
-    selectedAccount,
-    termsAccepted,
-    isSigned,
+  const canContinue = () => canContinueOperation(step.value, {
+    filesCount: files.value.length,
+    selectedAccount: selectedAccount.value,
+    termsAccepted: termsAccepted.value,
+    isSigned: isSigned.value,
   });
 
   return {

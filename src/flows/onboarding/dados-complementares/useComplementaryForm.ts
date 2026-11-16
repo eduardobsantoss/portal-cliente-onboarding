@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { ref } from 'vue';
 import { useNonPartnerEditor } from '@/flows/onboarding/dados-complementares/representantes/useNonPartnerEditor';
 import { useSociosEditor } from '@/flows/onboarding/dados-complementares/socios/useSociosEditor';
 import { usePfForm } from '@/flows/onboarding/dados-complementares/usePfForm';
@@ -11,45 +11,53 @@ import {
 } from '@/utils/complementarySubmit';
 
 export function useComplementaryForm(onSubmit: (payload?: ComplementaryFormSubmitPayload) => void) {
-  const [accountType, setAccountType] = useState<AccountType>('pj');
+  const accountType = ref<AccountType>('pj');
 
   // Validation state
-  const [hasDataErrors, setHasDataErrors] = useState(false);
-  const [dataErrorMessage] = useState('');
+  const hasDataErrors = ref(false);
+  const dataErrorMessage = ref('');
 
   const pf = usePfForm();
   const pj = usePjForm();
 
-  const [validationErrorNotice, setValidationErrorNotice] = useState<string | null>(null);
-  const clearValidationNotice = () => setValidationErrorNotice(null);
+  const validationErrorNotice = ref<string | null>(null);
+  const clearValidationNotice = () => {
+    validationErrorNotice.value = null;
+  };
 
   const sociosEditor = useSociosEditor({
-    companyAddress: pj.pjCompanyData,
+    // getter para manter a reatividade do endereço da sede
+    companyAddress: () => pj.pjCompanyData.value,
     clearValidationNotice,
   });
   const nonPartnerEditor = useNonPartnerEditor({ clearValidationNotice });
 
   const selectAccountType = (type: AccountType) => {
-    setAccountType(type);
-    setHasDataErrors(false);
+    accountType.value = type;
+    hasDataErrors.value = false;
   };
 
   // Trigger submission to advance directly to Document Upload
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = (e?: Event) => {
     if (e) e.preventDefault();
 
     // Validação Item 3: não permitir avançar sem pelo menos um representante legal
-    if (accountType === 'pj') {
-      if (!hasLegalRepresentative(sociosEditor.socios, nonPartnerEditor.reps)) {
-        setValidationErrorNotice(LEGAL_REPRESENTATIVE_REQUIRED_MESSAGE);
+    if (accountType.value === 'pj') {
+      if (!hasLegalRepresentative(sociosEditor.socios.value, nonPartnerEditor.reps.value)) {
+        validationErrorNotice.value = LEGAL_REPRESENTATIVE_REQUIRED_MESSAGE;
         return;
       }
     }
 
-    setValidationErrorNotice(null);
+    validationErrorNotice.value = null;
 
     onSubmit(
-      buildSubmitPayload(accountType, sociosEditor.socios, nonPartnerEditor.reps, pj.pjCompanyData)
+      buildSubmitPayload(
+        accountType.value,
+        sociosEditor.socios.value,
+        nonPartnerEditor.reps.value,
+        pj.pjCompanyData.value
+      )
     );
   };
 

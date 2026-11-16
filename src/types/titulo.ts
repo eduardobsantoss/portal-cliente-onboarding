@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-vue-next';
 
 export type TituloDetailsTab = 'DETALHES_TITULO' | 'ANEXOS' | 'VALIDACOES' | 'MOVIMENTACOES' | 'SACADO';
 

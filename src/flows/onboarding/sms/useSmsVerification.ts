@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import type { SmsStatus } from '@/types/sms';
 import {
   SMS_INVALID_CODE_MESSAGE,
@@ -9,10 +9,10 @@ import { useSmsCountdown } from './useSmsCountdown';
 import { useSmsCode } from './useSmsCode';
 
 interface UseSmsVerificationParams {
-  isVerified: boolean;
-  verifiedAt: string;
-  maskedPhone: string;
-  isModalVariant: boolean;
+  isVerified: MaybeRefOrGetter<boolean>;
+  verifiedAt: MaybeRefOrGetter<string>;
+  maskedPhone: MaybeRefOrGetter<string>;
+  isModalVariant: MaybeRefOrGetter<boolean>;
   onVerified?: (phone: string) => void;
   onCloseModal?: () => void;
 }
@@ -25,38 +25,42 @@ export function useSmsVerification({
   onVerified,
   onCloseModal,
 }: UseSmsVerificationParams) {
-  const [status, setStatus] = useState<SmsStatus>(isVerified ? 'verified' : 'idle');
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const status = ref<SmsStatus>(toValue(isVerified) ? 'verified' : 'idle');
+  const errorMsg = ref<string | null>(null);
   const { cooldown, setCooldown } = useSmsCountdown();
-  const [showSimulatedSmsToast, setShowSimulatedSmsToast] = useState(false);
-  const [currentVerifiedAt, setCurrentVerifiedAt] = useState<string>(verifiedAt);
+  const showSimulatedSmsToast = ref(false);
+  const currentVerifiedAt = ref<string>(toValue(verifiedAt));
 
-  const code = useSmsCode({ onClearError: () => setErrorMsg(null) });
+  const code = useSmsCode({ onClearError: () => { errorMsg.value = null; } });
 
   // Update status if prop changes
-  useEffect(() => {
-    if (isVerified) {
-      setStatus('verified');
-    }
-  }, [isVerified]);
+  watch(
+    () => toValue(isVerified),
+    (verified) => {
+      if (verified) {
+        status.value = 'verified';
+      }
+    },
+    { immediate: true },
+  );
 
   // Trigger SMS sending
   const handleSendSms = () => {
-    setStatus('sending');
-    setErrorMsg(null);
+    status.value = 'sending';
+    errorMsg.value = null;
     code.resetDigits();
 
     setTimeout(() => {
-      setStatus('sent');
+      status.value = 'sent';
       setCooldown(SMS_RESEND_COOLDOWN_SECONDS);
-      setShowSimulatedSmsToast(true);
+      showSimulatedSmsToast.value = true;
 
       setTimeout(() => {
         code.focusInput(0);
       }, 100);
 
       setTimeout(() => {
-        setShowSimulatedSmsToast(false);
+        showSimulatedSmsToast.value = false;
       }, 12000);
     }, 500);
   };
@@ -66,25 +70,25 @@ export function useSmsVerification({
     if (inputCode === SMS_TEST_CODE) {
       const now = new Date();
       const formattedDate = `${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-      setCurrentVerifiedAt(formattedDate);
-      setStatus('verified');
-      setErrorMsg(null);
-      setShowSimulatedSmsToast(false);
-      onVerified?.(maskedPhone);
-      if (isModalVariant && onCloseModal) {
+      currentVerifiedAt.value = formattedDate;
+      status.value = 'verified';
+      errorMsg.value = null;
+      showSimulatedSmsToast.value = false;
+      onVerified?.(toValue(maskedPhone));
+      if (toValue(isModalVariant) && onCloseModal) {
         setTimeout(() => {
           onCloseModal();
         }, 1200);
       }
     } else {
-      setErrorMsg(SMS_INVALID_CODE_MESSAGE);
+      errorMsg.value = SMS_INVALID_CODE_MESSAGE;
     }
   };
 
   const handleRefazerValidacao = () => {
-    setStatus('idle');
+    status.value = 'idle';
     code.resetDigits();
-    setErrorMsg(null);
+    errorMsg.value = null;
     setCooldown(0);
     handleSendSms();
   };
@@ -109,6 +113,6 @@ export function useSmsVerification({
     handleDigitChange: (index: number, value: string) =>
       code.handleDigitChange(index, value, validateCode),
     handleKeyDown: code.handleKeyDown,
-    handlePaste: (e: React.ClipboardEvent<HTMLInputElement>) => code.handlePaste(e, validateCode),
+    handlePaste: (e: ClipboardEvent) => code.handlePaste(e, validateCode),
   };
 }

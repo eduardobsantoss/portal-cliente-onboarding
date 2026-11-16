@@ -1,4 +1,4 @@
-import { Banknote, Building2, Hourglass } from 'lucide-react';
+import { Banknote, Building2, Hourglass } from 'lucide-vue-next';
 import { OPERATION_NOMINAL_VALUE, OPERATION_VEHICLE } from '@/mocks/operationDetails';
 import type { InfoItem } from '@/types/dashboard';
 import type { OperationKpi, PortalOperation } from '@/types/portalOperation';

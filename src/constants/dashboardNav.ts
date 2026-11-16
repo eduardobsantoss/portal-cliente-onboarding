@@ -1,4 +1,4 @@
-import { Briefcase, FileBarChart, Home, LayoutDashboard, ShieldCheck } from 'lucide-react';
+import { Briefcase, FileBarChart, Home, LayoutDashboard, ShieldCheck } from 'lucide-vue-next';
 import type { DashboardNavItem } from '@/types/dashboard';
 
 export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [

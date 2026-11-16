@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { onBeforeUnmount, onMounted, ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import { ANALYSIS_PROGRESS_STAGES } from '@/constants/analysis';
 
 interface UseAnalysisProgressParams {
@@ -6,34 +6,42 @@ interface UseAnalysisProgressParams {
   onFastForwardPending?: () => void;
 }
 
-export function useAnalysisProgress({ onComplete, onFastForwardPending }: UseAnalysisProgressParams) {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [progress, setProgress] = useState(5);
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+/** `params` deve ser um getter/ref para manter a reatividade dos callbacks recebidos via props. */
+export function useAnalysisProgress(params: MaybeRefOrGetter<UseAnalysisProgressParams>) {
+  const currentStepIndex = ref(0);
+  const progress = ref(5);
+  const elapsedSeconds = ref(0);
 
   // Background timer (sem exibir o timer de 30s no topo conforme solicitado)
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setElapsedSeconds((prev) => prev + 1);
+  let timer: ReturnType<typeof setInterval> | undefined;
+  onMounted(() => {
+    timer = setInterval(() => {
+      elapsedSeconds.value += 1;
     }, 1000);
+  });
+  onBeforeUnmount(() => {
+    if (timer !== undefined) clearInterval(timer);
+  });
 
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    const stage = ANALYSIS_PROGRESS_STAGES.find((s) => elapsedSeconds < s.untilSeconds);
-    if (stage) {
-      setCurrentStepIndex(stage.stepIndex);
-      setProgress(stage.progress);
-    } else {
-      setProgress(100);
-      if (onFastForwardPending) {
-        onFastForwardPending();
+  watch(
+    elapsedSeconds,
+    (seconds) => {
+      const stage = ANALYSIS_PROGRESS_STAGES.find((s) => seconds < s.untilSeconds);
+      if (stage) {
+        currentStepIndex.value = stage.stepIndex;
+        progress.value = stage.progress;
       } else {
-        onComplete();
+        progress.value = 100;
+        const { onComplete, onFastForwardPending } = toValue(params);
+        if (onFastForwardPending) {
+          onFastForwardPending();
+        } else {
+          onComplete();
+        }
       }
-    }
-  }, [elapsedSeconds, onFastForwardPending, onComplete]);
+    },
+    { immediate: true }
+  );
 
   return { currentStepIndex, progress };
 }

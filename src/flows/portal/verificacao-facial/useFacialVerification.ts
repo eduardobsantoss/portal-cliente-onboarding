@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ref } from 'vue';
 import { FACIAL_VERIFICATION_BASE_URL } from '@/constants/facial';
 
 interface UseFacialVerificationParams {
@@ -6,28 +6,32 @@ interface UseFacialVerificationParams {
 }
 
 export function useFacialVerification({ onVerified }: UseFacialVerificationParams) {
-  const [copied, setCopied] = useState(false);
-  const [smsSent, setSmsSent] = useState(false);
-  const [isSimulating, setIsSimulating] = useState(false);
-  const [sessionCode] = useState(() => `gci-bio-${Math.floor(100000 + Math.random() * 900000)}`);
+  const copied = ref(false);
+  const smsSent = ref(false);
+  const isSimulating = ref(false);
+  const sessionCode = `gci-bio-${Math.floor(100000 + Math.random() * 900000)}`;
 
   const verificationUrl = `${FACIAL_VERIFICATION_BASE_URL}${sessionCode}`;
 
   const handleCopyLink = () => {
     navigator.clipboard?.writeText?.(verificationUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 3000);
   };
 
   const handleSendSms = () => {
-    setSmsSent(true);
-    setTimeout(() => setSmsSent(false), 4000);
+    smsSent.value = true;
+    setTimeout(() => {
+      smsSent.value = false;
+    }, 4000);
   };
 
   const handleSimulateScan = () => {
-    setIsSimulating(true);
+    isSimulating.value = true;
     setTimeout(() => {
-      setIsSimulating(false);
+      isSimulating.value = false;
       onVerified();
     }, 1200);
   };

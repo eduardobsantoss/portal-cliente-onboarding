@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
+import { ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 
-export function useLongWaitWarning(timer: number) {
-  const [showLongWaitWarning, setShowLongWaitWarning] = useState(false);
+export function useLongWaitWarning(timer: MaybeRefOrGetter<number>) {
+  const showLongWaitWarning = ref(false);
 
-  useEffect(() => {
-    if (timer > 120) { // Simulating 20 minutes with a shorter time for demo
-      setShowLongWaitWarning(true);
-    }
-  }, [timer]);
+  watch(
+    () => toValue(timer),
+    (value) => {
+      if (value > 120) { // Simulating 20 minutes with a shorter time for demo
+        showLongWaitWarning.value = true;
+      }
+    },
+    { immediate: true },
+  );
 
   return showLongWaitWarning;
 }

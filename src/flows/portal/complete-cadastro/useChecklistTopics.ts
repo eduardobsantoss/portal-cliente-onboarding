@@ -1,24 +1,22 @@
-import { useState } from 'react';
+import { ref } from 'vue';
 import { INITIAL_EXPANDED_TOPICS } from '@/constants/documentChecklist';
 import type { ChecklistTopicKey, ExpandedTopics } from '@/types/documentChecklist';
 
 /** Quais tópicos do checklist estão expandidos (accordion). */
 export function useChecklistTopics() {
-  const [expandedTopics, setExpandedTopics] = useState<ExpandedTopics>(INITIAL_EXPANDED_TOPICS);
+  const expandedTopics = ref<ExpandedTopics>(INITIAL_EXPANDED_TOPICS);
 
   // Toggle single topic
   const toggleTopic = (key: ChecklistTopicKey) => {
-    setExpandedTopics((prev) => ({ ...prev, [key]: !prev[key] }));
+    expandedTopics.value = { ...expandedTopics.value, [key]: !expandedTopics.value[key] };
   };
 
   const openTopics = (keys: ChecklistTopicKey[]) => {
-    setExpandedTopics((prev) => {
-      const next = { ...prev };
-      keys.forEach((key) => {
-        next[key] = true;
-      });
-      return next;
+    const next = { ...expandedTopics.value };
+    keys.forEach((key) => {
+      next[key] = true;
     });
+    expandedTopics.value = next;
   };
 
   return { expandedTopics, toggleTopic, openTopics };

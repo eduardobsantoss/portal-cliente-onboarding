@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-vue-next';
 
 export type DashboardTab = 'home' | 'geral' | 'operacoes' | 'carteira' | 'documentos' | 'cadastro';
 
