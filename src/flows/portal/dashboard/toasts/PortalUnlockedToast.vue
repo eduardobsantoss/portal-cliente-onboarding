@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { motion } from 'motion-v';
 import { CheckCircle2, X } from 'lucide-vue-next';
-import { LIMIT_AVAILABLE_LABEL } from '@/constants/analysis';
 
-/** Aviso de cadastro concluído / acesso ao portal liberado. */
+/** Aviso de cadastro concluído. */
 const emit = defineEmits<{
   close: [];
 }>();
@@ -19,7 +18,7 @@ const emit = defineEmits<{
     <div class="flex items-center gap-3">
       <CheckCircle2 :size="20" class="shrink-0" />
       <span class="text-sm font-bold">
-        Análise de crédito concluída! Seu limite de {{ LIMIT_AVAILABLE_LABEL }} já está disponível para antecipação.
+        Cadastro concluído com sucesso! Documentos enviados para análise da mesa de crédito.
       </span>
     </div>
     <button

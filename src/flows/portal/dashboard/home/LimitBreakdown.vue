@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { Clock, TrendingUp, Wallet } from 'lucide-vue-next';
-import { LIMIT_EMPTY_LABEL } from '@/constants/analysis';
+import { LIMIT_AVAILABLE_LABEL, LIMIT_EMPTY_LABEL } from '@/constants/analysis';
 
 /** Cartões de limite para desconto e disponível para antecipação. */
-defineProps<{
-  limitLabel: string;
-  isLimitReleased: boolean;
-}>();
 </script>
 
 <template>
@@ -17,7 +13,7 @@ defineProps<{
           <Wallet :size="24" />
         </div>
         <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Limite para Desconto de Duplicata</p>
-        <h3 class="text-3xl font-black text-gci tracking-tight">{{ limitLabel }}</h3>
+        <h3 class="text-3xl font-black text-gci tracking-tight">{{ LIMIT_AVAILABLE_LABEL }}</h3>
       </div>
       <div class="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between">
         <span class="text-xs font-bold text-slate-500">Utilizado: {{ LIMIT_EMPTY_LABEL }}</span>
@@ -33,12 +29,12 @@ defineProps<{
           <TrendingUp :size="24" />
         </div>
         <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Disponível para Antecipação de Duplicata</p>
-        <h3 class="text-4xl font-black text-gci tracking-tight">{{ limitLabel }}</h3>
+        <h3 class="text-4xl font-black text-gci tracking-tight">{{ LIMIT_AVAILABLE_LABEL }}</h3>
       </div>
       <div class="mt-8 pt-8 border-t border-slate-50">
-        <div :class="`flex items-center gap-2 font-bold text-xs uppercase tracking-wider ${isLimitReleased ? 'text-gci' : 'text-slate-400'}`">
+        <div class="flex items-center gap-2 text-gci font-bold text-xs uppercase tracking-wider">
           <Clock :size="16" />
-          {{ isLimitReleased ? 'Limite liberado para antecipação' : 'Disponível após a análise de crédito' }}
+          Limite liberado para antecipação
         </div>
       </div>
     </div>

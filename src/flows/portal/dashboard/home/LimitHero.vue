@@ -5,15 +5,13 @@ import { LIMIT_AVAILABLE_LABEL } from '@/constants/analysis';
 import PendingBlockToast from '@/flows/portal/dashboard/toasts/PendingBlockToast.vue';
 import type { PendingToastSource } from '@/types/dashboard';
 
-/** Destaque do limite: chamada para a análise de crédito ou valor já liberado para antecipação. */
+/** Destaque "Crédito Pré-Aprovado" com o limite disponível e o botão de antecipação. */
 defineProps<{
-  isLimitReleased: boolean;
   activePendingToastSource: PendingToastSource | null;
 }>();
 
 const emit = defineEmits<{
   anticipate: [];
-  startCreditAnalysis: [];
   dismissPendingToast: [];
   goToCarteira: [];
 }>();
@@ -31,46 +29,25 @@ const emit = defineEmits<{
     <div class="relative z-10 max-w-3xl">
       <div class="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full mb-6 border border-white/10">
         <Shield :size="14" class="text-agro-orange" />
-        <span class="text-[10px] font-black uppercase tracking-widest">
-          {{ isLimitReleased ? 'Crédito Pré-Aprovado' : 'Limite de Crédito' }}
-        </span>
+        <span class="text-[10px] font-black uppercase tracking-widest">Crédito Pré-Aprovado</span>
       </div>
-      <template v-if="isLimitReleased">
-        <h2 class="text-3xl md:text-5xl font-black leading-[1.1] mb-6">
-          Você tem <span class="text-agro-orange whitespace-nowrap">{{ LIMIT_AVAILABLE_LABEL }}</span> <br class="hidden md:block" /> disponível para antecipação de recebíveis.
-        </h2>
-        <p class="text-base text-white/70 mb-10 leading-relaxed font-medium">
-          Antecipe seus valores a receber. Sem burocracia, 100% digital e com taxas competitivas.
-        </p>
-      </template>
-      <template v-else>
-        <h2 class="text-3xl md:text-5xl font-black leading-[1.1] mb-6">
-          Libere o seu limite de crédito para antecipar recebíveis.
-        </h2>
-        <p class="text-base text-white/70 mb-10 leading-relaxed font-medium">
-          Conclua a análise de crédito em poucos passos e comece a antecipar com taxas competitivas.
-        </p>
-      </template>
+      <h2 class="text-3xl md:text-5xl font-black leading-[1.1] mb-6">
+        Você tem <span class="text-agro-orange whitespace-nowrap">{{ LIMIT_AVAILABLE_LABEL }}</span> <br class="hidden md:block" /> disponível para antecipação de recebíveis.
+      </h2>
+      <p class="text-base text-white/70 mb-10 leading-relaxed font-medium">
+        Antecipe seus valores a receber. Sem burocracia, 100% digital e com taxas competitivas.
+      </p>
       <div class="relative inline-block">
         <button
-          v-if="isLimitReleased"
           @click="emit('anticipate')"
           class="group bg-white text-gci px-10 py-5 rounded-[24px] font-black text-base transition-all hover:shadow-2xl hover:shadow-white/20 active:scale-95 flex items-center gap-4 uppercase tracking-widest"
         >
           Antecipar Agora
           <ArrowRight :size="20" class="group-hover:translate-x-1 transition-transform" />
         </button>
-        <button
-          v-else
-          @click="emit('startCreditAnalysis')"
-          class="group bg-white text-gci px-10 py-5 rounded-[24px] font-black text-base transition-all hover:shadow-2xl hover:shadow-white/20 active:scale-95 flex items-center gap-4 uppercase tracking-widest"
-        >
-          Liberar meu limite
-          <ArrowRight :size="20" class="group-hover:translate-x-1 transition-transform" />
-        </button>
         <AnimatePresence>
           <PendingBlockToast
-            v-if="isLimitReleased && activePendingToastSource === 'hero'"
+            v-if="activePendingToastSource === 'hero'"
             source="hero"
             @close="emit('dismissPendingToast')"
             @go-to-carteira="emit('goToCarteira')"

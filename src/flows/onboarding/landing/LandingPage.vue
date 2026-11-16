@@ -9,22 +9,33 @@ import SocialProofSection from './components/sections/SocialProofSection.vue';
 import HowItWorksSection from './components/sections/HowItWorksSection.vue';
 import CallToActionSection from './components/sections/CallToActionSection.vue';
 import NewsletterModal from './components/modals/NewsletterModal.vue';
+import RegistrationModal from './components/modals/RegistrationModal.vue';
 import { NEWSLETTER_STORAGE_SUBSCRIBED } from './constants/newsletter';
+import type { RegistrationLead } from '@/types/registration';
 
 /**
  * Passo 0 do onboarding: landing page do Grupo Ceres Investimentos.
- * Os CTAs de cadastro avançam para a confirmação do celular e "Acesse sua conta" leva ao login.
+ * Os CTAs de cadastro abrem o formulário "Abra sua conta"; ao concluir, o fluxo segue para a
+ * confirmação do celular. "Acesse sua conta" leva ao login.
  * O modal de newsletter continua abrindo sozinho (uma vez) para quem ainda não se inscreveu.
  */
 const emit = defineEmits<{
-  register: [];
+  register: [lead: RegistrationLead];
   login: [];
 }>();
 
 const isNewsletterModalOpen = ref(false);
+const isRegistrationOpen = ref(false);
 let newsletterTimer: number | undefined;
 
-const openRegistration = () => emit('register');
+const openRegistration = () => {
+  isNewsletterModalOpen.value = false;
+  isRegistrationOpen.value = true;
+};
+const handleRegistrationSubmit = (lead: RegistrationLead) => {
+  isRegistrationOpen.value = false;
+  emit('register', lead);
+};
 const openLogin = () => emit('login');
 
 onMounted(() => {
@@ -34,6 +45,8 @@ onMounted(() => {
   if (subscribed) return;
 
   newsletterTimer = window.setTimeout(() => {
+    // Não sobrepõe o formulário de cadastro caso o visitante já o tenha aberto.
+    if (isRegistrationOpen.value) return;
     isNewsletterModalOpen.value = true;
   }, 1500);
 });
@@ -55,6 +68,12 @@ onBeforeUnmount(() => {
       <CallToActionSection :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
     </main>
     <Footer />
+
+    <RegistrationModal
+      v-if="isRegistrationOpen"
+      @close="isRegistrationOpen = false"
+      @submit="handleRegistrationSubmit"
+    />
 
     <NewsletterModal
       :isOpen="isNewsletterModalOpen"

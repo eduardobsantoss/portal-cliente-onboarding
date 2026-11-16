@@ -2,12 +2,14 @@ import { computed, ref, type UnwrapNestedRefs } from 'vue';
 import type { ComplementaryFormSubmitPayload } from '@/types/dadosComplementares';
 import type { DocumentUploadItem, DocumentsMode } from '@/types/documentUpload';
 import type { OnboardingViewState } from '@/types/onboarding';
+import type { RegistrationLead } from '@/types/registration';
 
 export function useOnboardingFlow() {
   // A jornada começa na landing page do GCI e segue:
-  // Landing → Confirmação do celular por SMS → Criação de senha → Termos → Dados complementares...
+  // Landing (formulário "Abra sua conta") → Confirmação do celular por SMS → Criação de senha → Termos → Dados complementares...
   const currentView = ref<OnboardingViewState>('landing');
   const history = ref<OnboardingViewState[]>([]);
+  const registrationLead = ref<RegistrationLead | null>(null);
   const formData = ref<ComplementaryFormSubmitPayload | null>(null);
   const documentsSnapshot = ref<DocumentUploadItem[] | null>(null);
   const documentsMode = ref<DocumentsMode>('initial');
@@ -24,6 +26,12 @@ export function useOnboardingFlow() {
     if (prev.length === 0) return;
     currentView.value = prev[prev.length - 1];
     history.value = prev.slice(0, -1);
+  };
+
+  /** Guarda os dados do formulário da landing e avança para a confirmação do celular. */
+  const submitRegistration = (lead: RegistrationLead) => {
+    registrationLead.value = lead;
+    goTo('phone_verification');
   };
 
   const setDocumentsSnapshot = (items: DocumentUploadItem[] | null) => {
@@ -51,6 +59,7 @@ export function useOnboardingFlow() {
 
   return {
     currentView,
+    registrationLead,
     formData,
     documentsSnapshot,
     documentsMode,
@@ -61,6 +70,7 @@ export function useOnboardingFlow() {
     canGoBack: computed(() => history.value.length > 0),
     goTo,
     goBack,
+    submitRegistration,
     handleComplementarySubmit,
     openDocumentAdjustment,
   };

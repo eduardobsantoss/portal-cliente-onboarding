@@ -24,7 +24,16 @@ const emit = defineEmits<{
 
 // Cada composable devolve refs; `reactive(...)` as desembrulha para repassar o estado aos filhos
 // (mesmo formato de objetos de estado do original em React).
-const nav = reactive(useDashboardNavigation());
+// A navegação precisa abrir a solicitação de operação, que por sua vez depende de `nav.setActiveTab`;
+// por isso o callback só acessa `ops` quando é chamado (depois da inicialização).
+const nav = reactive(
+  useDashboardNavigation({
+    openOperationRequest: (serviceName = '') => {
+      ops.selectedService = serviceName;
+      ops.showOperationRequest = true;
+    },
+  }),
+);
 const group = reactive(useGroupSwitch());
 const ops = reactive(useOperations({ selectedGroup: () => group.selectedGroup, setActiveTab: nav.setActiveTab }));
 const carteiraRefs = useCarteira();
@@ -64,7 +73,6 @@ const goToCarteira = () => {
     <!-- Sidebar -->
     <Sidebar
       :is-open="nav.isSidebarOpen"
-      :is-verified="nav.isVerified"
       :active-tab="nav.activeTab"
       @select-item="nav.handleSelectNavItem"
       @close="nav.isSidebarOpen = false"
@@ -95,10 +103,8 @@ const goToCarteira = () => {
         <PageHeader
           :active-tab="nav.activeTab"
           :selected-group="group.selectedGroup"
-          :is-limit-released="nav.isVerified"
           :active-pending-toast-source="overlays.activePendingToastSource"
           @anticipate="nav.onAnticipateClick"
-          @start-credit-analysis="nav.startCreditAnalysis"
           @dismiss-pending-toast="overlays.activePendingToastSource = null"
           @go-to-carteira="goToCarteira"
         />

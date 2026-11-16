@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { motion } from 'motion-v';
-import { AlertTriangle, CheckCircle2, ShieldCheck } from 'lucide-vue-next';
+import { AlertTriangle, CheckCircle2 } from 'lucide-vue-next';
+import ValidationSpinner from '@/components/ui/ValidationSpinner.vue';
 
 const emit = defineEmits<{
   approve: [];
@@ -19,18 +20,7 @@ const emit = defineEmits<{
     >
       <div class="text-center py-6 md:py-10 space-y-8">
         <!-- 1. Anel Giratório com Pulso Central -->
-        <div class="relative w-28 h-28 mx-auto flex items-center justify-center">
-          <!-- Brilho externo pulsante -->
-          <div class="absolute inset-0 rounded-full bg-[#004A2F]/10 animate-ping opacity-75" />
-
-          <!-- Anel giratório bicolor (Verde GCI e Laranja Agro) -->
-          <div class="absolute inset-0 rounded-full border-4 border-gray-100 border-t-[#004A2F] border-r-[#FF7300] animate-spin" />
-
-          <!-- Círculo central com escudo pulsante -->
-          <div class="w-20 h-20 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-[#004A2F] relative z-10">
-            <ShieldCheck :size="36" class="text-[#FF7300] animate-pulse" />
-          </div>
-        </div>
+        <ValidationSpinner />
 
         <div class="space-y-2">
           <h3 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">

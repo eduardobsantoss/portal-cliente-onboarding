@@ -7,7 +7,6 @@ import type { DashboardNavItem, DashboardTab } from '@/types/dashboard';
 /** Menu lateral de navegação do portal. */
 defineProps<{
   isOpen: boolean;
-  isVerified: boolean;
   activeTab: DashboardTab;
 }>();
 
@@ -55,13 +54,6 @@ const isNarrowViewport = () => window.innerWidth < 1024;
           <component :is="item.icon" :size="20" :class="activeTab === item.id ? 'text-agro-orange' : 'shrink-0'" />
           <span v-if="isOpen || isNarrowViewport()" class="font-semibold text-sm">{{ item.label }}</span>
         </div>
-
-        <span
-          v-if="(isOpen || isNarrowViewport()) && Boolean(item.badge) && !isVerified"
-          class="text-[9px] font-black uppercase tracking-wider bg-agro-orange text-white px-2 py-0.5 rounded-full"
-        >
-          {{ item.badge }}
-        </span>
       </button>
     </nav>
 
