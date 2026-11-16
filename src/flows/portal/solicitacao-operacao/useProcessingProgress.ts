@@ -1,24 +1,32 @@
-import { useEffect, useState } from 'react';
+import { ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import { OPERATION_PROCESSING_ITEMS } from '@/constants/operationRequest';
 import type { OperationStep } from '@/types/operationRequest';
 
-export function useProcessingProgress(step: OperationStep, onFinished: () => void) {
-  const [processingIndex, setProcessingIndex] = useState(0);
+export function useProcessingProgress(step: MaybeRefOrGetter<OperationStep>, onFinished: () => void) {
+  const processingIndex = ref(0);
 
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | undefined;
-    if (step === 'PROCESSING_DOCS') {
-      interval = setInterval(() => {
-        setProcessingIndex(prev => {
-          if (prev < OPERATION_PROCESSING_ITEMS.length) return prev + 1;
+  watch(
+    () => toValue(step),
+    (currentStep, _previous, onCleanup) => {
+      let interval: ReturnType<typeof setInterval> | undefined;
+      let timeout: ReturnType<typeof setTimeout> | undefined;
+      if (currentStep === 'PROCESSING_DOCS') {
+        interval = setInterval(() => {
+          if (processingIndex.value < OPERATION_PROCESSING_ITEMS.length) {
+            processingIndex.value += 1;
+            return;
+          }
           clearInterval(interval);
-          setTimeout(() => onFinished(), 1500);
-          return prev;
-        });
-      }, 4000); // Slower transition (4 seconds per step)
-    }
-    return () => clearInterval(interval);
-  }, [step]);
+          timeout = setTimeout(() => onFinished(), 1500);
+        }, 4000); // Slower transition (4 seconds per step)
+      }
+      onCleanup(() => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      });
+    },
+    { immediate: true },
+  );
 
   return processingIndex;
 }

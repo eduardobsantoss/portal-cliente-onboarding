@@ -1,56 +1,56 @@
-import { useEffect, useState } from 'react';
+import { computed, shallowRef, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import type { SignerRepresentative } from '@/types/signer';
 import { formatSignedAtToday } from '@/utils/formatSignedAt';
 
-export function useSignatureRepresentatives(initialRepresentatives: SignerRepresentative[]) {
-  const [reps, setReps] = useState<SignerRepresentative[]>(() => {
-    return initialRepresentatives.map((rep) => ({
-      ...rep,
-      status: rep.status || 'Pendente',
-    }));
-  });
+function withDefaultStatus(representatives: SignerRepresentative[]): SignerRepresentative[] {
+  return representatives.map((rep) => ({
+    ...rep,
+    status: rep.status || 'Pendente',
+  }));
+}
+
+export function useSignatureRepresentatives(
+  initialRepresentatives: MaybeRefOrGetter<SignerRepresentative[]>
+) {
+  const reps = shallowRef<SignerRepresentative[]>(withDefaultStatus(toValue(initialRepresentatives)));
 
   // Keep reps synchronized with actual form state
-  useEffect(() => {
-    setReps(
-      initialRepresentatives.map((rep) => ({
-        ...rep,
-        status: rep.status || 'Pendente',
-      }))
-    );
-  }, [initialRepresentatives]);
+  watch(
+    () => toValue(initialRepresentatives),
+    (representatives) => {
+      reps.value = withDefaultStatus(representatives);
+    }
+  );
 
-  const totalSigners = reps.length;
-  const signedCount = reps.filter((r) => r.status === 'Assinado').length;
-  const allSigned = totalSigners > 0 && signedCount === totalSigners;
+  const totalSigners = computed(() => reps.value.length);
+  const signedCount = computed(() => reps.value.filter((r) => r.status === 'Assinado').length);
+  const allSigned = computed(
+    () => totalSigners.value > 0 && signedCount.value === totalSigners.value
+  );
 
   // Simulation: Sign single
   const handleToggleSignSingle = (id: string) => {
-    setReps((prev) =>
-      prev.map((r) => {
-        if (r.id === id) {
-          const isNowSigned = r.status !== 'Assinado';
-          return {
-            ...r,
-            status: isNowSigned ? 'Assinado' : 'Pendente',
-            signedAt: isNowSigned ? formatSignedAtToday() : undefined,
-          };
-        }
-        return r;
-      })
-    );
+    reps.value = reps.value.map((r) => {
+      if (r.id === id) {
+        const isNowSigned = r.status !== 'Assinado';
+        return {
+          ...r,
+          status: isNowSigned ? 'Assinado' : 'Pendente',
+          signedAt: isNowSigned ? formatSignedAtToday() : undefined,
+        };
+      }
+      return r;
+    });
   };
 
   // Simulation: Sign all (Required in Turn: "Simular assinaturas concluídas")
   const handleSimulateAllSigned = () => {
     const now = formatSignedAtToday();
-    setReps((prev) =>
-      prev.map((r) => ({
-        ...r,
-        status: 'Assinado',
-        signedAt: r.signedAt || now,
-      }))
-    );
+    reps.value = reps.value.map((r) => ({
+      ...r,
+      status: 'Assinado',
+      signedAt: r.signedAt || now,
+    }));
   };
 
   return {

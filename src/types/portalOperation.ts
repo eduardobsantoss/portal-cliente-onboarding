@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-vue-next';
 
 export type OperationDetailsTab = 'DADOS_GERAIS' | 'ATIVOS' | 'ANEXOS';
 

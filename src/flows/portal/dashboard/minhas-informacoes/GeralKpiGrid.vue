@@ -1,0 +1,62 @@
+<script setup lang="ts">
+import { motion } from 'motion-v';
+import { ArrowUpRight, CreditCard, TrendingUp, Wallet } from 'lucide-vue-next';
+import { LIMIT_EMPTY_LABEL } from '@/constants/analysis';
+
+/** Cartões de Limite Total, Risco e Disponível. */
+defineProps<{
+  limitLabel: string;
+}>();
+</script>
+
+<template>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <motion.div
+      :initial="{ opacity: 0, y: 10 }"
+      :animate="{ opacity: 1, y: 0 }"
+      class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gci/5 flex items-center justify-center text-gci">
+          <Wallet :size="20" />
+        </div>
+        <span class="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-full flex items-center gap-1 uppercase tracking-wider">
+          <ArrowUpRight :size="12" /> 0%
+        </span>
+      </div>
+      <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Limite Total</p>
+      <h3 class="text-2xl font-bold text-gci">{{ limitLabel }}</h3>
+    </motion.div>
+
+    <motion.div
+      :initial="{ opacity: 0, y: 10 }"
+      :animate="{ opacity: 1, y: 0 }"
+      :transition="{ delay: 0.1 }"
+      class="bg-gci p-6 rounded-2xl shadow-lg shadow-gci/10 text-white relative overflow-hidden group"
+    >
+      <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700"></div>
+      <div class="flex items-center justify-between mb-4 relative z-10">
+        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white">
+          <CreditCard :size="20" />
+        </div>
+      </div>
+      <p class="text-[10px] text-white/60 font-bold uppercase tracking-wider mb-1 relative z-10">Risco</p>
+      <h3 class="text-2xl font-bold text-white relative z-10">{{ LIMIT_EMPTY_LABEL }}</h3>
+    </motion.div>
+
+    <motion.div
+      :initial="{ opacity: 0, y: 10 }"
+      :animate="{ opacity: 1, y: 0 }"
+      :transition="{ delay: 0.2 }"
+      class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group sm:col-span-2 lg:col-span-1"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-10 h-10 rounded-xl bg-agro-orange/5 flex items-center justify-center text-agro-orange">
+          <TrendingUp :size="20" />
+        </div>
+      </div>
+      <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Disponível</p>
+      <h3 class="text-2xl font-bold text-gci">{{ limitLabel }}</h3>
+    </motion.div>
+  </div>
+</template>

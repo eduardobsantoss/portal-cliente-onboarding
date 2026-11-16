@@ -1,35 +1,35 @@
-import { useState } from 'react';
+import { ref } from 'vue';
 import { INITIAL_PHONE_VERIFIED_AT } from '@/constants/documentChecklist';
 
 /** Estado das validações por SMS (tópico 1) e biometria facial (tópico 2). */
 export function useIdentityVerification() {
   // Phone verification state - starts as Concluído per Item 2
-  const [phoneVerified, setPhoneVerified] = useState(true);
-  const [phoneVerifiedAt, setPhoneVerifiedAt] = useState(INITIAL_PHONE_VERIFIED_AT);
+  const phoneVerified = ref(true);
+  const phoneVerifiedAt = ref(INITIAL_PHONE_VERIFIED_AT);
 
   // Facial verification state
-  const [facialVerified, setFacialVerified] = useState(false);
+  const facialVerified = ref(false);
 
   const handlePhoneVerified = () => {
-    setPhoneVerified(true);
+    phoneVerified.value = true;
     const now = new Date();
-    setPhoneVerifiedAt(
-      `${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
-    );
+    phoneVerifiedAt.value = `${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
   };
 
-  const handleFacialVerified = () => setFacialVerified(true);
+  const handleFacialVerified = () => {
+    facialVerified.value = true;
+  };
 
   /** Simulação "preencher todos": marca SMS e biometria como concluídos (sem alterar a data do SMS). */
   const markAllVerified = () => {
-    setPhoneVerified(true);
-    setFacialVerified(true);
+    phoneVerified.value = true;
+    facialVerified.value = true;
   };
 
   const resetIdentity = () => {
-    setPhoneVerified(true);
-    setPhoneVerifiedAt(INITIAL_PHONE_VERIFIED_AT);
-    setFacialVerified(false);
+    phoneVerified.value = true;
+    phoneVerifiedAt.value = INITIAL_PHONE_VERIFIED_AT;
+    facialVerified.value = false;
   };
 
   return {

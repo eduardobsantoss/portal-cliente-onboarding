@@ -84,3 +84,14 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #d1d5db;
 }
+
+/* Scroll-based Fade-In (diretiva v-fade-in da landing) */
+.v-fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.v-fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

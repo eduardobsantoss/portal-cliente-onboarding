@@ -1,9 +1,15 @@
-import { useEffect } from 'react';
+import { onBeforeUnmount, onMounted } from 'vue';
 
+/** Trava o scroll do body enquanto o componente que chama este composable estiver montado. */
 export function useBodyScrollLock() {
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
+  let previousOverflow = '';
+
+  onMounted(() => {
+    previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = previousOverflow; };
-  }, []);
+  });
+
+  onBeforeUnmount(() => {
+    document.body.style.overflow = previousOverflow;
+  });
 }

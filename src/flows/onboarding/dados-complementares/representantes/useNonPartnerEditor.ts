@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { ref } from 'vue';
 import { INITIAL_NON_PARTNER_FORM } from '@/constants/complementaryForm';
+import { createSetter } from '@/flows/onboarding/dados-complementares/stateSetter';
 import type { NonPartnerRepresentative } from '@/types/representante';
 import { buildBlankNonPartnerForm, buildNonPartnerFromForm } from '@/utils/representante';
 
@@ -8,37 +9,42 @@ interface UseNonPartnerEditorOptions {
 }
 
 export function useNonPartnerEditor({ clearValidationNotice }: UseNonPartnerEditorOptions) {
-  const [reps, setReps] = useState<NonPartnerRepresentative[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<Partial<NonPartnerRepresentative>>(INITIAL_NON_PARTNER_FORM);
+  const reps = ref<NonPartnerRepresentative[]>([]);
+  const isModalOpen = ref(false);
+  const editingId = ref<string | null>(null);
+  const form = ref<Partial<NonPartnerRepresentative>>(INITIAL_NON_PARTNER_FORM);
+
+  const setReps = createSetter(reps);
+  const setForm = createSetter(form);
 
   const openAdd = () => {
-    setEditingId(null);
-    setForm(buildBlankNonPartnerForm());
-    setIsModalOpen(true);
+    editingId.value = null;
+    form.value = buildBlankNonPartnerForm();
+    isModalOpen.value = true;
   };
 
   const openEdit = (rep: NonPartnerRepresentative) => {
-    setEditingId(rep.id);
-    setForm({ ...rep });
-    setIsModalOpen(true);
+    editingId.value = rep.id;
+    form.value = { ...rep };
+    isModalOpen.value = true;
   };
 
-  const save = (e: React.FormEvent) => {
+  const save = (e: Event) => {
     e.preventDefault();
-    if (!form.nome || !form.cpf) return;
+    if (!form.value.nome || !form.value.cpf) return;
 
-    if (editingId) {
+    const currentId = editingId.value;
+    const currentForm = form.value;
+    if (currentId) {
       setReps((prev) =>
         prev.map((r) =>
-          r.id === editingId ? ({ ...r, ...form } as NonPartnerRepresentative) : r
+          r.id === currentId ? ({ ...r, ...currentForm } as NonPartnerRepresentative) : r
         )
       );
     } else {
-      setReps((prev) => [...prev, buildNonPartnerFromForm(form)]);
+      setReps((prev) => [...prev, buildNonPartnerFromForm(currentForm)]);
     }
-    setIsModalOpen(false);
+    isModalOpen.value = false;
     clearValidationNotice();
   };
 
@@ -54,7 +60,9 @@ export function useNonPartnerEditor({ clearValidationNotice }: UseNonPartnerEdit
     setForm,
     openAdd,
     openEdit,
-    closeModal: () => setIsModalOpen(false),
+    closeModal: () => {
+      isModalOpen.value = false;
+    },
     save,
     remove,
   };

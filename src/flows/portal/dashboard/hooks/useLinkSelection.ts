@@ -1,62 +1,62 @@
-import { useState } from 'react';
+import { ref, toValue, type MaybeRefOrGetter, type Ref, type UnwrapNestedRefs } from 'vue';
 import type { SacadoContact, Titulo } from '@/types/titulo';
 import { toggleListItem } from '@/utils/toggleListItem';
 
 interface UseLinkSelectionParams {
-  resolutionTitulo: Titulo | null;
-  setResolutionTitulo: (titulo: Titulo | null) => void;
-  titulosList: Titulo[];
-  setTitulosList: (titulos: Titulo[]) => void;
-  setHasPendingConfirmations: (value: boolean) => void;
-  sacadoContacts: SacadoContact[];
+  resolutionTitulo: Ref<Titulo | null>;
+  titulosList: Ref<Titulo[]>;
+  hasPendingConfirmations: Ref<boolean>;
+  sacadoContacts: MaybeRefOrGetter<SacadoContact[]>;
 }
 
 /** Modal "Enviar Link de Confirmação": canais e destinatários escolhidos e disparo do link. */
 export function useLinkSelection({
   resolutionTitulo,
-  setResolutionTitulo,
   titulosList,
-  setTitulosList,
-  setHasPendingConfirmations,
+  hasPendingConfirmations,
   sacadoContacts,
 }: UseLinkSelectionParams) {
-  const [showLinkSelectionModal, setShowLinkSelectionModal] = useState(false);
-  const [selectedSacados, setSelectedSacados] = useState<string[]>([]);
-  const [selectedChannels, setSelectedChannels] = useState<string[]>(['whatsapp']);
+  const showLinkSelectionModal = ref(false);
+  const selectedSacados = ref<string[]>([]);
+  const selectedChannels = ref<string[]>(['whatsapp']);
 
   const openLinkSelectionModal = (titulo: Titulo) => {
-    setResolutionTitulo(titulo);
-    setShowLinkSelectionModal(true);
+    resolutionTitulo.value = titulo;
+    showLinkSelectionModal.value = true;
   };
 
   const closeLinkSelectionModal = () => {
-    setShowLinkSelectionModal(false);
-    setResolutionTitulo(null);
+    showLinkSelectionModal.value = false;
+    resolutionTitulo.value = null;
   };
 
-  const toggleChannel = (channelId: string) => setSelectedChannels(prev => toggleListItem(prev, channelId));
+  const toggleChannel = (channelId: string) => {
+    selectedChannels.value = toggleListItem(selectedChannels.value, channelId);
+  };
 
-  const toggleSacado = (contactId: string) => setSelectedSacados(prev => toggleListItem(prev, contactId));
+  const toggleSacado = (contactId: string) => {
+    selectedSacados.value = toggleListItem(selectedSacados.value, contactId);
+  };
 
   const toggleAllSacados = () => {
-    const allIds = sacadoContacts.map(c => c.id);
-    if (selectedSacados.length === allIds.length) setSelectedSacados([]);
-    else setSelectedSacados(allIds);
+    const allIds = toValue(sacadoContacts).map(c => c.id);
+    if (selectedSacados.value.length === allIds.length) selectedSacados.value = [];
+    else selectedSacados.value = allIds;
   };
 
   const submitLinkSelection = () => {
-    const updatedList = titulosList.map(t => t.id === resolutionTitulo.id ? {
+    const updatedList = titulosList.value.map(t => t.id === resolutionTitulo.value!.id ? {
       ...t,
       actionStatus: 'Pendente de Análise',
       status: 'Pendente de Análise',
       linkEnviado: true
     } : t);
 
-    setTitulosList(updatedList);
+    titulosList.value = updatedList;
 
     const hasPending = updatedList.some(t => t.actionStatus === 'Pendência');
     if (!hasPending) {
-      setHasPendingConfirmations(false);
+      hasPendingConfirmations.value = false;
     }
 
     closeLinkSelectionModal();
@@ -75,4 +75,5 @@ export function useLinkSelection({
   };
 }
 
-export type LinkSelectionState = ReturnType<typeof useLinkSelection>;
+/** Estado desembrulhado (use `reactive(useLinkSelection(...))` para repassar aos componentes filhos). */
+export type LinkSelectionState = UnwrapNestedRefs<ReturnType<typeof useLinkSelection>>;

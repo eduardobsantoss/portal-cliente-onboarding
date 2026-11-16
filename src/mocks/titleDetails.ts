@@ -1,4 +1,4 @@
-import { ArrowUpRight, FileCheck, Link, X } from 'lucide-react';
+import { ArrowUpRight, FileCheck, Link, X } from 'lucide-vue-next';
 import type { DocumentFile } from '@/types/dashboard';
 import type { TituloMovement } from '@/types/titulo';
 

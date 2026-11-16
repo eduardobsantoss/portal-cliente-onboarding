@@ -1,4 +1,4 @@
-import { Banknote, FileCheck, Hourglass, Search } from 'lucide-react';
+import { Banknote, FileCheck, Hourglass, Search } from 'lucide-vue-next';
 import type { DocumentFile } from '@/types/dashboard';
 import type { OperationAsset, OperationJourneyStep } from '@/types/portalOperation';
 

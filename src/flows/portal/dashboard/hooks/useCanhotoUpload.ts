@@ -1,65 +1,68 @@
-import { useState } from 'react';
+import { ref, type Ref, type UnwrapNestedRefs } from 'vue';
 import { CANHOTO_COMPLETE_DELAY_MS, CANHOTO_PROGRESS_TICK_MS } from '@/constants/dashboardTimings';
 import type { CanhotoFile, Titulo } from '@/types/titulo';
 
 interface UseCanhotoUploadParams {
-  resolutionTitulo: Titulo | null;
-  setResolutionTitulo: (titulo: Titulo | null) => void;
-  titulosList: Titulo[];
-  setTitulosList: (titulos: Titulo[]) => void;
+  resolutionTitulo: Ref<Titulo | null>;
+  titulosList: Ref<Titulo[]>;
 }
 
 /** Modal "Subir Canhoto": arquivo escolhido e envio simulado com barra de progresso. */
-export function useCanhotoUpload({ resolutionTitulo, setResolutionTitulo, titulosList, setTitulosList }: UseCanhotoUploadParams) {
-  const [showCanhotoModal, setShowCanhotoModal] = useState(false);
-  const [canhotoFiles, setCanhotoFiles] = useState<CanhotoFile[]>([]);
-  const [isUploadingCanhoto, setIsUploadingCanhoto] = useState(false);
-  const [uploadCanhotoProgress, setUploadCanhotoProgress] = useState(0);
+export function useCanhotoUpload({ resolutionTitulo, titulosList }: UseCanhotoUploadParams) {
+  const showCanhotoModal = ref(false);
+  const canhotoFiles = ref<CanhotoFile[]>([]);
+  const isUploadingCanhoto = ref(false);
+  const uploadCanhotoProgress = ref(0);
 
   const openCanhotoModal = (titulo: Titulo) => {
-    setResolutionTitulo(titulo);
-    setShowCanhotoModal(true);
-    setCanhotoFiles([]);
-    setIsUploadingCanhoto(false);
-    setUploadCanhotoProgress(0);
+    resolutionTitulo.value = titulo;
+    showCanhotoModal.value = true;
+    canhotoFiles.value = [];
+    isUploadingCanhoto.value = false;
+    uploadCanhotoProgress.value = 0;
   };
 
   const closeCanhotoModal = () => {
-    setShowCanhotoModal(false);
-    setResolutionTitulo(null);
+    showCanhotoModal.value = false;
+    resolutionTitulo.value = null;
   };
 
   const pickCanhotoFile = () => {
-    setCanhotoFiles([{ name: "CANHOTO_NF_" + resolutionTitulo?.numero + ".png", size: "2.4 MB" }]);
+    canhotoFiles.value = [{ name: "CANHOTO_NF_" + resolutionTitulo.value?.numero + ".png", size: "2.4 MB" }];
   };
 
-  const removeCanhotoFile = () => setCanhotoFiles([]);
+  const removeCanhotoFile = () => {
+    canhotoFiles.value = [];
+  };
 
   const handleCanhotoSubmit = () => {
-    setIsUploadingCanhoto(true);
+    // Valores capturados no envio (o original os lê da renderização em que o envio foi disparado).
+    const titulo = resolutionTitulo.value;
+    const currentList = titulosList.value;
+    isUploadingCanhoto.value = true;
     let progress = 0;
     const interval = setInterval(() => {
       progress += Math.random() * 30;
       if (progress >= 100) {
-        setUploadCanhotoProgress(100);
+        uploadCanhotoProgress.value = 100;
         clearInterval(interval);
         setTimeout(() => {
-          setIsUploadingCanhoto(false);
-          setShowCanhotoModal(false);
-          setResolutionTitulo(null);
+          isUploadingCanhoto.value = false;
+          showCanhotoModal.value = false;
+          resolutionTitulo.value = null;
 
-          if (resolutionTitulo) {
-            const updatedList = titulosList.map(t => t.id === resolutionTitulo.id ? {
+          if (titulo) {
+            const updatedList = currentList.map(t => t.id === titulo.id ? {
               ...t,
               actionStatus: 'Pendente de Análise',
               status: 'Pendente de Análise',
               canhotoEnviado: true
             } : t);
-            setTitulosList(updatedList);
+            titulosList.value = updatedList;
           }
         }, CANHOTO_COMPLETE_DELAY_MS);
       } else {
-        setUploadCanhotoProgress(progress);
+        uploadCanhotoProgress.value = progress;
       }
     }, CANHOTO_PROGRESS_TICK_MS);
   };
@@ -77,4 +80,5 @@ export function useCanhotoUpload({ resolutionTitulo, setResolutionTitulo, titulo
   };
 }
 
-export type CanhotoUploadState = ReturnType<typeof useCanhotoUpload>;
+/** Estado desembrulhado (use `reactive(useCanhotoUpload(...))` para repassar aos componentes filhos). */
+export type CanhotoUploadState = UnwrapNestedRefs<ReturnType<typeof useCanhotoUpload>>;

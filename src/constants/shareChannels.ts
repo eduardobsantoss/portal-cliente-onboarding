@@ -1,4 +1,4 @@
-import { Mail, MessageSquare } from 'lucide-react';
+import { Mail, MessageSquare } from 'lucide-vue-next';
 import type { ShareChannel } from '@/types/titulo';
 
 export const SHARE_CHANNELS: ShareChannel[] = [

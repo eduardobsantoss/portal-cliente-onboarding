@@ -1,4 +1,5 @@
 export type OnboardingViewState =
+  | 'landing'
   | 'phone_verification'
   | 'create_password'
   | 'login'

@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-vue-next';
 
 export type OperationStep =
   | 'XML_UPLOAD'

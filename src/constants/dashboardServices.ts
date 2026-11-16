@@ -1,4 +1,4 @@
-import { ArrowDownRight, Banknote } from 'lucide-react';
+import { ArrowDownRight, Banknote } from 'lucide-vue-next';
 import type { DashboardService } from '@/types/dashboard';
 
 export const DASHBOARD_SERVICES: DashboardService[] = [

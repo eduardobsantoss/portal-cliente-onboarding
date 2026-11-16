@@ -1,62 +1,60 @@
-import React, { useState } from 'react';
+import { ref, type Ref, type UnwrapNestedRefs } from 'vue';
 import { SUCCESS_APPROVAL_TOAST_MS } from '@/constants/dashboardTimings';
 import type { Titulo } from '@/types/titulo';
 
 interface UseResolveScreenParams {
-  titulosList: Titulo[];
-  setTitulosList: React.Dispatch<React.SetStateAction<Titulo[]>>;
-  setHasPendingConfirmations: (value: boolean) => void;
+  titulosList: Ref<Titulo[]>;
+  hasPendingConfirmations: Ref<boolean>;
 }
 
 /** Tela "Resolução de Pendências" e os avisos globais de validação dos títulos. */
-export function useResolveScreen({ titulosList, setTitulosList, setHasPendingConfirmations }: UseResolveScreenParams) {
-  const [isShowingResolveScreen, setIsShowingResolveScreen] = useState(false);
-  const [hasSeenResolveExplanation, setHasSeenResolveExplanation] = useState(false);
-  const [isWaitingValidation, setIsWaitingValidation] = useState(false);
-  const [showSuccessApprovalToast, setShowSuccessApprovalToast] = useState(false);
+export function useResolveScreen({ titulosList, hasPendingConfirmations }: UseResolveScreenParams) {
+  const isShowingResolveScreen = ref(false);
+  const hasSeenResolveExplanation = ref(false);
+  const isWaitingValidation = ref(false);
+  const showSuccessApprovalToast = ref(false);
   // Título em resolução (compartilhado com os modais de canhoto e de link de confirmação).
-  const [resolutionTitulo, setResolutionTitulo] = useState<Titulo | null>(null);
+  const resolutionTitulo = ref<Titulo | null>(null);
 
   const openResolveScreen = () => {
-    setHasSeenResolveExplanation(false);
-    setIsShowingResolveScreen(true);
+    hasSeenResolveExplanation.value = false;
+    isShowingResolveScreen.value = true;
   };
 
   const handleFinishResolution = () => {
-    const hasPending = titulosList.some(t => t.actionStatus === 'Pendência');
+    const hasPending = titulosList.value.some(t => t.actionStatus === 'Pendência');
     if (!hasPending) {
-      setIsWaitingValidation(true);
+      isWaitingValidation.value = true;
     }
-    setIsShowingResolveScreen(false);
+    isShowingResolveScreen.value = false;
   };
 
   const handleConfirmValidation = () => {
-    setIsWaitingValidation(false);
-    setTitulosList(prev => prev.map(t => (t.actionStatus === 'Pendente de Análise' || (t.canhotoEnviado || t.linkEnviado)) ? {
+    // Lista anterior à atualização (o original usa o valor capturado na renderização).
+    const previousList = titulosList.value;
+    isWaitingValidation.value = false;
+    titulosList.value = previousList.map(t => (t.actionStatus === 'Pendente de Análise' || (t.canhotoEnviado || t.linkEnviado)) ? {
       ...t,
       actionStatus: 'Confirmado',
       status: 'Confirmado',
       statusColor: 'text-green-600 bg-green-50 border-green-100'
-    } : t));
-    setShowSuccessApprovalToast(true);
-    setTimeout(() => setShowSuccessApprovalToast(false), SUCCESS_APPROVAL_TOAST_MS);
-    setHasPendingConfirmations(titulosList.some(t => t.actionStatus === 'Pendência' && !t.canhotoEnviado && !t.linkEnviado));
+    } : t);
+    showSuccessApprovalToast.value = true;
+    setTimeout(() => (showSuccessApprovalToast.value = false), SUCCESS_APPROVAL_TOAST_MS);
+    hasPendingConfirmations.value = previousList.some(t => t.actionStatus === 'Pendência' && !t.canhotoEnviado && !t.linkEnviado);
   };
 
   return {
     isShowingResolveScreen,
-    setIsShowingResolveScreen,
     hasSeenResolveExplanation,
-    setHasSeenResolveExplanation,
     isWaitingValidation,
     showSuccessApprovalToast,
-    setShowSuccessApprovalToast,
     resolutionTitulo,
-    setResolutionTitulo,
     openResolveScreen,
     handleFinishResolution,
     handleConfirmValidation,
   };
 }
 
-export type ResolveScreenState = ReturnType<typeof useResolveScreen>;
+/** Estado desembrulhado (use `reactive(useResolveScreen(...))` para repassar aos componentes filhos). */
+export type ResolveScreenState = UnwrapNestedRefs<ReturnType<typeof useResolveScreen>>;

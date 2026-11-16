@@ -1,0 +1,54 @@
+<script setup lang="ts">
+import { motion } from 'motion-v';
+import { KeyRound } from 'lucide-vue-next';
+import { useCreatePassword } from './useCreatePassword';
+import CreatePasswordForm from './CreatePasswordForm.vue';
+import CreatePasswordSuccess from './CreatePasswordSuccess.vue';
+
+defineProps<{
+  isOpen: boolean;
+}>();
+
+const emit = defineEmits<{
+  close: [createdPassword?: string];
+}>();
+
+const form = useCreatePassword({ onClose: (createdPassword) => emit('close', createdPassword) });
+</script>
+
+<template>
+  <div
+    v-if="isOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/20 backdrop-blur-[2px]"
+  >
+    <motion.div
+      :initial="{ opacity: 0, scale: 0.95, y: 15 }"
+      :animate="{ opacity: 1, scale: 1, y: 0 }"
+      :exit="{ opacity: 0, scale: 0.95, y: 15 }"
+      :transition="{ duration: 0.3, ease: 'easeOut' }"
+      class="bg-white rounded-3xl border border-slate-200/90 shadow-2xl max-w-md w-full overflow-hidden relative"
+    >
+      <!-- Header Banner -->
+      <div class="bg-gradient-to-br from-[#083C4A] to-[#0d5366] p-6 sm:p-7 text-white relative">
+        <div class="mb-3">
+          <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-agro-orange shadow-inner">
+            <KeyRound :size="24" />
+          </div>
+        </div>
+
+        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+          Criar Senha de Acesso
+        </h2>
+        <p class="text-xs sm:text-sm text-white/80 mt-1 leading-relaxed">
+          Defina sua senha de segurança para habilitar o acesso ao Portal do Cliente GCI.
+        </p>
+      </div>
+
+      <!-- Form Content -->
+      <div class="p-6 sm:p-7 space-y-5">
+        <CreatePasswordSuccess v-if="form.isSuccess.value" />
+        <CreatePasswordForm v-else :form="form" />
+      </div>
+    </motion.div>
+  </div>
+</template>

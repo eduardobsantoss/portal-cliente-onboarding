@@ -18,6 +18,12 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 ## 2. Diagrama de Estados da Jornada
 
 ```
+[Landing GCI] ──("Acesse sua conta")──► [Login]
+   │ ("Conheça o Portal" / "Registre-se")
+   ▼
+[Confirmação do celular (SMS)] ──► [Criação de senha]
+   │
+   ▼
 [Login] 
    │
    ▼
@@ -56,7 +62,17 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 ## 3. Detalhamento Etapa por Etapa
 
-### Etapa 1: Autenticação Inicial (`Login.tsx`)
+### Etapa 0: Landing Page GCI (`LandingPage.vue`)
+- **Objetivo**: Primeira tela da jornada. Apresenta o Portal do Cliente GCI (Hero, Soluções, Benefícios, Prova Social, Como Funciona, CTA final e Rodapé) antes de qualquer passo de cadastro. Origem: projeto `landing-page-gci`, portado para `src/flows/onboarding/landing/`.
+- **Navegação**:
+  - CTAs de cadastro ("Conheça o Portal", "Registre-se", "Registre-se agora", "Conheça nossas soluções") avançam para **Confirmação do celular** (`phone_verification`).
+  - "Acesse sua conta" / "Acesse o Portal do Cliente" levam ao **Login** (`login`).
+- **Newsletter**: o modal de newsletter (`NewsletterModal.vue`) abre sozinho após 1,5 s para quem ainda não se inscreveu (controle via `localStorage`, chave `gci_newsletter_subscribed`) e envia o lead para a Firebase Function `submitNewsletterLead`.
+- **Configuração**: `VITE_GA_MEASUREMENT_ID` (GA4), `VITE_NEWSLETTER_LEAD_URL` (endpoint do lead; em dev o vite faz proxy de `/api/newsletter-lead`). Veja `.env.example`.
+
+---
+
+### Etapa 1: Autenticação Inicial (`Login.vue`)
 - **Objetivo**: Entrada segura do usuário titular ou operador do cadastro.
 - **Campos**: E-mail institucional e senha de acesso.
 - **Dados Mockados Padrão**: 
@@ -67,7 +83,7 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 ---
 
-### Etapa 2: Termos de Uso e Política de Privacidade (`TermsAgreement.tsx`)
+### Etapa 2: Termos de Uso e Política de Privacidade (`TermsAgreement.vue`)
 - **Objetivo**: Consentimento formal conforme diretrizes de SCD do Banco Central (Bacen) e LGPD.
 - **Estrutura**:
   - Leitura dos Termos Gerais de Abertura de Conta de Pagamento / Crédito.
@@ -77,7 +93,7 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 ---
 
-### Etapa 3: Dados Complementares para Abertura (`ComplementaryDataForm.tsx`)
+### Etapa 3: Dados Complementares para Abertura (`ComplementaryDataForm.vue`)
 - **Objetivo**: Coleta cadastral aprofundada antes do upload documental.
 - **Seleção de Modalidade**: Alternância entre **Pessoa Jurídica (PJ)** e **Pessoa Física (PF)**.
 
@@ -103,7 +119,7 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 ---
 
-### Etapa 4: Envio de Documentos Iniciais de Abertura (`OnboardingDocumentUpload.tsx`)
+### Etapa 4: Envio de Documentos Iniciais de Abertura (`OnboardingDocumentUpload.vue`)
 - **Objetivo**: Recepção dos arquivos de identificação e societários para o processo de abertura de conta.
 - **Especificações Técnicas de Arquivo**:
   - Formatos aceitos: **JPG, JPEG, PNG ou PDF (base64)** até **12MB** por arquivo.
@@ -121,18 +137,18 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 ---
 
-### Etapa 5: Validação e Análise Pendente (`AnalysisPending.tsx` e `RejectionNotice.tsx`)
+### Etapa 5: Validação e Análise Pendente (`AnalysisPending.vue` e `RejectionNotice.vue`)
 - **Objetivo**: Tratar o tempo de resposta e compliance regulatório.
-- **Tela de Análise Pendente (`AnalysisPending.tsx`)**:
+- **Tela de Análise Pendente (`AnalysisPending.vue`)**:
   - Informa que a análise de crédito e dados está em andamento.
   - Comunica envio de notificação por e-mail e SMS assim que concluído.
   - Permite fechar a aba com segurança sem perda do progresso.
-- **Tela de Reprovação (`RejectionNotice.tsx`)**:
+- **Tela de Reprovação (`RejectionNotice.vue`)**:
   - Apresenta feedback formal dos motivos de inconformidade cadastral e orientações para reenvio ou contato com mesa de crédito.
 
 ---
 
-### Etapa 6: Abertura da Conta Concluída (`AccountCreated.tsx`)
+### Etapa 6: Abertura da Conta Concluída (`AccountCreated.vue`)
 - **Objetivo**: Entrega das credenciais bancárias da Conta Digital GCI.
 - **Identificadores Entregues**:
   - **Instituição Financeira**: Banco 414 - GCI SCD
@@ -148,7 +164,7 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 ---
 
-### Etapa 7: Dashboard e Checklist da Análise de Crédito (`Dashboard.tsx` e `DocumentVerification.tsx`)
+### Etapa 7: Dashboard e Checklist da Análise de Crédito (`Dashboard.vue` e `DocumentVerification.vue`)
 
 #### Comportamento das Abas do Dashboard:
 - Ao ingressar no Dashboard pela primeira vez, o cliente cai na **Home**, com a conta aberta e o limite ainda não liberado.
@@ -159,7 +175,7 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 - **Aba da análise**:
   - **"Análise de Crédito"** (Documentos e Checklist Oficial GCI), com o selo "Novo" até o limite ser liberado.
 
-#### O Checklist Documental Oficial da GCI (`DocumentVerification.tsx`):
+#### O Checklist Documental Oficial da GCI (`DocumentVerification.vue`):
 Construído rigorosamente sobre as especificações do documento oficial da instituição, dividido em:
 
 ##### Seção 3: Documentos Cadastrais da Empresa

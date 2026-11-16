@@ -7,7 +7,7 @@ import {
   ShieldCheck,
   CheckCircle2,
   Zap,
-} from 'lucide-react';
+} from 'lucide-vue-next';
 import type { OperationProcessingStage, OperationStep, OperationStepConfig } from '@/types/operationRequest';
 
 export const OPERATION_STEPS_CONFIG: OperationStepConfig[] = [
