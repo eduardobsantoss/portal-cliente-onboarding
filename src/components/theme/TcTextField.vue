@@ -15,6 +15,7 @@ const props = withDefaults(
     required?: boolean;
     inputmode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
     autocomplete?: string;
+    maxlength?: number;
   }>(),
   { modelValue: '', type: 'text', required: false },
 );
@@ -58,6 +59,7 @@ const onInput = (event: Event) => {
       :placeholder="placeholder"
       :inputmode="inputmode"
       :autocomplete="autocomplete"
+      :maxlength="maxlength"
       :required="required"
       :aria-required="required ? 'true' : undefined"
       :aria-invalid="error ? 'true' : undefined"

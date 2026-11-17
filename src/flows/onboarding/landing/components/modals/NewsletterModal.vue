@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { X, Loader2, CheckCircle2 } from "lucide-vue-next";
+import { X, AlertCircle, CheckCircle2 } from "lucide-vue-next";
+import TcDialog from "@/components/theme/TcDialog.vue";
+import TcDisplayHeading from "@/components/theme/TcDisplayHeading.vue";
+import TcTextField from "@/components/theme/TcTextField.vue";
+import TcCheckbox from "@/components/theme/TcCheckbox.vue";
+import TcButton from "@/components/theme/TcButton.vue";
 import {
   NEWSLETTER_CONSENT_TEXT,
   NEWSLETTER_STORAGE_DISMISSED,
@@ -96,154 +101,128 @@ async function onSubmit() {
 </script>
 
 <template>
-  <Transition name="fade-modal">
-    <div
-      v-if="isOpen"
-      class="fixed inset-0 z-[120] flex items-center justify-center p-4"
-    >
-      <div
-        class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+  <TcDialog
+    :open="isOpen"
+    variant="centered"
+    labelledby="newsletter-modal-title"
+    @close="dismiss"
+  >
+    <div v-if="successMessage" class="flex flex-col items-center gap-[var(--space-5)] text-center">
+      <button
+        type="button"
+        class="inline-flex size-[var(--control-arrow)] shrink-0 cursor-pointer items-center justify-center self-end rounded-[var(--radius-full)] border-[1.5px] border-[color:var(--border-strong)] text-[color:var(--text-strong)] transition-colors duration-[var(--duration-base)] hover:bg-[var(--surface-soft)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] motion-reduce:transition-none"
+        aria-label="Fechar"
         @click="dismiss"
-      />
-
-      <div
-        class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-gray-100 relative z-10 overflow-hidden transform transition-all animate-scale-up"
-        role="dialog"
-        aria-labelledby="newsletter-modal-title"
-        aria-modal="true"
       >
+        <X :size="18" aria-hidden="true" />
+      </button>
+      <CheckCircle2
+        :size="40"
+        class="text-[color:var(--success-base)]"
+        aria-hidden="true"
+      />
+      <p
+        class="m-0 text-[length:var(--text-md)] leading-[var(--leading-body)] text-[color:var(--text-strong)]"
+      >
+        {{ successMessage }}
+      </p>
+    </div>
+
+    <form v-else class="flex flex-col gap-[var(--space-5)]" @submit.prevent="onSubmit">
+      <div class="flex items-start justify-between gap-[var(--space-4)]">
+        <TcDisplayHeading
+          id="newsletter-modal-title"
+          as="h2"
+          size="3xl"
+        >
+          Fique
+          <template #second>por dentro.</template>
+        </TcDisplayHeading>
         <button
           type="button"
-          @click="dismiss"
-          class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center"
+          class="inline-flex size-[var(--control-arrow)] shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-full)] border-[1.5px] border-[color:var(--border-strong)] text-[color:var(--text-strong)] transition-colors duration-[var(--duration-base)] hover:bg-[var(--surface-soft)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] motion-reduce:transition-none"
           aria-label="Fechar"
+          @click="dismiss"
         >
-          <X :size="18" />
+          <X :size="18" aria-hidden="true" />
         </button>
-
-        <div v-if="successMessage" class="text-center py-6 space-y-3">
-          <CheckCircle2 :size="40" class="mx-auto text-green-500" />
-          <p class="text-sm text-gray-700 leading-relaxed">{{ successMessage }}</p>
-        </div>
-
-        <form v-else class="space-y-5" @submit.prevent="onSubmit">
-          <div class="text-center pr-6">
-            <h3
-              id="newsletter-modal-title"
-              class="text-2xl font-black text-gray-900 tracking-tight"
-            >
-              Fique por dentro
-            </h3>
-            <p class="text-xs text-gray-500 mt-2 leading-relaxed">
-              Receba notícias do Grupo Ceres Investimentos e atualizações de
-              mercado no seu WhatsApp.
-            </p>
-          </div>
-
-          <div class="space-y-3">
-            <div>
-              <label for="newsletter-name" class="sr-only">Nome</label>
-              <input
-                id="newsletter-name"
-                v-model="name"
-                type="text"
-                autocomplete="name"
-                placeholder="Seu nome"
-                required
-                maxlength="255"
-                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gci focus:ring-2 focus:ring-gci/20 outline-none text-sm"
-              />
-            </div>
-            <div>
-              <label for="newsletter-phone" class="sr-only">Telefone</label>
-              <input
-                id="newsletter-phone"
-                :value="phone"
-                type="tel"
-                autocomplete="tel"
-                placeholder="(00) 00000-0000"
-                required
-                inputmode="numeric"
-                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gci focus:ring-2 focus:ring-gci/20 outline-none text-sm"
-                @input="onPhoneInput"
-              />
-            </div>
-          </div>
-
-          <label
-            class="flex gap-2.5 items-start text-left cursor-pointer group"
-          >
-            <input
-              v-model="consent"
-              type="checkbox"
-              required
-              class="mt-0.5 shrink-0 rounded border-gray-300 text-gci focus:ring-gci"
-            />
-            <span class="text-[10px] text-gray-500 leading-relaxed group-hover:text-gray-600">
-              {{ NEWSLETTER_CONSENT_TEXT }}
-            </span>
-          </label>
-
-          <!-- Honeypot anti-bot -->
-          <input
-            v-model="honeypot"
-            type="text"
-            name="website"
-            tabindex="-1"
-            autocomplete="off"
-            class="absolute opacity-0 pointer-events-none h-0 w-0"
-            aria-hidden="true"
-          />
-
-          <p v-if="errorMessage" class="text-xs text-red-600 text-center">
-            {{ errorMessage }}
-          </p>
-
-          <button
-            type="submit"
-            :disabled="isSubmitting || !consent"
-            class="w-full bg-gci hover:bg-gci-hover disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 px-6 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] disabled:active:scale-100"
-          >
-            <Loader2 v-if="isSubmitting" :size="18" class="animate-spin" />
-            {{ isSubmitting ? "Enviando..." : "Quero receber novidades" }}
-          </button>
-
-          <button
-            type="button"
-            class="w-full text-[11px] text-gray-400 hover:text-gray-600 font-semibold"
-            @click="dismiss"
-          >
-            Agora não
-          </button>
-        </form>
       </div>
-    </div>
-  </Transition>
+
+      <p
+        class="m-0 text-[length:var(--text-base)] leading-[var(--leading-body)] text-[color:var(--text-muted)]"
+      >
+        Receba notícias do Grupo Ceres Investimentos e atualizações de
+        mercado no seu WhatsApp.
+      </p>
+
+      <TcTextField
+        id="newsletter-name"
+        v-model="name"
+        label="Nome"
+        type="text"
+        autocomplete="name"
+        placeholder="Seu nome"
+        required
+        :maxlength="255"
+      />
+      <TcTextField
+        id="newsletter-phone"
+        :model-value="phone"
+        label="Telefone"
+        type="tel"
+        autocomplete="tel"
+        placeholder="(00) 00000-0000"
+        inputmode="numeric"
+        required
+        @input="onPhoneInput"
+      />
+
+      <p class="m-0 text-[length:var(--text-xs)] text-[color:var(--text-muted)]">
+        * campo obrigatório
+      </p>
+
+      <TcCheckbox id="newsletter-consent" v-model="consent">
+        {{ NEWSLETTER_CONSENT_TEXT }}
+      </TcCheckbox>
+
+      <!-- Honeypot anti-bot -->
+      <input
+        v-model="honeypot"
+        type="text"
+        name="website"
+        tabindex="-1"
+        autocomplete="off"
+        class="absolute opacity-0 pointer-events-none h-0 w-0"
+        aria-hidden="true"
+      />
+
+      <p
+        v-if="errorMessage"
+        role="alert"
+        class="m-0 flex items-center gap-[var(--space-2)] text-[length:var(--text-xs)] text-[color:var(--danger-dark)]"
+      >
+        <AlertCircle class="size-[14px] shrink-0" aria-hidden="true" />
+        {{ errorMessage }}
+      </p>
+
+      <TcButton
+        variant="primary"
+        arrow
+        type="submit"
+        class="w-full"
+        :loading="isSubmitting"
+        :disabled="isSubmitting || !consent"
+      >
+        {{ isSubmitting ? "Enviando..." : "Quero receber novidades" }}
+      </TcButton>
+
+      <button
+        type="button"
+        class="h-[var(--control-arrow)] cursor-pointer rounded-[var(--radius-full)] text-[length:var(--text-sm)] font-[number:var(--weight-bold)] text-[color:var(--text-link)] transition-colors duration-[var(--duration-base)] hover:text-[color:var(--text-link-hover)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] motion-reduce:transition-none"
+        @click="dismiss"
+      >
+        Agora não
+      </button>
+    </form>
+  </TcDialog>
 </template>
-
-<style scoped>
-.fade-modal-enter-active,
-.fade-modal-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-modal-enter-from,
-.fade-modal-leave-to {
-  opacity: 0;
-}
-
-@keyframes scaleUp {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-scale-up {
-  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-</style>
