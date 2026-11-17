@@ -1,19 +1,21 @@
 import { onMounted, ref, type UnwrapNestedRefs } from 'vue';
-import { ANTICIPATION_LOCKED_NOTICE, getServiceLockedNotice } from '@/constants/dashboardMessages';
 import { DESKTOP_BREAKPOINT_PX } from '@/constants/dashboardNav';
-import { LOCKED_NOTICE_MS, PORTAL_UNLOCKED_TOAST_MS } from '@/constants/dashboardTimings';
-import type { DashboardNavItem, DashboardTab, PendingToastSource } from '@/types/dashboard';
+import { PORTAL_UNLOCKED_TOAST_MS } from '@/constants/dashboardTimings';
+import type { DashboardNavItem, DashboardTab } from '@/types/dashboard';
 
-export interface LockedNotice {
-  message: string;
-  offerCreditAction: boolean;
+interface UseDashboardNavigationParams {
+  /** Abre a solicitação de operação (opcionalmente já com o serviço escolhido). */
+  openOperationRequest: (serviceName?: string) => void;
 }
 
-/** Aba ativa, sidebar e avisos. `isVerified` indica que o limite de crédito já foi liberado. */
-export function useDashboardNavigation() {
+/**
+ * Aba ativa, sidebar e conclusão do "Compl. Cadastro".
+ * O portal já nasce liberado para operar: nenhuma aba é bloqueada e `isVerified` apenas indica
+ * que o checklist de "Compl. Cadastro" foi concluído.
+ */
+export function useDashboardNavigation({ openOperationRequest }: UseDashboardNavigationParams) {
   const isVerified = ref(false);
   const activeTab = ref<DashboardTab>('home');
-  const lockedNotice = ref<LockedNotice | null>(null);
   const portalUnlockedToast = ref(false);
   const isSidebarOpen = ref(false);
 
@@ -27,35 +29,17 @@ export function useDashboardNavigation() {
     activeTab.value = tab;
   };
 
-  const showLockedNotice = (message: string, offerCreditAction = false) => {
-    lockedNotice.value = { message, offerCreditAction };
-    setTimeout(() => (lockedNotice.value = null), LOCKED_NOTICE_MS);
-  };
-
-  const dismissLockedNotice = () => {
-    lockedNotice.value = null;
-  };
-
   const handleSelectNavItem = (item: DashboardNavItem) => {
     activeTab.value = item.id;
     if (window.innerWidth < DESKTOP_BREAKPOINT_PX) isSidebarOpen.value = false;
   };
 
-  const startCreditAnalysis = () => {
-    lockedNotice.value = null;
-    activeTab.value = 'documentos';
-    if (window.innerWidth < DESKTOP_BREAKPOINT_PX) isSidebarOpen.value = false;
-  };
-
   const handleOpenOperationRequest = (serviceName: string) => {
-    if (isVerified.value) return;
-    showLockedNotice(getServiceLockedNotice(serviceName), true);
+    openOperationRequest(serviceName);
   };
 
-  const onAnticipateClick = (_source: PendingToastSource) => {
-    if (!isVerified.value) {
-      showLockedNotice(ANTICIPATION_LOCKED_NOTICE);
-    }
+  const onAnticipateClick = () => {
+    openOperationRequest();
   };
 
   const handleCompleteVerification = () => {
@@ -74,18 +58,15 @@ export function useDashboardNavigation() {
     isVerified,
     activeTab,
     setActiveTab,
-    lockedNotice,
-    dismissLockedNotice,
     portalUnlockedToast,
     isSidebarOpen,
     handleSelectNavItem,
     handleOpenOperationRequest,
     onAnticipateClick,
-    startCreditAnalysis,
     handleCompleteVerification,
     handleResetVerification,
   };
 }
 
-/** Estado desembrulhado (use `reactive(useDashboardNavigation())` para repassar aos componentes filhos). */
+/** Estado desembrulhado (use `reactive(useDashboardNavigation(...))` para repassar aos componentes filhos). */
 export type DashboardNavigation = UnwrapNestedRefs<ReturnType<typeof useDashboardNavigation>>;

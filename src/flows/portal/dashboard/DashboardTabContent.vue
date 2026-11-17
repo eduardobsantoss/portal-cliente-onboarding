@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LIMIT_AVAILABLE_LABEL, LIMIT_EMPTY_LABEL } from '@/constants/analysis';
+import { LIMIT_AVAILABLE_LABEL } from '@/constants/analysis';
 import DocumentVerification from '@/flows/portal/complete-cadastro/DocumentVerification.vue';
 import CarteiraTab from '@/flows/portal/dashboard/carteira/CarteiraTab.vue';
 import HomeTab from '@/flows/portal/dashboard/home/HomeTab.vue';
@@ -12,7 +12,7 @@ import GeralTab from '@/flows/portal/dashboard/minhas-informacoes/GeralTab.vue';
 import OperacoesTab from '@/flows/portal/dashboard/operacoes/OperacoesTab.vue';
 import type { PortalOperation } from '@/types/portalOperation';
 
-/** Conteúdo da aba ativa; qualquer aba desconhecida cai na Análise de Crédito. */
+/** Conteúdo da aba ativa; qualquer aba desconhecida cai em "Compl. Cadastro". */
 const props = defineProps<{
   nav: DashboardNavigation;
   ops: OperationsState;
@@ -37,18 +37,16 @@ const handleOpenOperation = (op: PortalOperation) => {
     :operations="ops.operations"
     :has-pending-confirmations="carteira.hasPendingConfirmations"
     :is-waiting-validation="resolveScreen.isWaitingValidation"
-    :is-limit-released="nav.isVerified"
     :active-pending-toast-source="overlays.activePendingToastSource"
     @navigate="nav.setActiveTab"
     @open-operation="handleOpenOperation"
     @anticipate="nav.onAnticipateClick"
-    @start-credit-analysis="nav.startCreditAnalysis"
     @dismiss-pending-toast="overlays.activePendingToastSource = null"
     @go-to-carteira="emit('goToCarteira')"
   />
   <GeralTab
     v-else-if="nav.activeTab === 'geral'"
-    :limit-label="nav.isVerified ? LIMIT_AVAILABLE_LABEL : LIMIT_EMPTY_LABEL"
+    :limit-label="LIMIT_AVAILABLE_LABEL"
     @select-service="nav.handleOpenOperationRequest"
   />
   <CarteiraTab

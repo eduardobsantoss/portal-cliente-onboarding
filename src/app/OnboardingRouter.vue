@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import LandingPage from '@/flows/onboarding/landing/LandingPage.vue';
 import InitialPhoneVerification from '@/flows/onboarding/sms/InitialPhoneVerification.vue';
 import CreatePasswordScreen from '@/flows/onboarding/senha/CreatePasswordScreen.vue';
@@ -8,17 +9,23 @@ import ComplementaryDataForm from '@/flows/onboarding/dados-complementares/Compl
 import OnboardingDocumentUpload from '@/flows/onboarding/documentos/OnboardingDocumentUpload.vue';
 import AccountOpeningSignature from '@/flows/onboarding/assinatura/AccountOpeningSignature.vue';
 import AnalysisPending from '@/flows/onboarding/analise/AnalysisPending.vue';
-import AccountCreated from '@/flows/onboarding/conta-criada/AccountCreated.vue';
+// import AccountCreated from '@/flows/onboarding/conta-criada/AccountCreated.vue'; // etapa desativada por enquanto
 import RejectionNotice from '@/flows/onboarding/analise/RejectionNotice.vue';
 import Dashboard from '@/flows/portal/dashboard/Dashboard.vue';
 import { SMS_DEFAULT_MASKED_PHONE } from '@/constants/sms';
 import { MOCK_COMPANY_CNPJ, MOCK_COMPANY_NAME } from '@/mocks/onboardingCompany';
 import { buildSigners } from '@/utils/buildSigners';
+import { maskPhoneForDisplay } from '@/utils/registrationMasks';
 import type { OnboardingFlow } from '@/hooks/useOnboardingFlow';
 
 const props = defineProps<{
   flow: OnboardingFlow;
 }>();
+
+// Telefone informado no formulário da landing (mascarado); usa o padrão se o fluxo não passou por ela.
+const registeredMaskedPhone = computed(
+  () => maskPhoneForDisplay(props.flow.registrationLead?.phone ?? '') ?? SMS_DEFAULT_MASKED_PHONE,
+);
 
 // Reenvio após ajuste volta direto para a análise, sem reassinar.
 const handleSubmitDocs = () => {
@@ -29,17 +36,17 @@ const handleSubmitDocs = () => {
 </script>
 
 <template>
-  <!-- Step 0: Landing page do GCI (CTA de cadastro segue para a confirmação do celular) -->
+  <!-- Step 0: Landing page do GCI (CTAs de cadastro abrem o formulário e seguem para a confirmação do celular) -->
   <LandingPage
     v-if="flow.currentView === 'landing'"
-    @register="flow.goTo('phone_verification')"
+    @register="flow.submitRegistration"
     @login="flow.goTo('login')"
   />
 
   <!-- Step 1: Confirmação do celular por SMS -->
   <InitialPhoneVerification
     v-else-if="flow.currentView === 'phone_verification'"
-    :masked-phone="SMS_DEFAULT_MASKED_PHONE"
+    :masked-phone="registeredMaskedPhone"
     @confirmed="flow.goTo('create_password')"
     @go-to-login="flow.goTo('login')"
   />
@@ -105,17 +112,23 @@ const handleSubmitDocs = () => {
   <!-- Step 8: Intermediate Pending Status (Analysis in progress, email alert, safe tab close) -->
   <AnalysisPending
     v-else-if="flow.currentView === 'analysis_pending'"
-    @simulate-approve="flow.goTo('account_created')"
+    @simulate-approve="flow.goTo('dashboard')"
     @simulate-reject="flow.goTo('rejection_notice')"
     @simulate-adjustment="flow.openDocumentAdjustment"
     @back-to-login="flow.goTo('login')"
   />
 
-  <!-- Step 9: Account Created (Agency, Account number, GCI details) -->
+  <!--
+    Step 9: "Sua Conta Digital GCI está aberta" (Agência, número da conta, detalhes GCI).
+    Desativado por enquanto: a aprovação segue direto para o Dashboard.
+    Para reativar: descomente este bloco e o import de AccountCreated, e volte o
+    @simulate-approve da análise para flow.goTo('account_created').
+
   <AccountCreated
     v-else-if="flow.currentView === 'account_created'"
     @continue-to-complete-registration="flow.goTo('dashboard')"
   />
+  -->
 
   <!-- Rejection Notice Screen -->
   <RejectionNotice

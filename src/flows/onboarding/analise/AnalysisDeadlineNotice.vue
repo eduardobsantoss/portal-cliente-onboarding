@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { Clock } from 'lucide-vue-next';
 import { MOCK_USER_EMAIL } from '@/mocks/onboardingUser';
 </script>
 
 <template>
-  <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
-    <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
-      <Clock :size="16" class="text-agro-orange" />
-      <span>Prazo de Análise Cadastral: <strong>até 5 dias úteis</strong></span>
-    </div>
-    <p class="text-xs text-slate-600 leading-relaxed">
+  <!-- Mesma estrutura do texto de "Validando documentação": título + descrição centralizados -->
+  <div class="space-y-2 text-center">
+    <h3 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+      Prazo de Análise Cadastral: até 5 dias úteis
+    </h3>
+    <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed max-w-md mx-auto">
       Agradecemos por escolher a Ceres para abrir a sua conta. Dentro deste prazo, enviaremos a devolutiva sobre a abertura da sua conta no e-mail <strong class="text-slate-900 font-bold">{{ MOCK_USER_EMAIL }}</strong>.
     </p>
   </div>

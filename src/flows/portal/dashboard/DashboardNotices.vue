@@ -5,7 +5,6 @@ import type { ResolveScreenState } from '@/flows/portal/dashboard/hooks/useResol
 import type { CanhotoUploadState } from '@/flows/portal/dashboard/hooks/useCanhotoUpload';
 import type { LinkSelectionState } from '@/flows/portal/dashboard/hooks/useLinkSelection';
 import ResolveScreenModal from '@/flows/portal/dashboard/modais/ResolveScreenModal/ResolveScreenModal.vue';
-import LockedNoticeToast from '@/flows/portal/dashboard/toasts/LockedNoticeToast.vue';
 import PortalUnlockedToast from '@/flows/portal/dashboard/toasts/PortalUnlockedToast.vue';
 import SuccessApprovalToast from '@/flows/portal/dashboard/toasts/SuccessApprovalToast.vue';
 import ValidationWaitingToast from '@/flows/portal/dashboard/toasts/ValidationWaitingToast.vue';
@@ -25,14 +24,6 @@ defineProps<{
   <!-- Unlocked Portal Toast -->
   <AnimatePresence>
     <PortalUnlockedToast v-if="nav.portalUnlockedToast" key="portal-unlocked" @close="nav.portalUnlockedToast = false" />
-    <LockedNoticeToast
-      v-if="nav.lockedNotice"
-      key="locked-notice"
-      :message="nav.lockedNotice.message"
-      :action-label="nav.lockedNotice.offerCreditAction ? 'Liberar meu limite' : undefined"
-      @close="nav.dismissLockedNotice"
-      @action="nav.startCreditAnalysis"
-    />
   </AnimatePresence>
 
   <!-- Welcome Section -->

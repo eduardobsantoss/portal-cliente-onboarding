@@ -10,8 +10,8 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 1. **Jornada de Onboarding & Abertura da Conta Digital** (Passos 1 a 6):
    - Desde a autenticação inicial até a liberação do número de agência e conta corrente digital GCI.
-2. **Portal do Cliente & Análise de Crédito (Middle Corporate e Simples/PME)**:
-   - Após a abertura da conta, o cliente entra na Home com o menu liberado. A antecipação permanece em R$ 0,00 até a conclusão da Análise de Crédito (checklist documental), que libera R$ 2.000.000,00.
+2. **Portal do Cliente & "Compl. Cadastro" (Middle Corporate e Simples/PME)**:
+   - Após a abertura da conta, o cliente entra na Home com o menu liberado e o limite de R$ 2.000.000,00 já disponível para antecipação. O checklist documental ("Compl. Cadastro") é feito dentro do portal, sem travar a operação.
 
 ---
 
@@ -20,6 +20,9 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 ```
 [Landing GCI] ──("Acesse sua conta")──► [Login]
    │ ("Conheça o Portal" / "Registre-se")
+   ▼
+[Formulário "Abra sua conta" (e-mail, CPF/CNPJ, telefone)] ──("X")──► [Landing GCI]
+   │ ("Concluir Cadastro")
    ▼
 [Confirmação do celular (SMS)] ──► [Criação de senha]
    │
@@ -49,9 +52,9 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
    │ └─ CTA: "Acessar meu portal"
    ▼
 [Dashboard do Cliente / Portal GCI — Home]
-   ├─ Menu liberado (Home, Minhas Informações, Carteira, Operações, Análise de Crédito)
-   ├─ Limite em R$ 0,00 e chamadas "Liberar meu limite" / "Iniciar análise de crédito"
-   └─ Aba "Análise de Crédito" (Documentos e Checklist Oficial GCI)
+   ├─ Menu liberado (Home, Minhas Informações, Carteira, Operações, Compl. Cadastro)
+   ├─ Limite de R$ 2.000.000,00 disponível, "Antecipar Agora" abre a Solicitação de Operação
+   └─ Aba "Compl. Cadastro" (Documentos e Checklist Oficial GCI)
         ├─ Seção 3: Documentos Cadastrais da Empresa
         ├─ Seção 4: Demonstrativos Financeiros & Contábeis (Regra Simples Nacional)
         ├─ Seção 5: Crédito & Relacionamento Bancário
@@ -65,7 +68,7 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 ### Etapa 0: Landing Page GCI (`LandingPage.vue`)
 - **Objetivo**: Primeira tela da jornada. Apresenta o Portal do Cliente GCI (Hero, Soluções, Benefícios, Prova Social, Como Funciona, CTA final e Rodapé) antes de qualquer passo de cadastro. Origem: projeto `landing-page-gci`, portado para `src/flows/onboarding/landing/`.
 - **Navegação**:
-  - CTAs de cadastro ("Conheça o Portal", "Registre-se", "Registre-se agora", "Conheça nossas soluções") avançam para **Confirmação do celular** (`phone_verification`).
+  - CTAs de cadastro ("Conheça o Portal", "Registre-se", "Registre-se agora", "Conheça nossas soluções") abrem o formulário **"Abra sua conta"** (`RegistrationModal.vue`, tela cheia): alternância PJ (CNPJ) / PF (CPF), e-mail, documento e telefone/WhatsApp, com máscaras e validação (e-mail válido, 11/14 dígitos, telefone com DDD). O "X" fecha e volta à landing. Ao **Concluir Cadastro**, os dados são guardados em `registrationLead` e o fluxo avança para **Confirmação do celular** (`phone_verification`), que exibe o telefone informado mascarado.
   - "Acesse sua conta" / "Acesse o Portal do Cliente" levam ao **Login** (`login`).
 - **Newsletter**: o modal de newsletter (`NewsletterModal.vue`) abre sozinho após 1,5 s para quem ainda não se inscreveu (controle via `localStorage`, chave `gci_newsletter_subscribed`) e envia o lead para a Firebase Function `submitNewsletterLead`.
 - **Configuração**: `VITE_GA_MEASUREMENT_ID` (GA4), `VITE_NEWSLETTER_LEAD_URL` (endpoint do lead; em dev o vite faz proxy de `/api/newsletter-lead`). Veja `.env.example`.
@@ -149,6 +152,7 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 ---
 
 ### Etapa 6: Abertura da Conta Concluída (`AccountCreated.vue`)
+- **Status**: etapa **desativada por enquanto** (comentada em `OnboardingRouter.vue`). A aprovação na análise segue direto para o Dashboard. O componente foi mantido para reativação futura.
 - **Objetivo**: Entrega das credenciais bancárias da Conta Digital GCI.
 - **Identificadores Entregues**:
   - **Instituição Financeira**: Banco 414 - GCI SCD
@@ -164,16 +168,15 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 
 ---
 
-### Etapa 7: Dashboard e Checklist da Análise de Crédito (`Dashboard.vue` e `DocumentVerification.vue`)
+### Etapa 7: Dashboard e Checklist "Compl. Cadastro" (`Dashboard.vue` e `DocumentVerification.vue`)
 
 #### Comportamento das Abas do Dashboard:
-- Ao ingressar no Dashboard pela primeira vez, o cliente cai na **Home**, com a conta aberta e o limite ainda não liberado.
-- **Menu liberado**:
-  - *Home*, *Minhas Informações*, *Carteira* e *Operações* abrem normalmente. Carteira e operações seguem vazias e os valores de limite aparecem como R$ 0,00.
-  - A Home troca o texto de boas-vindas e os botões de antecipação por chamadas para a análise de crédito ("Liberar meu limite" e "Iniciar análise de crédito").
-  - Serviços de crédito, enquanto o limite não existe, exibem o aviso de que a solicitação fica disponível após a análise, com o atalho "Liberar meu limite".
-- **Aba da análise**:
-  - **"Análise de Crédito"** (Documentos e Checklist Oficial GCI), com o selo "Novo" até o limite ser liberado.
+- Ao ingressar no Dashboard pela primeira vez, o cliente cai na **Home**, já com o limite disponível (R$ 2.000.000,00) e apto a operar.
+- **Menu liberado** (nenhuma aba é bloqueada):
+  - *Home*, *Minhas Informações*, *Carteira*, *Operações* e *Compl. Cadastro* abrem normalmente.
+  - Na Home, "Antecipar Agora" e "Fazer Antecipação" abrem a **Solicitação de Operação**; em *Minhas Informações*, o serviço "Desconto de Duplicata" também.
+- **Aba "Compl. Cadastro"**:
+  - Documentos e Checklist Oficial GCI. É opcional para operar: ao concluí-lo, o cliente volta à Home com o aviso de cadastro concluído.
 
 #### O Checklist Documental Oficial da GCI (`DocumentVerification.vue`):
 Construído rigorosamente sobre as especificações do documento oficial da instituição, dividido em:
@@ -221,9 +224,9 @@ Auditoria completa para sócios, representantes, avalistas e cônjuges:
 ---
 
 ## 4. Liberação do Portal e Próximos Passos Operacionais
-Quando todos os documentos da Análise de Crédito são submetidos e validados:
-1. O status da empresa muda para **Verificado / Limite Liberado** (R$ 2.000.000,00 disponíveis para antecipação).
-2. O portal permanece com o menu liberado e passa a exibir o limite:
+Quando todos os documentos do "Compl. Cadastro" são submetidos e validados:
+1. O status do cadastro muda para **Verificado** e o cliente volta à Home com o aviso de cadastro concluído.
+2. O portal já estava liberado para operar e continua exibindo o limite:
    - **Home**: Resumo financeiro, R$ 2.000.000,00 disponíveis e os botões de antecipação.
    - **Carteira**: Gestão de títulos, confirmações de entrega, canhoto digital e cessões de recebíveis.
    - **Operações**: Histórico de esteira de crédito, contratações de CPR, Capital de Giro e Duplicatas.

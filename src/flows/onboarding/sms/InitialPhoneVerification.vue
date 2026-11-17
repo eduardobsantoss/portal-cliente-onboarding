@@ -58,7 +58,7 @@ const handleVerified = () => {
           Confirme seu celular
         </h1>
         <p class="text-xs sm:text-sm text-white/80 font-medium mt-2 leading-relaxed">
-          Para sua segurança, enviamos um código de confirmação por SMS para o número informado no seu cadastro inicial via WhatsApp.
+          Para sua segurança, enviamos um código de confirmação por SMS para o número informado no formulário de cadastro.
         </p>
       </div>
 
