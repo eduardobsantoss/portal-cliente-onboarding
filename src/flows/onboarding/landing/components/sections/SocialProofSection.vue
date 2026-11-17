@@ -3,6 +3,9 @@ import TcPhotoSection from '@/components/theme/TcPhotoSection.vue';
 import TcEyebrow from '@/components/theme/TcEyebrow.vue';
 import TcDisplayHeading from '@/components/theme/TcDisplayHeading.vue';
 import StatCard from '../ui/StatCard.vue';
+import { publicAsset } from '@/utils/publicAsset';
+
+const proofPhoto = publicAsset('assets/refactor/campo-soja.jpeg');
 
 const stats = [
   { label: 'ANOS DE MERCADO', value: '7+' },
@@ -13,7 +16,7 @@ const stats = [
 
 <template>
   <TcPhotoSection
-    src="/assets/refactor/campo-soja.jpeg"
+    :src="proofPhoto"
     class="px-[var(--section-pad-x)] py-[var(--section-pad-y)] max-md:px-[var(--space-6)]"
   >
     <div v-fade-in class="max-w-[760px]">

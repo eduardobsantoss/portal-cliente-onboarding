@@ -4,6 +4,9 @@ import TcPhotoSection from "@/components/theme/TcPhotoSection.vue";
 import TcEyebrow from "@/components/theme/TcEyebrow.vue";
 import TcDisplayHeading from "@/components/theme/TcDisplayHeading.vue";
 import TcButton from "@/components/theme/TcButton.vue";
+import { publicAsset } from "@/utils/publicAsset";
+
+const heroPhoto = publicAsset("assets/refactor/tractor-right-copy.jpg");
 
 interface HeroSectionProps {
   onOpenRegistration: () => void;
@@ -21,7 +24,7 @@ onMounted(() => {
 
 <template>
   <TcPhotoSection
-    src="/assets/refactor/tractor-right-copy.jpg"
+    :src="heroPhoto"
     position="center 45%"
     min-height="calc(100vh - 40px)"
     top-scrim

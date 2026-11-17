@@ -12,6 +12,7 @@ import TcTextField from '@/components/theme/TcTextField.vue';
 import TcButton from '@/components/theme/TcButton.vue';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { maskDocument, maskPhone, onlyDigits } from '@/utils/registrationMasks';
+import { publicAsset } from '@/utils/publicAsset';
 import type { RegistrationDocumentType, RegistrationLead } from '@/types/registration';
 
 /**
@@ -47,8 +48,8 @@ const documentTypeOptions = [
 
 // Véu vertical do painel de foto (valores do spec do Prompt 04); o background-image precisa
 // trazer a foto junto, porque este style substitui o do TcPhotoSection.
-const photoBackground =
-  'linear-gradient(180deg, rgba(8, 60, 74, 0.72) 0%, rgba(8, 60, 74, 0.9) 60%, rgba(8, 60, 74, 0.95) 100%), url("/assets/refactor/campo-soja.jpeg")';
+const photoSrc = publicAsset('assets/refactor/campo-soja.jpeg');
+const photoBackground = `linear-gradient(180deg, rgba(8, 60, 74, 0.72) 0%, rgba(8, 60, 74, 0.9) 60%, rgba(8, 60, 74, 0.95) 100%), url("${photoSrc}")`;
 
 const selectType = (type: RegistrationDocumentType) => {
   documentType.value = type;
@@ -118,7 +119,7 @@ const handleSubmit = () => {
     <div class="grid flex-1 grid-cols-1 gap-[var(--page-gutter)] lg:grid-cols-2">
       <!-- Painel de foto -->
       <TcPhotoSection
-        src="/assets/refactor/campo-soja.jpeg"
+        :src="photoSrc"
         :style="{ backgroundImage: photoBackground }"
         class="flex flex-col justify-between gap-[var(--space-8)] px-[var(--space-9)] pb-[var(--space-9)] pt-[var(--space-8)]"
       >

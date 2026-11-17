@@ -2,6 +2,9 @@
 import TcPhotoSection from '@/components/theme/TcPhotoSection.vue';
 import TcDisplayHeading from '@/components/theme/TcDisplayHeading.vue';
 import TcButton from '@/components/theme/TcButton.vue';
+import { publicAsset } from '@/utils/publicAsset';
+
+const ctaPhoto = publicAsset('assets/refactor/soybeans-harvesting.jpg');
 
 interface CallToActionSectionProps {
   onOpenRegistration: () => void;
@@ -13,7 +16,7 @@ const props = defineProps<CallToActionSectionProps>();
 
 <template>
   <TcPhotoSection
-    src="/assets/refactor/soybeans-harvesting.jpg"
+    :src="ctaPhoto"
     position="center 60%"
     class="px-[var(--space-12)] py-[calc(var(--space-12)*2)] max-md:px-[var(--space-6)]"
   >
