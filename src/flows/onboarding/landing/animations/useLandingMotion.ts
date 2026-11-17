@@ -10,6 +10,7 @@ import { useSmoothScroll } from './useSmoothScroll';
 import { setupHeroMotion } from './heroMotion';
 import { setupParallax } from './parallax';
 import { setupReveals, setupDrawLines } from './reveal';
+import { setupStackCards } from './stackCards';
 
 /**
  * Orquestra as animações da landing: rolagem suave (Lenis) + entradas, parallax e recortes
@@ -34,6 +35,9 @@ export function useLandingMotion(root: Ref<HTMLElement | null>): void {
 
       const flushers: Array<() => void> = [];
 
+      // A pilha muda a altura da página: precisa ser montada antes das demais, que medem posições.
+      const stopStack = setupStackCards(el);
+
       setupHeroMotion(el, { scrub: desktop });
       setupReveals(el, flushers);
 
@@ -49,6 +53,8 @@ export function useLandingMotion(root: Ref<HTMLElement | null>): void {
         end: 'max',
         onEnter: () => flushers.forEach((flush) => flush()),
       });
+
+      return stopStack;
     });
 
     stopRefresh = refreshOnAssetsReady();
