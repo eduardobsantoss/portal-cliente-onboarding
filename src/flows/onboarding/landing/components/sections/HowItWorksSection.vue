@@ -37,19 +37,27 @@ const steps = [
 <template>
   <TcSection id="como-funciona">
     <template #aside>
-      <TcEyebrow>COMO FUNCIONA</TcEyebrow>
+      <TcEyebrow data-reveal>COMO FUNCIONA</TcEyebrow>
     </template>
 
-    <TcDisplayHeading size="3xl">
+    <TcDisplayHeading size="3xl" data-reveal>
       Três passos
       <template #second>para abrir sua conta</template>
     </TcDisplayHeading>
 
-    <div class="mt-[var(--space-12)] grid gap-[var(--space-3)] md:grid-cols-3">
+    <!-- Linha de progresso: se desenha conforme a rolagem (desktop) -->
+    <div
+      aria-hidden="true"
+      class="mt-[var(--space-12)] hidden h-[2px] bg-[var(--border-subtle)] md:block"
+    >
+      <div data-draw-line class="h-full origin-left bg-[var(--surface-brand)]" />
+    </div>
+
+    <div class="mt-[var(--space-6)] grid grid-cols-[minmax(0,1fr)] gap-[var(--space-3)] md:grid-cols-3">
       <StepCard
         v-for="(step, index) in steps"
         :key="step.number"
-        v-fade-in="index * 0.1"
+        data-reveal
         :number="step.number"
         :title="step.title"
         :description="step.description"
@@ -57,7 +65,7 @@ const steps = [
       />
     </div>
 
-    <div class="mt-[var(--space-12)]">
+    <div data-reveal class="mt-[var(--space-12)]">
       <TcButton variant="primary" arrow @click="props.onOpenRegistration">
         Abra sua conta
       </TcButton>

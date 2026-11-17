@@ -72,14 +72,14 @@ const circleColorClass = computed(() =>
     :is="as"
     :type="as === 'button' ? 'button' : undefined"
     :href="as === 'a' ? href : undefined"
-    class="inline-flex cursor-pointer items-center whitespace-nowrap rounded-[var(--radius-full)] font-[number:var(--weight-semibold)] no-underline transition-colors duration-[var(--duration-base)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none"
+    class="group inline-flex cursor-pointer items-center whitespace-nowrap rounded-[var(--radius-full)] font-[number:var(--weight-semibold)] no-underline transition-colors duration-[var(--duration-base)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none"
     :class="[fillClass, heightClass, textClass, paddingClass]"
   >
     <span><slot /></span>
     <span
       v-if="arrow"
-      class="inline-flex shrink-0 items-center justify-center rounded-[var(--radius-full)]"
-      :class="[circleSizeClass, circleColorClass]"
+      class="inline-flex shrink-0 items-center justify-center rounded-[var(--radius-full)] transition-transform duration-500 ease-[var(--ease-standard)] motion-reduce:transition-none"
+      :class="[circleSizeClass, circleColorClass, loading ? '' : 'group-hover:rotate-45']"
       aria-hidden="true"
     >
       <Loader2

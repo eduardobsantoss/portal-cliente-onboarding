@@ -17,20 +17,25 @@ const props = defineProps<CallToActionSectionProps>();
 <template>
   <TcPhotoSection
     :src="ctaPhoto"
-    position="center 60%"
+    position="center 82%"
+    data-clip-reveal
     class="px-[var(--space-12)] py-[calc(var(--space-12)*2)] max-md:px-[var(--space-6)]"
   >
-    <div v-fade-in class="max-w-[760px]">
-      <TcDisplayHeading size="4xl" tone="onDark">
+    <div class="max-w-[760px]">
+      <TcDisplayHeading size="4xl" tone="onDark" data-split-reveal>
         Pronto para antecipar
         <template #second>seus recebíveis?</template>
       </TcDisplayHeading>
       <p
+        data-reveal
         class="mt-[var(--space-6)] max-w-[52ch] text-[length:var(--text-md)] leading-[var(--leading-body)] text-[color:var(--text-on-brand-muted)]"
       >
         Junte-se a centenas de empresas e produtores que já antecipam seus recebíveis com o Grupo Ceres.
       </p>
-      <div class="mt-[var(--space-10)] flex flex-wrap items-center gap-[var(--space-4)]">
+      <div
+        data-reveal
+        class="mt-[var(--space-10)] flex flex-wrap items-center gap-[var(--space-4)]"
+      >
         <TcButton variant="inverse" arrow @click="props.onOpenRegistration">
           Abra sua conta
         </TcButton>

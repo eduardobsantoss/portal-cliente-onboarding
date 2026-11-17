@@ -17,7 +17,7 @@ defineProps<StepCardProps>();
 <template>
   <TcSoftCard
     radius="lg"
-    class="flex min-h-[240px] flex-col justify-between p-[var(--space-8)]"
+    class="flex min-h-[200px] flex-col justify-between gap-[var(--space-6)] p-[var(--space-6)] outline outline-1 -outline-offset-1 outline-transparent md:min-h-[240px] md:p-[var(--space-8)] transition-[translate,outline-color] duration-[var(--duration-slow)] ease-[var(--ease-standard)] hover:-translate-y-1 hover:outline-[color:var(--border-default)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
   >
     <TcStatusLabel>{{ number }}</TcStatusLabel>
     <div>

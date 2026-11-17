@@ -17,9 +17,10 @@ const stats = [
 <template>
   <TcPhotoSection
     :src="proofPhoto"
+    data-clip-reveal
     class="px-[var(--section-pad-x)] py-[var(--section-pad-y)] max-md:px-[var(--space-6)]"
   >
-    <div v-fade-in class="max-w-[760px]">
+    <div data-reveal class="max-w-[760px]">
       <TcEyebrow tone="onDark">NOSSOS NÚMEROS</TcEyebrow>
       <TcDisplayHeading size="4xl" tone="onDark" class="mt-[var(--space-6)]">
         O grupo que o
@@ -32,11 +33,11 @@ const stats = [
       </p>
     </div>
 
-    <div class="mt-[var(--space-12)] grid gap-[var(--space-3)] md:grid-cols-3">
+    <div class="mt-[var(--space-10)] grid grid-cols-[minmax(0,1fr)] gap-[var(--space-3)] md:mt-[var(--space-12)] md:grid-cols-3">
       <StatCard
         v-for="(stat, index) in stats"
         :key="stat.label"
-        v-fade-in="index * 0.1"
+        data-reveal
         :label="stat.label"
         :value="stat.value"
       />

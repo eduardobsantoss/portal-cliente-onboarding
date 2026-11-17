@@ -49,19 +49,19 @@ const benefits = [
 <template>
   <TcSection id="beneficios">
     <template #aside>
-      <TcEyebrow>POR QUE A GCI?</TcEyebrow>
+      <TcEyebrow data-reveal>POR QUE A GCI?</TcEyebrow>
     </template>
 
-    <TcDisplayHeading size="3xl">
+    <TcDisplayHeading size="3xl" data-reveal>
       Seu dia a dia
       <template #second>sem planilha nem e-mail</template>
     </TcDisplayHeading>
 
-    <div class="mt-[var(--space-12)] grid gap-x-[var(--space-14)] md:grid-cols-2">
+    <div class="mt-[var(--space-10)] grid grid-cols-[minmax(0,1fr)] gap-x-[var(--space-14)] md:mt-[var(--space-12)] md:grid-cols-2">
       <BenefitCard
         v-for="(benefit, index) in benefits"
         :key="benefit.title"
-        v-fade-in="index * 0.05"
+        data-reveal
         :title="benefit.title"
         :description="benefit.description"
         :icon="benefit.icon"

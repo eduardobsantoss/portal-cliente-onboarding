@@ -19,7 +19,7 @@ const emit = defineEmits<{
     <label
       v-for="option in options"
       :key="option.value"
-      class="relative flex h-[var(--control-nav)] flex-1 cursor-pointer items-center justify-center whitespace-nowrap rounded-[var(--radius-full)] px-[var(--space-4)] text-[length:var(--text-sm)] font-[number:var(--weight-semibold)] text-[color:var(--text-strong)] transition-colors duration-[var(--duration-base)] has-[:checked]:bg-[var(--surface-brand)] has-[:checked]:font-[number:var(--weight-bold)] has-[:checked]:text-[color:var(--text-on-brand)] has-[:focus-visible]:shadow-[var(--focus-ring)] motion-reduce:transition-none"
+      class="relative flex h-[var(--control-nav)] min-w-0 flex-1 cursor-pointer items-center justify-center rounded-[var(--radius-full)] px-[var(--space-2)] text-center text-[length:var(--text-sm)] leading-[1.2] sm:whitespace-nowrap sm:px-[var(--space-4)] font-[number:var(--weight-semibold)] text-[color:var(--text-strong)] transition-colors duration-[var(--duration-base)] has-[:checked]:bg-[var(--surface-brand)] has-[:checked]:font-[number:var(--weight-bold)] has-[:checked]:text-[color:var(--text-on-brand)] has-[:focus-visible]:shadow-[var(--focus-ring)] motion-reduce:transition-none"
     >
       <input
         type="radio"

@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-vue-next';
 import { cn } from '@/utils/cn';
 import Logo from './Logo.vue';
 import TcButton from '@/components/theme/TcButton.vue';
+import { smoothScrollTo } from '../../animations/useSmoothScroll';
 
 interface NavbarProps {
   onOpenRegistration: () => void;
@@ -33,17 +34,16 @@ onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
 
+const NAVBAR_OFFSET = 92;
+
 const scrollToSection = (sectionId: string) => {
   const section = document.getElementById(sectionId);
   if (!section) return;
-
-  const navbarOffset = 92;
-  const top = section.getBoundingClientRect().top + window.scrollY - navbarOffset;
-  window.scrollTo({ top, behavior: 'smooth' });
+  smoothScrollTo(section, -NAVBAR_OFFSET);
 };
 
 const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  smoothScrollTo(0);
   isMobileMenuOpen.value = false;
 };
 </script>
@@ -52,28 +52,48 @@ const scrollToTop = () => {
   <nav
     aria-label="Principal"
     :class="cn(
-      'fixed inset-x-0 top-0 z-50 transition-colors duration-[var(--duration-slow)] motion-reduce:transition-none',
+      'fixed inset-x-0 top-0 z-50 transition-[padding] duration-[var(--duration-base)] ease-[var(--ease-standard)] motion-reduce:transition-none',
       isScrolled
-        ? 'border-b border-[color:var(--border-subtle)] bg-[var(--surface-page)] px-[var(--section-pad-x)] py-[var(--space-3)] max-md:px-[var(--page-gutter)]'
-        : 'bg-transparent px-[calc(var(--page-gutter)+var(--section-pad-x))] pt-[calc(var(--page-gutter)+var(--space-6))] max-md:px-[calc(var(--page-gutter)+var(--space-5))]'
+        ? 'px-[var(--section-pad-x)] py-[var(--space-3)] max-md:px-[var(--page-gutter)]'
+        : 'px-[calc(var(--page-gutter)+var(--section-pad-x))] pb-[var(--space-3)] pt-[calc(var(--page-gutter)+var(--space-6))] max-md:px-[calc(var(--page-gutter)+var(--space-5))]'
     )"
   >
-    <div class="relative flex w-full items-center justify-between">
-      <div class="flex items-center">
+    <!-- Fundo branco da barra: aparece por opacidade, no mesmo tempo dos textos, sem "piscar" -->
+    <div
+      aria-hidden="true"
+      :class="cn(
+        'pointer-events-none absolute inset-0 -z-10 border-b border-[color:var(--border-subtle)] bg-[var(--surface-page)] transition-opacity duration-[var(--duration-base)] motion-reduce:transition-none',
+        isScrolled ? 'opacity-100' : 'opacity-0'
+      )"
+    />
+    <div class="flex w-full items-center justify-between gap-[var(--space-4)]">
+      <div data-nav-item class="flex shrink-0 items-center">
         <button
           type="button"
           @click="scrollToTop"
           class="rounded-[var(--radius-sm)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
           aria-label="Voltar ao topo"
         >
-          <Logo :variant="isScrolled ? 'light' : 'dark'" />
+          <!-- As duas versões ficam sempre no DOM (já carregadas) e trocam por opacidade -->
+          <span class="grid items-center">
+            <Logo
+              variant="dark"
+              :class-name="cn('col-start-1 row-start-1 transition-opacity duration-[var(--duration-base)] motion-reduce:transition-none', isScrolled && 'opacity-0')"
+            />
+            <Logo
+              variant="light"
+              aria-hidden="true"
+              :class-name="cn('col-start-1 row-start-1 transition-opacity duration-[var(--duration-base)] motion-reduce:transition-none', !isScrolled && 'opacity-0')"
+            />
+          </span>
         </button>
       </div>
 
       <!-- Links: grupo "vidro" sobre a foto; azuis, sem moldura, na barra branca -->
+      <div data-nav-item class="hidden min-w-0 flex-1 justify-center xl:flex">
       <div
         :class="cn(
-          'absolute left-1/2 hidden -translate-x-1/2 items-center gap-[var(--space-1)] rounded-[var(--radius-full)] border p-[var(--space-1)] lg:flex',
+          'flex items-center gap-[var(--space-1)] rounded-[var(--radius-full)] border p-[var(--space-1)] transition-colors duration-[var(--duration-base)] motion-reduce:transition-none',
           isScrolled
             ? 'border-transparent bg-transparent'
             : 'border-[color:var(--glass-border)] bg-[var(--glass-bg)]'
@@ -94,9 +114,10 @@ const scrollToTop = () => {
           {{ item.label }}
         </button>
       </div>
+      </div>
 
       <!-- Ações (desktop) — destaque em Abra sua conta, que fica por último -->
-      <div class="hidden items-center gap-[var(--space-3)] lg:flex">
+      <div data-nav-item class="hidden shrink-0 items-center gap-[var(--space-3)] xl:flex">
         <TcButton
           size="nav"
           :variant="isScrolled ? 'secondary' : 'glass'"
@@ -116,7 +137,7 @@ const scrollToTop = () => {
       <button
         type="button"
         :class="cn(
-          'inline-flex size-[var(--control-nav)] cursor-pointer items-center justify-center rounded-[var(--radius-full)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] lg:hidden',
+          'inline-flex size-[var(--control-nav)] cursor-pointer items-center justify-center rounded-[var(--radius-full)] transition-colors duration-[var(--duration-base)] motion-reduce:transition-none focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] xl:hidden',
           isScrolled ? 'text-[color:var(--text-strong)]' : 'text-[color:var(--text-on-brand)]'
         )"
         :aria-label="isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'"
@@ -131,7 +152,7 @@ const scrollToTop = () => {
     <!-- Menu mobile: painel branco -->
     <div
       v-if="isMobileMenuOpen"
-      class="mt-[var(--space-3)] flex flex-col gap-[var(--space-2)] rounded-[var(--radius-xl)] bg-[var(--surface-card)] p-[var(--space-6)] text-[color:var(--text-strong)] lg:hidden"
+      class="mt-[var(--space-3)] flex flex-col gap-[var(--space-2)] rounded-[var(--radius-xl)] bg-[var(--surface-card)] p-[var(--space-6)] text-[color:var(--text-strong)] xl:hidden"
     >
       <button
         v-for="item in navItems"

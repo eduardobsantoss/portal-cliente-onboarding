@@ -128,7 +128,11 @@ async function onSubmit() {
       </p>
     </div>
 
-    <form v-else class="flex flex-col gap-[var(--space-5)]" @submit.prevent="onSubmit">
+    <form
+      v-else
+      class="flex flex-col gap-[var(--space-4)] [@media(min-height:820px)]:gap-[var(--space-5)]"
+      @submit.prevent="onSubmit"
+    >
       <div class="flex items-start justify-between gap-[var(--space-4)]">
         <TcDisplayHeading
           id="newsletter-modal-title"
@@ -149,7 +153,7 @@ async function onSubmit() {
       </div>
 
       <p
-        class="m-0 text-[length:var(--text-base)] leading-[var(--leading-body)] text-[color:var(--text-muted)]"
+        class="m-0 hidden text-[length:var(--text-base)] leading-[var(--leading-body)] text-[color:var(--text-muted)] [@media(min-height:700px)]:block"
       >
         Receba notícias do Grupo Ceres Investimentos e atualizações de
         mercado no seu WhatsApp.

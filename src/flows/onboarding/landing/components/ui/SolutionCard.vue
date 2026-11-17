@@ -15,7 +15,9 @@ defineProps<SolutionCardProps>();
 </script>
 
 <template>
-  <TcSoftCard class="flex flex-col p-[var(--space-8)]">
+  <TcSoftCard
+    class="flex flex-col p-[var(--space-6)] outline outline-1 -outline-offset-1 outline-transparent md:p-[var(--space-8)] transition-[translate,outline-color] duration-[var(--duration-slow)] ease-[var(--ease-standard)] hover:-translate-y-1 hover:outline-[color:var(--border-default)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+  >
     <IconBadge
       :icon="icon"
       :size="24"

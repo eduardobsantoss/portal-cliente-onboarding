@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import Navbar from './components/layout/Navbar.vue';
 import Footer from './components/layout/Footer.vue';
 import HeroSection from './components/sections/HeroSection.vue';
@@ -10,8 +10,12 @@ import HowItWorksSection from './components/sections/HowItWorksSection.vue';
 import CallToActionSection from './components/sections/CallToActionSection.vue';
 import NewsletterModal from './components/modals/NewsletterModal.vue';
 import RegistrationModal from './components/modals/RegistrationModal.vue';
+import LegalDocumentModal from './components/modals/LegalDocumentModal.vue';
 import { NEWSLETTER_STORAGE_SUBSCRIBED } from './constants/newsletter';
 import type { RegistrationLead } from '@/types/registration';
+import type { TermsDocumentType } from '@/types/terms';
+import { useLandingMotion } from './animations/useLandingMotion';
+import { pauseSmoothScroll, resumeSmoothScroll } from './animations/useSmoothScroll';
 
 /**
  * Passo 0 do onboarding: landing page do Grupo Ceres Investimentos.
@@ -24,8 +28,12 @@ const emit = defineEmits<{
   login: [];
 }>();
 
+const pageRoot = ref<HTMLElement | null>(null);
+useLandingMotion(pageRoot);
+
 const isNewsletterModalOpen = ref(false);
 const isRegistrationOpen = ref(false);
+const legalDocument = ref<TermsDocumentType | null>(null);
 let newsletterTimer: number | undefined;
 
 const openRegistration = () => {
@@ -37,6 +45,12 @@ const handleRegistrationSubmit = (lead: RegistrationLead) => {
   emit('register', lead);
 };
 const openLogin = () => emit('login');
+
+// Com um modal aberto, a rolagem suave da página é pausada (o modal rola sozinho).
+watch([isRegistrationOpen, isNewsletterModalOpen, legalDocument], ([registration, newsletter, legal]) => {
+  if (registration || newsletter || legal) pauseSmoothScroll();
+  else resumeSmoothScroll();
+});
 
 onMounted(() => {
   window.scrollTo({ top: 0 });
@@ -57,11 +71,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white font-sans">
-    <!--
-      A página usa o theme-client. Os modais ficam FORA desta raiz de propósito: continuam no estilo
-      antigo até o Prompt 04, e os tokens do tema (que redefinem text-*, rounded-*) mudariam a aparência deles.
-    -->
+  <div ref="pageRoot" class="min-h-screen bg-white font-sans">
+    <!-- A página usa o theme-client; os modais (TcDialog) têm a própria raiz de tema. -->
     <div class="theme-client flex min-h-screen flex-col gap-[var(--page-gutter)] p-[var(--page-gutter)]">
       <Navbar :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
       <main class="flex flex-col gap-[var(--page-gutter)]">
@@ -72,13 +83,23 @@ onBeforeUnmount(() => {
         <HowItWorksSection :onOpenRegistration="openRegistration" />
         <CallToActionSection :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
       </main>
-      <Footer />
+      <Footer
+        @register="openRegistration"
+        @login="openLogin"
+        @open-legal="legalDocument = $event"
+      />
     </div>
 
     <RegistrationModal
       v-if="isRegistrationOpen"
       @close="isRegistrationOpen = false"
       @submit="handleRegistrationSubmit"
+    />
+
+    <LegalDocumentModal
+      v-if="legalDocument"
+      :doc-type="legalDocument"
+      @close="legalDocument = null"
     />
 
     <NewsletterModal

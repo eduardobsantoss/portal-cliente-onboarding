@@ -13,6 +13,7 @@ defineProps<StatCardProps>();
 <template>
   <TcGlassCard>
     <p
+      data-countup
       class="m-0 whitespace-nowrap text-[length:var(--text-3xl-fluid)] font-[number:var(--weight-black)] leading-[var(--leading-display)] tracking-[var(--tracking-display)] tabular-nums text-[color:var(--text-on-brand)]"
     >
       {{ value }}

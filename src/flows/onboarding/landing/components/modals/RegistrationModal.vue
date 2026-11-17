@@ -46,10 +46,10 @@ const documentTypeOptions = [
   { value: 'CPF', label: 'Pessoa Física (CPF)' },
 ];
 
-// Véu vertical do painel de foto (valores do spec do Prompt 04); o background-image precisa
-// trazer a foto junto, porque este style substitui o do TcPhotoSection.
+// Véu vertical do painel de foto (valores do spec do Prompt 04).
 const photoSrc = publicAsset('assets/refactor/campo-soja.jpeg');
-const photoBackground = `linear-gradient(180deg, rgba(8, 60, 74, 0.72) 0%, rgba(8, 60, 74, 0.9) 60%, rgba(8, 60, 74, 0.95) 100%), url("${photoSrc}")`;
+const photoScrim =
+  'linear-gradient(180deg, rgba(8, 60, 74, 0.72) 0%, rgba(8, 60, 74, 0.9) 60%, rgba(8, 60, 74, 0.95) 100%)';
 
 const selectType = (type: RegistrationDocumentType) => {
   documentType.value = type;
@@ -117,11 +117,11 @@ const handleSubmit = () => {
 <template>
   <TcDialog :open="true" variant="fullscreen" labelledby="registration-title" @close="emit('close')">
     <div class="grid flex-1 grid-cols-1 gap-[var(--page-gutter)] lg:grid-cols-2">
-      <!-- Painel de foto -->
+      <!-- Painel de foto: some em telas pequenas, deixando só o formulário -->
       <TcPhotoSection
         :src="photoSrc"
-        :style="{ backgroundImage: photoBackground }"
-        class="flex flex-col justify-between gap-[var(--space-8)] px-[var(--space-9)] pb-[var(--space-9)] pt-[var(--space-8)]"
+        :scrim="photoScrim"
+        class="hidden flex-col justify-between gap-[var(--space-8)] px-[var(--space-9)] pb-[var(--space-9)] pt-[var(--space-8)] lg:flex"
       >
         <Logo variant="dark" class-name="h-[68px] self-start md:h-[68px]" />
 
@@ -138,7 +138,7 @@ const handleSubmit = () => {
           </TcDisplayHeading>
         </div>
 
-        <TcGlassCard class="max-lg:hidden">
+        <TcGlassCard>
           <div class="flex items-start gap-[var(--space-4)]">
             <Lock class="mt-[2px] size-[22px] shrink-0" aria-hidden="true" />
             <div>
@@ -157,27 +157,37 @@ const handleSubmit = () => {
         </TcGlassCard>
       </TcPhotoSection>
 
-      <!-- Formulário -->
-      <div class="flex flex-col px-[calc(var(--space-10)+var(--space-1))] pb-[var(--space-6)] pt-[var(--space-3)] max-lg:px-[var(--space-2)]">
-        <button
-          type="button"
-          id="btn-close-registration"
-          class="inline-flex size-[var(--control-nav)] shrink-0 cursor-pointer items-center justify-center self-end rounded-[var(--radius-full)] border-[1.5px] border-[color:var(--border-strong)] text-[color:var(--text-strong)] transition-colors duration-[var(--duration-base)] hover:bg-[var(--surface-soft)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] motion-reduce:transition-none"
-          aria-label="Fechar e voltar ao site"
-          @click="emit('close')"
+      <!-- Formulário: compacto para caber na tela sem rolagem interna -->
+      <div
+        class="flex min-w-0 flex-col px-[var(--space-2)] pb-[var(--space-3)] pt-[var(--space-1)] lg:px-[calc(var(--space-10)+var(--space-1))] lg:pt-[var(--space-3)]"
+      >
+        <!-- Cabeçalho: eyebrow e botão de fechar na mesma linha, para poupar altura -->
+        <div
+          class="mx-auto flex w-full max-w-[480px] items-center justify-between gap-[var(--space-4)]"
         >
-          <X :size="20" aria-hidden="true" />
-        </button>
+          <TcEyebrow class="max-sm:hidden">Grupo Ceres Investimentos</TcEyebrow>
+          <button
+            type="button"
+            id="btn-close-registration"
+            class="ml-auto inline-flex size-[var(--control-nav)] shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-full)] border-[1.5px] border-[color:var(--border-strong)] text-[color:var(--text-strong)] transition-colors duration-[var(--duration-base)] hover:bg-[var(--surface-soft)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] motion-reduce:transition-none"
+            aria-label="Fechar e voltar ao site"
+            @click="emit('close')"
+          >
+            <X :size="20" aria-hidden="true" />
+          </button>
+        </div>
 
-        <div class="flex flex-1 items-center py-[var(--space-6)]">
-          <div class="mx-auto flex w-full max-w-[480px] flex-col gap-[var(--space-5)]">
-            <TcEyebrow>Grupo Ceres Investimentos</TcEyebrow>
-            <TcDisplayHeading id="registration-title" as="h2" size="4xl">
+        <div class="flex flex-1 items-center py-[var(--space-3)]">
+          <div
+            class="mx-auto flex w-full max-w-[480px] flex-col gap-[var(--space-4)] [@media(min-height:820px)]:gap-[var(--space-5)] [@media(max-height:760px)]:gap-[var(--space-3)]"
+          >
+            <!-- O texto de apoio sai em telas baixas para o formulário caber sem rolagem -->
+            <TcDisplayHeading id="registration-title" as="h2" size="3xl">
               Abra
               <template #second>sua conta.</template>
             </TcDisplayHeading>
             <p
-              class="m-0 text-[length:var(--text-base)] leading-[var(--leading-body)] text-[color:var(--text-muted)]"
+              class="m-0 hidden text-[length:var(--text-base)] leading-[var(--leading-body)] text-[color:var(--text-muted)] [@media(min-height:840px)]:block"
             >
               Preencha os dados abaixo. Em seguida, vamos confirmar seu celular por SMS e você
               criará sua senha de acesso ao Portal do Cliente.
@@ -191,7 +201,9 @@ const handleSubmit = () => {
               @update:model-value="selectType($event as RegistrationDocumentType)"
             />
 
-            <form class="flex flex-col gap-[var(--space-5)]" novalidate @submit.prevent="handleSubmit">
+            <form
+              class="flex flex-col gap-[var(--space-4)] [@media(max-height:760px)]:gap-[var(--space-3)]"
+              novalidate @submit.prevent="handleSubmit">
               <TcTextField
                 id="input-email"
                 v-model="form.email"
@@ -205,18 +217,6 @@ const handleSubmit = () => {
               />
 
               <TcTextField
-                id="input-document"
-                :model-value="form.document"
-                :label="documentType"
-                :hint="documentType === 'CPF' ? '11 dígitos' : '14 dígitos'"
-                inputmode="numeric"
-                :placeholder="documentType === 'CPF' ? '000.000.000-00' : '00.000.000/0000-00'"
-                required
-                :error="errors.document"
-                @input="onDocumentInput"
-              />
-
-              <TcTextField
                 id="input-phone"
                 :model-value="form.phone"
                 label="Telefone / WhatsApp"
@@ -226,6 +226,18 @@ const handleSubmit = () => {
                 required
                 :error="errors.phone"
                 @input="onPhoneInput"
+              />
+
+              <TcTextField
+                id="input-document"
+                :model-value="form.document"
+                :label="documentType"
+                :hint="documentType === 'CPF' ? '11 dígitos' : '14 dígitos'"
+                inputmode="numeric"
+                :placeholder="documentType === 'CPF' ? '000.000.000-00' : '00.000.000/0000-00'"
+                required
+                :error="errors.document"
+                @input="onDocumentInput"
               />
 
               <p class="m-0 text-[length:var(--text-xs)] text-[color:var(--text-muted)]">

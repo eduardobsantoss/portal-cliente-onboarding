@@ -33,19 +33,19 @@ const solutions = [
 <template>
   <TcSection id="solucoes">
     <template #aside>
-      <TcEyebrow>Soluções</TcEyebrow>
+      <TcEyebrow data-reveal>Soluções</TcEyebrow>
     </template>
 
-    <TcDisplayHeading size="3xl">
+    <TcDisplayHeading size="3xl" data-reveal>
       O que você faz
       <template #second>no portal</template>
     </TcDisplayHeading>
 
-    <div class="mt-[var(--space-12)] grid gap-[var(--space-3)] md:grid-cols-3">
+    <div class="mt-[var(--space-10)] grid grid-cols-[minmax(0,1fr)] gap-[var(--space-3)] md:mt-[var(--space-12)] md:grid-cols-3">
       <SolutionCard
         v-for="(item, index) in solutions"
         :key="item.title"
-        v-fade-in="index * 0.1"
+        data-reveal
         :category="item.category"
         :description="item.description"
         :icon="item.icon"

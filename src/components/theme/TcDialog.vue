@@ -5,6 +5,8 @@ const props = defineProps<{
   open: boolean;
   labelledby: string;
   variant: 'fullscreen' | 'centered';
+  /** Só no modo centered: card mais largo, para textos longos (ex.: documentos legais). */
+  wide?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -104,6 +106,7 @@ onBeforeUnmount(() => {
       role="dialog"
       aria-modal="true"
       :aria-labelledby="labelledby"
+      data-lenis-prevent
       class="theme-client fixed inset-0"
       :class="
         variant === 'fullscreen'
@@ -121,7 +124,8 @@ onBeforeUnmount(() => {
       </div>
       <div
         v-else
-        class="relative m-auto w-full max-w-[480px] rounded-[var(--radius-xl)] bg-[var(--surface-card)] p-[var(--space-9)] shadow-[var(--shadow-float)]"
+        class="relative m-auto w-full rounded-[var(--radius-xl)] bg-[var(--surface-card)] p-[var(--space-6)] shadow-[var(--shadow-float)] sm:p-[var(--space-9)]"
+        :class="wide ? 'max-w-[720px]' : 'max-w-[480px]'"
       >
         <slot />
       </div>
