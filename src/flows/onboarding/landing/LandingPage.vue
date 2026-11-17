@@ -57,17 +57,23 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white font-sans selection:bg-gci/10 selection:text-gci">
-    <Navbar :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
-    <main>
-      <HeroSection :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
-      <SolutionsSection />
-      <BenefitsSection />
-      <SocialProofSection />
-      <HowItWorksSection :onOpenRegistration="openRegistration" />
-      <CallToActionSection :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
-    </main>
-    <Footer />
+  <div class="min-h-screen bg-white font-sans">
+    <!--
+      A página usa o theme-client. Os modais ficam FORA desta raiz de propósito: continuam no estilo
+      antigo até o Prompt 04, e os tokens do tema (que redefinem text-*, rounded-*) mudariam a aparência deles.
+    -->
+    <div class="theme-client flex min-h-screen flex-col gap-[var(--page-gutter)] p-[var(--page-gutter)]">
+      <Navbar :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
+      <main class="flex flex-col gap-[var(--page-gutter)]">
+        <HeroSection :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
+        <SolutionsSection />
+        <BenefitsSection />
+        <SocialProofSection />
+        <HowItWorksSection :onOpenRegistration="openRegistration" />
+        <CallToActionSection :onOpenRegistration="openRegistration" :onOpenLogin="openLogin" />
+      </main>
+      <Footer />
+    </div>
 
     <RegistrationModal
       v-if="isRegistrationOpen"

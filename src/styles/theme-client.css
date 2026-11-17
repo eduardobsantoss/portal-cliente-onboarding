@@ -1,0 +1,244 @@
+/* =====================================================================
+   GCI — THEME-CLIENT  (v1 — extraído da direção visual V3.1 "Campo")
+   Tema da landing, do onboarding e do Portal do Cliente. NÃO é o theme-admin.
+
+   Agnóstico de framework (CSS custom properties): serve o protótipo
+   Vue 3 + Tailwind 4 e o front de produção Nuxt/Vue.
+
+   Camadas (mesma arquitetura do minerva-design-tokens.css):
+     1. PRIMITIVAS  — valores crus. As de marca são IGUAIS às do Minerva.
+     2. SEMÂNTICAS  — papéis de uso. Componentes consomem SEMPRE esta camada.
+
+   Regras de marca (confirmadas por Eduardo, nov/2026):
+     - GCI Blue #083C4A é a cor principal.
+     - Branco é #FFFFFF (não usar creme/off-white).
+     - Agro Orange é cor AUXILIAR: só detalhes pequenos (ver --accent).
+
+   Legenda:
+     [V3.1]     valor medido nas telas aprovadas (SMS, Login, Home).
+     [Minerva]  herdado do minerva-design-tokens.css, sem alteração.
+     [Proposta] não existe na V3.1; sugestão a confirmar.
+   ===================================================================== */
+
+.theme-client {
+
+  /* =================================================================
+     1. PRIMITIVAS
+     ================================================================= */
+
+  /* ---- Marca: GCI Blue [Minerva] ---- */
+  --gci-base:        #083C4A;
+  --gci-hover:       #062D38;
+  --gci-active:      #04222B;
+  --gci-light:       #F0F4F5;   /* superfície suave */
+  --gci-subtle:      #DCE6E9;   /* borda sutil */
+  --gci-tint:        #0E5263;   /* [V3.1] superfície sobre fundo azul (cards da seção escura) */
+
+  /* ---- Auxiliar: Agro Orange [Minerva] ---- */
+  --agro-base:       #F27D26;
+
+  /* ---- Neutros frios do cliente [V3.1] ---- */
+  --white:           #FFFFFF;
+  --mist-300:        #B5C7CB;   /* borda de input, tracejado, fatia de gráfico */
+  --mist-500:        #6E8F97;   /* fatia de gráfico */
+  --mist-600:        #55686D;   /* texto secundário (5.9:1 sobre branco) */
+  --mist-700:        #3B5A62;   /* fatia de gráfico */
+
+  /* ---- Estados [Minerva] ---- */
+  --success-base:    #059669;
+  --success-light:   #ECFDF5;
+  --success-dark:    #047857;
+  --warning-base:    #D97706;
+  --warning-light:   #FFFBEB;
+  --warning-dark:    #B45309;
+  --danger-base:     #DC2626;
+  --danger-light:    #FEF2F2;
+  --danger-dark:     #B91C1C;
+
+
+  /* =================================================================
+     2. SEMÂNTICAS
+     ================================================================= */
+
+  /* ---- Superfícies ---- */
+  --surface-page:        var(--white);        /* [V3.1] fundo da aplicação */
+  --surface-soft:        var(--gci-light);    /* [V3.1] faixa de pendência, card de serviço, dados da conta */
+  --surface-card:        var(--white);        /* [V3.1] card do código SMS, card sobre seção azul */
+  --surface-brand:       var(--gci-base);     /* [V3.1] seção escura, etapa concluída, botão primário */
+  --surface-brand-raised: var(--gci-tint);    /* [V3.1] card dentro de seção azul */
+
+  /* Vidro: SÓ sobre foto ou sobre azul */
+  --glass-bg:            rgba(255, 255, 255, 0.16);   /* [V3.1] */
+  --glass-border:        rgba(255, 255, 255, 0.32);   /* [V3.1] */
+
+  /* ---- Texto ---- */
+  --text-strong:         var(--gci-base);     /* [V3.1] títulos e corpo principal são AZUIS, não pretos */
+  --text-muted:          var(--mist-600);     /* [V3.1] */
+  --text-on-brand:       var(--white);
+  --text-on-brand-muted: rgba(255, 255, 255, 0.88);   /* [V3.1] segunda linha do título, apoio */
+  --text-link:           var(--gci-base);
+  --text-link-hover:     var(--gci-tint);
+
+  /* ---- Bordas ---- */
+  --border-subtle:       var(--gci-subtle);
+  --border-default:      var(--mist-500);     /* input em repouso: 3.5:1 sobre branco (WCAG 1.4.11 pede 3:1); mist-300 dava 1.75:1 */
+  --border-strong:       var(--gci-base);     /* [V3.1] input preenchido, botão contornado, etapa atual */
+  --border-dashed:       var(--mist-300);     /* [V3.1] etapa pendente, serviço indisponível */
+
+  /* ---- Ações ---- */
+  --action-primary-bg:        var(--gci-base);
+  --action-primary-bg-hover:  var(--gci-hover);
+  --action-primary-bg-active: var(--gci-active);
+  --action-primary-text:      var(--white);
+  /* Sobre foto/azul o primário INVERTE: fundo branco, texto azul [V3.1] */
+  --action-inverse-bg:        var(--white);
+  --action-inverse-text:      var(--gci-base);
+  --action-secondary-border:  var(--gci-base);
+  --action-secondary-text:    var(--gci-base);
+
+  /* ---- Acento (laranja AUXILIAR) [V3.1] ----
+     Usos permitidos, e só estes:
+       1. traço de 22x2px antes do rótulo de seção (eyebrow)
+       2. ponto de notificação / marcador da etapa atual (8-10px)
+       3. borda do campo em foco no código SMS
+     Proibido: fundo de botão, card, painel, faixa ou texto. */
+  --accent:              var(--agro-base);
+
+  /* ---- Foto de fundo: véu azul para o texto [V3.1] ---- */
+  /* Faixa superior: mantém a navegação legível sobre céu claro ou sol (medido: 2.4:1 sem, 4.9:1 com) */
+  --scrim-photo-top: linear-gradient(180deg,
+                   rgba(8, 60, 74, 0.90) 0%,
+                   rgba(8, 60, 74, 0.50) 14%,
+                   rgba(8, 60, 74, 0) 28%);
+  --scrim-photo: linear-gradient(90deg,
+                   rgba(8, 60, 74, 0.94) 0%,
+                   rgba(8, 60, 74, 0.70) 46%,
+                   rgba(8, 60, 74, 0.20) 82%);
+
+  /* ---- Gráfico de composição sobre azul (4 fatias por luminosidade) [V3.1] ---- */
+  --chart-1: var(--white);
+  --chart-2: var(--mist-300);
+  --chart-3: var(--mist-500);
+  --chart-4: var(--mist-700);
+
+
+  /* =================================================================
+     TIPOGRAFIA
+     ================================================================= */
+  /* [V3.1] Montserrat. Diverge do admin (Inter) — decisão a confirmar com a marca. */
+  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+               Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-numeric: var(--font-sans);   /* sempre com font-variant-numeric: tabular-nums */
+
+  /* Escala [V3.1]. Base de leitura 17px (admin é 14px). */
+  --text-eyebrow: 0.75rem;     /* 12px — rótulo de seção, caixa alta */
+  --text-xs:      0.8125rem;   /* 13px — apoio, rodapé, legenda */
+  --text-sm:      0.875rem;    /* 14px — label de campo, botão secundário */
+  --text-base:    0.9375rem;   /* 15px — corpo em cards, botão primário */
+  --text-md:      1.0625rem;   /* 17px — corpo de leitura */
+  --text-lg:      1.5rem;      /* 24px — título de card, valor em card */
+  --text-xl:      1.75rem;     /* 28px — nome de serviço, dígito do código */
+  --text-2xl:     2.125rem;    /* 34px — KPI */
+  --text-3xl:     3.25rem;     /* 52px — título de seção */
+  --text-4xl:     3.75rem;     /* 60px — título de seção escura / login */
+  --text-display: 6.5rem;      /* 104px — valor do hero / título do SMS */
+
+  /* [Proposta] versões fluidas para telas pequenas (a V3.1 só foi desenhada em 1440px) */
+  --text-3xl-fluid:     clamp(2rem, 1.2rem + 2.8vw, 3.25rem);
+  --text-4xl-fluid:     clamp(2.25rem, 1.3rem + 3.3vw, 3.75rem);
+  --text-display-fluid: clamp(2.75rem, 1rem + 6.6vw, 6.5rem);
+
+  --leading-display: 0.98;   /* [V3.1] */
+  --leading-heading: 1.02;   /* [V3.1] */
+  --leading-snug:    1.3;
+  --leading-body:    1.6;    /* [V3.1] */
+
+  /* Contraste de peso é a assinatura: 1ª linha 800, 2ª linha 300 [V3.1] */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-black:    800;
+
+  --tracking-display: -0.03em;   /* [V3.1] títulos e valores grandes */
+  --tracking-tight:   -0.02em;   /* [V3.1] valores médios */
+  --tracking-eyebrow: 0.3em;     /* [V3.1] */
+  --tracking-label:   0.2em;     /* [V3.1] status em caixa alta nos cards de etapa */
+
+
+  /* =================================================================
+     ESPAÇAMENTO — múltiplos de 4 [Minerva], com os passos usados na V3.1
+     ================================================================= */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;   /* gap entre cards irmãos */
+  --space-4:   16px;
+  --space-5:   20px;   /* margem da página e gap entre blocos */
+  --space-6:   24px;
+  --space-7:   28px;
+  --space-8:   32px;
+  --space-9:   36px;   /* padding lateral de hero e seção */
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-14:  56px;   /* gap entre colunas de seção */
+  --space-16:  64px;
+  --space-18:  72px;   /* padding vertical de seção */
+
+  --page-gutter:      var(--space-5);    /* [V3.1] */
+  --section-pad-x:    var(--space-9);    /* [V3.1] */
+  --section-pad-y:    var(--space-18);   /* [V3.1] */
+
+
+  /* =================================================================
+     RAIO [V3.1] — generoso; é o oposto do admin (4–12px)
+     ================================================================= */
+  --radius-sm:    8px;      /* chip pequeno */
+  --radius-md:    16px;     /* campo do código SMS */
+  --radius-input: 18px;     /* input de formulário */
+  --radius-lg:    24px;     /* card interno, card de etapa, KPI */
+  --radius-xl:    28px;     /* hero, painel de foto, seção, card flutuante */
+  --radius-full:  9999px;   /* botões, navegação, chips */
+
+
+  /* =================================================================
+     DIMENSÕES DE CONTROLE [V3.1]
+     ================================================================= */
+  --control-nav:        48px;   /* item de navegação, botão de cabeçalho, avatar */
+  --control-secondary:  52px;   /* botão secundário / link-botão */
+  --control-input:      58px;   /* input de formulário */
+  --control-primary:    60px;   /* botão primário */
+  --control-hero:       64px;   /* CTA do hero */
+  --control-otp:        66px;   /* campo do código SMS */
+  --control-arrow:      44px;   /* círculo da seta dentro do botão primário (48px no CTA do hero) */
+
+
+  /* =================================================================
+     ELEVAÇÃO [V3.1] — só para o que flutua sobre foto. Card sobre branco NÃO tem sombra.
+     ================================================================= */
+  --shadow-none:  none;
+  --shadow-float: 0 30px 70px rgba(4, 26, 32, 0.38);
+
+  --focus-ring: 0 0 0 3px rgba(8, 60, 74, 0.25);   /* [Minerva] */
+
+
+  /* =================================================================
+     MOVIMENTO [Minerva] — a V3.1 é estática; nada novo definido aqui
+     ================================================================= */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out:      cubic-bezier(0, 0, 0.2, 1);
+
+
+  /* =================================================================
+     CAMADAS (z-index) [Minerva]
+     ================================================================= */
+  --z-base:     0;
+  --z-sticky:   100;
+  --z-dropdown: 200;
+  --z-overlay:  300;
+  --z-modal:    400;
+  --z-toast:    500;
+}

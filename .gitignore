@@ -56,3 +56,6 @@ coverage/
 AGENTS.md
 agenkit.lock.json
 .agenkit/
+
+# Prompts e guia de referência do refactor visual (theme-client) — material de trabalho local
+refactor-theme-client/

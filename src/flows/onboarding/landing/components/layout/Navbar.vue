@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { Menu, X } from 'lucide-vue-next';
 import { cn } from '@/utils/cn';
 import Logo from './Logo.vue';
-import BaseButton from '../ui/BaseButton.vue';
+import TcButton from '@/components/theme/TcButton.vue';
 
 interface NavbarProps {
   onOpenRegistration: () => void;
@@ -50,105 +50,121 @@ const scrollToTop = () => {
 
 <template>
   <nav
+    aria-label="Principal"
     :class="cn(
-      'fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3',
-      isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
+      'fixed inset-x-0 top-0 z-50 transition-colors duration-[var(--duration-slow)] motion-reduce:transition-none',
+      isScrolled
+        ? 'border-b border-[color:var(--border-subtle)] bg-[var(--surface-page)] px-[var(--section-pad-x)] py-[var(--space-3)] max-md:px-[var(--page-gutter)]'
+        : 'bg-transparent px-[calc(var(--page-gutter)+var(--section-pad-x))] pt-[calc(var(--page-gutter)+var(--space-6))] max-md:px-[calc(var(--page-gutter)+var(--space-5))]'
     )"
   >
-    <div class="max-w-7xl mx-auto w-full px-5 md:px-6 relative flex items-center justify-between">
+    <div class="relative flex w-full items-center justify-between">
       <div class="flex items-center">
         <button
           type="button"
           @click="scrollToTop"
-          class="rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-gci/40 focus-visible:ring-offset-2"
+          class="rounded-[var(--radius-sm)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
           aria-label="Voltar ao topo"
         >
           <Logo :variant="isScrolled ? 'light' : 'dark'" />
         </button>
       </div>
 
-      <div class="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+      <!-- Links: grupo "vidro" sobre a foto; azuis, sem moldura, na barra branca -->
+      <div
+        :class="cn(
+          'absolute left-1/2 hidden -translate-x-1/2 items-center gap-[var(--space-1)] rounded-[var(--radius-full)] border p-[var(--space-1)] lg:flex',
+          isScrolled
+            ? 'border-transparent bg-transparent'
+            : 'border-[color:var(--glass-border)] bg-[var(--glass-bg)]'
+        )"
+      >
         <button
           v-for="item in navItems"
           :key="item.sectionId"
+          type="button"
           @click="scrollToSection(item.sectionId)"
           :class="cn(
-            'text-[14px] font-semibold hover:opacity-70 transition-opacity',
-            isScrolled ? 'text-gray-700' : 'text-white'
+            'h-[var(--control-nav)] cursor-pointer whitespace-nowrap rounded-[var(--radius-full)] px-[var(--space-6)] text-[length:var(--text-sm)] font-[number:var(--weight-semibold)] transition-colors duration-[var(--duration-base)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] motion-reduce:transition-none',
+            isScrolled
+              ? 'text-[color:var(--text-strong)] hover:bg-[var(--surface-soft)]'
+              : 'text-[color:var(--text-on-brand)] hover:bg-[var(--glass-bg)]'
           )"
         >
           {{ item.label }}
         </button>
       </div>
 
-      <!-- Action Buttons (Desktop) — destaque em Registre-se -->
-      <div class="hidden lg:flex items-center gap-4">
-        <BaseButton
-          variant="plain"
-          :class="cn(
-            'text-[14px] font-semibold px-5 py-2.5 rounded-full border transition-colors block text-center',
-            isScrolled
-              ? 'text-gci border-gci/30 bg-white hover:bg-gci-light'
-              : 'text-white border-white/40 bg-white/10 hover:bg-white/20'
-          )"
+      <!-- Ações (desktop) — destaque em Abra sua conta, que fica por último -->
+      <div class="hidden items-center gap-[var(--space-3)] lg:flex">
+        <TcButton
+          size="nav"
+          :variant="isScrolled ? 'secondary' : 'glass'"
           @click="props.onOpenLogin"
         >
           Acesse sua conta
-        </BaseButton>
-        <BaseButton
-          variant="solid-dark"
-          class="text-[14px] font-bold px-7 py-2.5 rounded-full transition-all transform hover:scale-105 shadow-lg"
+        </TcButton>
+        <TcButton
+          size="nav"
+          :variant="isScrolled ? 'primary' : 'inverse'"
           @click="props.onOpenRegistration"
         >
-          Registre-se
-        </BaseButton>
+          Abra sua conta
+        </TcButton>
       </div>
 
       <button
-        class="lg:hidden p-2 rounded-lg transition-colors"
+        type="button"
+        :class="cn(
+          'inline-flex size-[var(--control-nav)] cursor-pointer items-center justify-center rounded-[var(--radius-full)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] lg:hidden',
+          isScrolled ? 'text-[color:var(--text-strong)]' : 'text-[color:var(--text-on-brand)]'
+        )"
+        :aria-label="isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'"
+        :aria-expanded="isMobileMenuOpen"
         @click="isMobileMenuOpen = !isMobileMenuOpen"
       >
-        <X v-if="isMobileMenuOpen" :class="isScrolled ? 'text-gray-900' : 'text-white'" :size="24" />
-        <Menu v-else :class="isScrolled ? 'text-gray-900' : 'text-white'" :size="24" />
+        <X v-if="isMobileMenuOpen" :size="24" aria-hidden="true" />
+        <Menu v-else :size="24" aria-hidden="true" />
       </button>
     </div>
 
-    <!-- Mobile Menu -->
+    <!-- Menu mobile: painel branco -->
     <div
       v-if="isMobileMenuOpen"
-      class="absolute top-full left-0 right-0 bg-white shadow-2xl p-6 lg:hidden flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-300"
+      class="mt-[var(--space-3)] flex flex-col gap-[var(--space-2)] rounded-[var(--radius-xl)] bg-[var(--surface-card)] p-[var(--space-6)] text-[color:var(--text-strong)] lg:hidden"
     >
       <button
         v-for="item in navItems"
         :key="item.sectionId"
+        type="button"
         @click="() => {
           scrollToSection(item.sectionId);
           isMobileMenuOpen = false;
         }"
-        class="text-left py-3 text-gray-800 font-bold text-lg border-b border-gray-50"
+        class="h-[var(--control-nav)] cursor-pointer rounded-[var(--radius-sm)] border-b border-[color:var(--border-subtle)] text-left text-[length:var(--text-base)] font-[number:var(--weight-bold)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
       >
         {{ item.label }}
       </button>
-      <BaseButton
-        variant="plain"
-        class="border border-gci/25 text-gci py-4 rounded-full font-semibold text-lg text-center block"
+      <TcButton
+        variant="secondary"
+        class="mt-[var(--space-4)] w-full"
         @click="() => {
           props.onOpenLogin();
           isMobileMenuOpen = false;
         }"
       >
         Acesse sua conta
-      </BaseButton>
-      <BaseButton
-        variant="plain"
-        class="bg-gci text-white py-4 rounded-full font-bold text-lg shadow-xl text-center block mt-4"
+      </TcButton>
+      <TcButton
+        variant="primary"
+        class="w-full"
         @click="() => {
           props.onOpenRegistration();
           isMobileMenuOpen = false;
         }"
       >
-        Registre-se
-      </BaseButton>
+        Abra sua conta
+      </TcButton>
     </div>
   </nav>
 </template>

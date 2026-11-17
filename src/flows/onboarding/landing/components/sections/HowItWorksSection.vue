@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { FileText, PhoneCall, Rocket } from 'lucide-vue-next';
-import SectionHeading from '../ui/SectionHeading.vue';
+import TcSection from '@/components/theme/TcSection.vue';
+import TcEyebrow from '@/components/theme/TcEyebrow.vue';
+import TcDisplayHeading from '@/components/theme/TcDisplayHeading.vue';
+import TcButton from '@/components/theme/TcButton.vue';
 import StepCard from '../ui/StepCard.vue';
-import BaseButton from '../ui/BaseButton.vue';
 
 interface HowItWorksSectionProps {
   onOpenRegistration: () => void;
@@ -13,62 +15,52 @@ const props = defineProps<HowItWorksSectionProps>();
 const steps = [
   {
     number: '01',
-    title: 'Preencha seus dados',
-    description: 'Informe seu CPF ou CNPJ no formulário. É rápido, simples e 100% digital — sem papelada.',
+    title: 'Faça seu cadastro',
+    description: 'Informe e-mail, CPF ou CNPJ e telefone. Confirme por SMS e crie sua senha.',
     icon: FileText,
   },
   {
     number: '02',
-    title: 'Fale com um especialista',
-    description: 'Nossa equipe especializada em agronegócio entra em contato para entender suas necessidades.',
+    title: 'Envie dados e documentos',
+    description: 'Da empresa e dos sócios, com assinatura digital da abertura.',
     icon: PhoneCall,
   },
   {
     number: '03',
-    title: 'Comece a crescer',
-    description: 'Com a solução ideal para o seu perfil, seu negócio e patrimônio evoluem com segurança.',
+    title: 'Acompanhe a análise',
+    description: 'Com a conta aprovada, o portal é liberado para você operar.',
     icon: Rocket,
   },
 ];
 </script>
 
 <template>
-  <section id="como-funciona" class="py-20 md:py-32 bg-white scroll-mt-24">
-    <div class="max-w-7xl mx-auto px-6">
-      <SectionHeading
-        eyebrow="COMO FUNCIONA"
-        wrapper-class="text-center mb-16 md:mb-24"
-        eyebrow-class="text-gci font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase mb-4 block"
-        title-class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight"
-      >
-        Simples, rápido e <span class="text-gci">sem burocracia</span>
-      </SectionHeading>
+  <TcSection id="como-funciona">
+    <template #aside>
+      <TcEyebrow>COMO FUNCIONA</TcEyebrow>
+    </template>
 
-      <div class="grid md:grid-cols-3 gap-12 md:gap-16 relative">
-        <!-- Connector Line -->
-        <div class="hidden md:block absolute top-12 left-[15%] right-[15%] h-[1px] bg-gray-100 z-0" />
+    <TcDisplayHeading size="3xl">
+      Três passos
+      <template #second>para abrir sua conta</template>
+    </TcDisplayHeading>
 
-        <StepCard
-          v-for="(step, index) in steps"
-          :key="step.number"
-          v-fade-in="index * 0.1"
-          :number="step.number"
-          :title="step.title"
-          :description="step.description"
-          :icon="step.icon"
-        />
-      </div>
-
-      <div class="mt-16 md:mt-24 text-center">
-        <BaseButton
-          variant="solid-dark"
-          class="w-full sm:w-auto px-12 py-5 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-xl flex items-center justify-center gap-3 mx-auto"
-          @click="props.onOpenRegistration"
-        >
-          Abrir minha conta agora
-          <span class="text-xl">→</span>
-        </BaseButton>
-      </div>
+    <div class="mt-[var(--space-12)] grid gap-[var(--space-3)] md:grid-cols-3">
+      <StepCard
+        v-for="(step, index) in steps"
+        :key="step.number"
+        v-fade-in="index * 0.1"
+        :number="step.number"
+        :title="step.title"
+        :description="step.description"
+        :icon="step.icon"
+      />
     </div>
-  </section>
+
+    <div class="mt-[var(--space-12)]">
+      <TcButton variant="primary" arrow @click="props.onOpenRegistration">
+        Abra sua conta
+      </TcButton>
+    </div>
+  </TcSection>
 </template>

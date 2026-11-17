@@ -5,8 +5,6 @@ import {
   ArrowRight,
   Building2,
   Info,
-  KeyRound,
-  Mail,
   ShieldCheck,
   User,
   X,
@@ -116,16 +114,6 @@ const inputClass = (field: keyof typeof form, tone = 'text-gray-800') =>
 
 const benefits = [
   {
-    icon: Mail,
-    title: 'Confirmação por celular',
-    description: 'Enviamos um código por SMS para validar seu número na hora.',
-  },
-  {
-    icon: KeyRound,
-    title: 'Senha do Portal do Cliente',
-    description: 'Você define sua senha de acesso exclusiva logo após a confirmação.',
-  },
-  {
     icon: ShieldCheck,
     title: 'Privacidade & Proteção',
     description: 'Seus dados protegidos de acordo com as normas da LGPD.',
@@ -154,12 +142,8 @@ const benefits = [
             Abertura de Conta Digital
           </div>
           <h1 class="text-3xl lg:text-4xl font-extrabold leading-tight text-white">
-            Soluções financeiras estruturadas com a <span class="text-agro-orange">Ceres</span>.
+            Sua conta digital<br />em poucos passos.
           </h1>
-          <p class="text-white/75 text-sm lg:text-base leading-relaxed">
-            Faça seu cadastro de forma simples, rápida e 100% digital. Após o preenchimento, você
-            confirmará seu celular e definirá a senha de acesso ao Portal do Cliente.
-          </p>
         </div>
 
         <div class="space-y-4 pt-2">
@@ -343,8 +327,7 @@ const benefits = [
             >
               <Info :size="18" class="text-gci shrink-0 mt-0.5" />
               <p class="text-xs leading-relaxed text-blue-950/85">
-                Após clicar em <strong>Concluir Cadastro</strong>, enviaremos um código por SMS
-                para o telefone informado. Depois da confirmação, você define a senha do portal.
+                * campo obrigatório
               </p>
             </div>
 
@@ -359,10 +342,10 @@ const benefits = [
                   <div
                     class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
                   ></div>
-                  <span>Enviando Cadastro...</span>
+                  <span>Enviando cadastro...</span>
                 </template>
                 <template v-else>
-                  <span>Concluir Cadastro</span>
+                  <span>Concluir cadastro</span>
                   <ArrowRight :size="19" />
                 </template>
               </button>

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./styles/theme-client.css";
 
 @theme {
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -11,6 +12,28 @@
   --color-agro-orange: #F27D26;
   --color-surface: #F8FAFB;
   --color-border-subtle: #E2E8F0;
+}
+
+@theme inline {
+  --color-tc-brand: var(--gci-base);
+  --color-tc-brand-hover: var(--gci-hover);
+  --color-tc-brand-raised: var(--gci-tint);
+  --color-tc-soft: var(--gci-light);
+  --color-tc-muted: var(--mist-600);
+  --color-tc-line: var(--mist-300);
+  --color-tc-line-subtle: var(--gci-subtle);
+  --color-tc-accent: var(--agro-base);
+  --radius-tc-md: var(--radius-md);
+  --radius-tc-input: var(--radius-input);
+  --radius-tc-lg: var(--radius-lg);
+  --radius-tc-xl: var(--radius-xl);
+  --shadow-tc-float: var(--shadow-float);
+}
+
+.theme-client {
+  font-family: var(--font-sans);
+  color: var(--text-strong);
+  background: var(--surface-page);
 }
 
 @layer base {
@@ -94,4 +117,11 @@
 .v-fade-in.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-fade-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

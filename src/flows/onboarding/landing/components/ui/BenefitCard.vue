@@ -12,14 +12,21 @@ defineProps<BenefitCardProps>();
 </script>
 
 <template>
-  <div class="bg-white p-10 rounded-[32px] border border-gray-100 hover:shadow-xl transition-all duration-300 group">
+  <div class="border-t border-[color:var(--border-subtle)] py-[var(--space-7)]">
     <IconBadge
       :icon="icon"
       :size="24"
-      class="w-12 h-12 rounded-xl bg-gray-50 text-gci mb-8 group-hover:bg-gci group-hover:text-white transition-colors duration-300"
+      aria-hidden="true"
+      class="size-[var(--space-6)] justify-start text-[color:var(--text-strong)]"
     />
-    <h3 class="text-xl font-bold text-gray-900 mb-4">{{ title }}</h3>
-    <p class="text-gray-500 text-sm leading-relaxed">
+    <h3
+      class="m-0 mt-[var(--space-4)] text-[length:var(--text-lg)] font-[number:var(--weight-bold)] leading-[var(--leading-heading)] text-[color:var(--text-strong)]"
+    >
+      {{ title }}
+    </h3>
+    <p
+      class="m-0 mt-[var(--space-3)] text-[length:var(--text-base)] leading-[var(--leading-body)] text-[color:var(--text-muted)]"
+    >
       {{ description }}
     </p>
   </div>

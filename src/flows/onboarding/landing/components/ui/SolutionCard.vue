@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { Component } from 'vue';
+import TcSoftCard from '@/components/theme/TcSoftCard.vue';
 import IconBadge from './IconBadge.vue';
 
 interface SolutionCardProps {
   category: string;
   description: string;
   icon: Component;
+  // Mantido por compatibilidade com quem consome o componente; no theme-client todos os cards são iguais.
   variant: 'dark' | 'light';
 }
 
@@ -13,43 +15,30 @@ defineProps<SolutionCardProps>();
 </script>
 
 <template>
-  <div
-    :class="[
-      'p-10 rounded-[40px] transition-all duration-500 group border',
-      variant === 'dark'
-        ? 'bg-gci text-white border-gci shadow-2xl shadow-gci/20'
-        : 'bg-white text-gray-900 border-gray-100 hover:border-gci/20 hover:shadow-xl'
-    ]"
-  >
+  <TcSoftCard class="flex flex-col p-[var(--space-8)]">
     <IconBadge
       :icon="icon"
-      :size="32"
-      :class="[
-        'w-16 h-16 rounded-2xl mb-10 transition-transform duration-500 group-hover:scale-110',
-        variant === 'dark' ? 'bg-white/10 text-white' : 'bg-gray-50 text-gci'
-      ]"
+      :size="24"
+      aria-hidden="true"
+      class="size-[var(--control-nav)] shrink-0 rounded-[var(--radius-full)] bg-[var(--surface-brand)] text-[color:var(--text-on-brand)]"
     />
 
     <span
-      :class="[
-        'text-[10px] font-bold tracking-[0.2em] uppercase mb-3 block',
-        variant === 'dark' ? 'text-white/60' : 'text-gci'
-      ]"
+      class="mt-[var(--space-8)] block text-[length:var(--text-xs)] font-[number:var(--weight-semibold)] text-[color:var(--text-muted)]"
     >
       {{ category }}
     </span>
 
-    <h3 class="text-2xl font-bold mb-5 leading-tight">
+    <h3
+      class="m-0 mt-[var(--space-2)] text-[length:var(--text-lg)] font-[number:var(--weight-bold)] leading-[var(--leading-heading)] text-[color:var(--text-strong)]"
+    >
       <slot name="title" />
     </h3>
 
     <p
-      :class="[
-        'leading-relaxed text-sm',
-        variant === 'dark' ? 'text-white/70' : 'text-gray-500'
-      ]"
+      class="m-0 mt-[var(--space-3)] text-[length:var(--text-base)] leading-[var(--leading-body)] text-[color:var(--text-muted)]"
     >
       {{ description }}
     </p>
-  </div>
+  </TcSoftCard>
 </template>
