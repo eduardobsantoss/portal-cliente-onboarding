@@ -1,6 +1,46 @@
 import type { PfFormData } from '@/types/dadosComplementares';
 
+/** Estado inicial do formulário PF: tudo em branco até a consulta do CPF. */
+export const EMPTY_PF_DATA: PfFormData = {
+  nome: '',
+  cpf: '',
+  cep: '',
+  logradouro: '',
+  numero: '',
+  complemento: '',
+  bairro: '',
+  cidade: '',
+  uf: '',
+  correspondenciaMesmo: true,
+  correspondenciaCep: '',
+  correspondenciaLogradouro: '',
+  correspondenciaNumero: '',
+  correspondenciaComplemento: '',
+  correspondenciaBairro: '',
+  correspondenciaCidade: '',
+  correspondenciaUf: '',
+  dataNascimento: '',
+  genero: 'Masculino',
+  nacionalidade: 'Brasileira',
+  nomeMae: '',
+  profissao: '',
+  renda: '',
+  estadoCivil: 'Solteiro(a)',
+  nomeConjuge: '',
+  cpfConjuge: '',
+  regimeBens: '',
+  nomePai: '',
+  pep: false,
+  docTipo: 'RG',
+  docNumero: '',
+  docDataExpedicao: '',
+  docOrgao: '',
+};
+
+/** Dados de exemplo (simulam o retorno de um provedor de consulta de CPF). */
 export const INITIAL_PF_DATA: PfFormData = {
+  nome: 'Eduardo Santos',
+  cpf: '123.456.789-00',
   // Obrigatórios
   cep: '38400-100',
   logradouro: 'Avenida Rondon Pacheco',

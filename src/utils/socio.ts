@@ -61,6 +61,28 @@ export function buildSocioFromForm(form: Partial<Socio>): Socio {
   };
 }
 
+const SOCIO_REQUIRED_FIELDS = [
+  'nome',
+  'cpfCnpj',
+  'email',
+  'telefone',
+  'cep',
+  'logradouro',
+  'numero',
+  'bairro',
+  'cidade',
+  'uf',
+  'dataNascimento',
+  'nomeMae',
+  'profissao',
+  'renda',
+] as const satisfies readonly (keyof Socio)[];
+
+/** Sócio com todos os campos obrigatórios do modal preenchidos (pré-cadastros do QSA nascem incompletos). */
+export function isSocioComplete(socio: Socio): boolean {
+  return SOCIO_REQUIRED_FIELDS.every((field) => String(socio[field] ?? '').trim() !== '');
+}
+
 export function hasSocioOptionalData(socio: Socio): boolean {
   return Boolean(socio.nomePai || socio.rgNumero);
 }

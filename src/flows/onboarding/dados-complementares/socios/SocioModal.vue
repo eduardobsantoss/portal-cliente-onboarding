@@ -8,6 +8,7 @@ import ModalHeader from '@/components/ui/ModalHeader.vue';
 import SocioContactFields from '@/flows/onboarding/dados-complementares/socios/SocioContactFields.vue';
 import SocioOptionalSection from '@/flows/onboarding/dados-complementares/socios/SocioOptionalSection.vue';
 import type { SociosEditor } from '@/flows/onboarding/dados-complementares/socios/useSociosEditor';
+import { buildMockSocioPendingFields } from '@/mocks/complementaryPending';
 import { pickSocioAddress } from '@/utils/socio';
 
 const props = defineProps<{
@@ -56,6 +57,17 @@ const {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <SocioContactFields :form="form" :set-form="setForm" />
+        </div>
+
+        <!-- Atalho discreto de demonstração: preenche só os campos que ainda estão vazios -->
+        <div class="flex justify-end">
+          <button
+            type="button"
+            class="text-[10px] font-medium text-slate-300 hover:text-slate-500 transition-colors px-1 py-0.5"
+            @click="setForm({ ...form, ...buildMockSocioPendingFields(form) })"
+          >
+            Preencher pendências com dados de exemplo
+          </button>
         </div>
       </div>
 

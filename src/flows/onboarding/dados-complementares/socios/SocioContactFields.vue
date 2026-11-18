@@ -20,6 +20,7 @@ defineProps<{
 }>();
 
 const INPUT_CLASS = FIELD_VARIANT_STYLES.modal.input;
+const READ_ONLY_INPUT_CLASS = FIELD_VARIANT_STYLES.modal.readOnlyInput;
 
 /** Células do grid de "Dados Pessoais e de Contato" do modal de sócio. */
 </script>
@@ -28,8 +29,9 @@ const INPUT_CLASS = FIELD_VARIANT_STYLES.modal.input;
   <TextField
     wrapper-class-name="sm:col-span-2"
     required
+    :read-only="form.origemReceita"
     :value="form.nome || ''"
-    :input-class-name="INPUT_CLASS"
+    :input-class-name="form.origemReceita ? READ_ONLY_INPUT_CLASS : INPUT_CLASS"
     @change="setForm({ ...form, nome: $event })"
   >
     <template #label>Nome Completo *</template>

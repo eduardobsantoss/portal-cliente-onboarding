@@ -18,11 +18,14 @@ const props = withDefaults(
     placeholders?: Partial<Record<PersonField, string>>;
     /** quando definido, destaca o campo de renda e exibe o aviso abaixo dele */
     rendaNotice?: string;
+    /** campos de texto travados (somente leitura), ex.: preenchidos pela consulta de CPF */
+    readOnlyFields?: readonly PersonField[];
   }>(),
   {
     variant: 'page',
     generoOptions: () => GENEROS_COMPLETO,
     requireGenero: true,
+    readOnlyFields: () => [],
   },
 );
 
@@ -39,6 +42,7 @@ const DEFAULT_LABELS: Record<PersonField, string> = {
 
 const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
 const labelOf = (field: PersonField) => props.labels?.[field] ?? DEFAULT_LABELS[field];
+const isReadOnly = (field: PersonField) => props.readOnlyFields.includes(field);
 
 /** Dados pessoais comuns (PF, sócio...). Renderiza células do grid do pai. */
 </script>
@@ -76,7 +80,8 @@ const labelOf = (field: PersonField) => props.labels?.[field] ?? DEFAULT_LABELS[
       required
       :placeholder="placeholders?.[field]"
       :value="values[field] ?? ''"
-      :input-class-name="styles.input"
+      :read-only="isReadOnly(field)"
+      :input-class-name="isReadOnly(field) ? styles.readOnlyInput : styles.input"
       @change="(value) => emit('fieldChange', field, value)"
     >
       <template #label>{{ labelOf(field) }}</template>

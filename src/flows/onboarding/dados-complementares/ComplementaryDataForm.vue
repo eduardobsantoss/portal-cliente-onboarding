@@ -4,6 +4,7 @@ import OnboardingPageShell from '@/components/layout/OnboardingPageShell.vue';
 import AccountTypeSwitch from '@/flows/onboarding/dados-complementares/AccountTypeSwitch.vue';
 import ComplementaryBanner from '@/flows/onboarding/dados-complementares/ComplementaryBanner.vue';
 import DataErrorBanner from '@/flows/onboarding/dados-complementares/DataErrorBanner.vue';
+import MockFillButton from '@/flows/onboarding/dados-complementares/MockFillButton.vue';
 import PjForm from '@/flows/onboarding/dados-complementares/empresa/PjForm.vue';
 import PfForm from '@/flows/onboarding/dados-complementares/pessoa-fisica/PfForm.vue';
 import NonPartnerModal from '@/flows/onboarding/dados-complementares/representantes/NonPartnerModal.vue';
@@ -25,11 +26,17 @@ const {
   validationErrorNotice,
   pf,
   pj,
+  cnpjLookup,
+  cpfLookup,
   sociosEditor,
   nonPartnerEditor,
   selectAccountType,
+  fillWithMock,
   handleSubmit,
 } = form;
+// refs estáveis do composable (desestruturadas para serem desembrulhadas no template)
+const { pfData, setPfData, pfLockedFields, showOptionals, toggleOptionals } = pf;
+const { status: cpfStatus, errorMessage: cpfError, handleCpfChange } = cpfLookup;
 </script>
 
 <template>
@@ -55,11 +62,15 @@ const {
         <!-- FORM: PESSOA FÍSICA -->
         <PfForm
           v-if="accountType === 'pf'"
-          :pf-data="pf.pfData.value"
-          :set-pf-data="pf.setPfData"
-          :show-optionals="pf.showOptionals.value"
+          :pf-data="pfData"
+          :set-pf-data="setPfData"
+          :show-optionals="showOptionals"
           :has-data-errors="hasDataErrors"
-          @toggle-optionals="pf.toggleOptionals"
+          :locked-fields="pfLockedFields"
+          :lookup-status="cpfStatus"
+          :lookup-error="cpfError"
+          @cpf-change="handleCpfChange"
+          @toggle-optionals="toggleOptionals"
           @submit="handleSubmit"
         />
 
@@ -67,12 +78,16 @@ const {
         <PjForm
           v-if="accountType === 'pj'"
           :pj="pj"
+          :cnpj-lookup="cnpjLookup"
           :has-data-errors="hasDataErrors"
           :socios-editor="sociosEditor"
           :non-partner-editor="nonPartnerEditor"
           :validation-error-notice="validationErrorNotice"
           @submit="handleSubmit()"
         />
+
+        <!-- Atalho discreto para preencher tudo com dados de exemplo -->
+        <MockFillButton @click="fillWithMock" />
       </div>
     </motion.div>
 

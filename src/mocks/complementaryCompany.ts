@@ -1,5 +1,32 @@
 import type { PjCompanyFormData } from '@/types/dadosComplementares';
 
+/** Estado inicial do formulário PJ: tudo em branco até a consulta do CNPJ. */
+export const EMPTY_PJ_COMPANY_DATA: PjCompanyFormData = {
+  razaoSocial: '',
+  cnpj: '',
+  dataAbertura: '',
+  capitalSocial: '',
+  faturamentoAnual: '',
+  tipoEmpresa: '',
+  cnae: '',
+  cep: '',
+  logradouro: '',
+  numero: '',
+  complemento: '',
+  bairro: '',
+  cidade: '',
+  uf: '',
+  correspondenciaMesmo: true,
+  correspondenciaCep: '',
+  correspondenciaLogradouro: '',
+  correspondenciaNumero: '',
+  correspondenciaComplemento: '',
+  correspondenciaBairro: '',
+  correspondenciaCidade: '',
+  correspondenciaUf: '',
+};
+
+/** Dados de exemplo usados pelo botão "preencher com dados de exemplo". */
 export const INITIAL_PJ_COMPANY_DATA: PjCompanyFormData = {
   // Passo 1: Dados da Empresa
   razaoSocial: 'AGRO INDUSTRIAL SOJA & MILHO LTDA',

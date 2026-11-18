@@ -4,6 +4,8 @@ import { AlertCircle } from 'lucide-vue-next';
 defineProps<{
   value: string;
   hasDataErrors: boolean;
+  /** travado quando o CNAE veio da consulta de CNPJ */
+  readOnly?: boolean;
 }>();
 
 const emit = defineEmits<{ change: [value: string] }>();
@@ -23,12 +25,15 @@ const emit = defineEmits<{ change: [value: string] }>();
     <input
       type="text"
       required
+      :readonly="readOnly"
       placeholder="Ex: 01.15-6/00 - Cultivo de soja"
       :value="value"
-      :class="`w-full px-3.5 py-2.5 rounded-xl border font-medium focus:outline-none focus:ring-2 ${
-        hasDataErrors
-          ? 'border-amber-400 bg-amber-50/40 text-slate-900 focus:ring-amber-500/20'
-          : 'border-slate-200 bg-white focus:ring-gci/20 focus:border-gci'
+      :class="`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+        readOnly
+          ? 'border-slate-200 bg-slate-50 text-slate-700 font-bold cursor-default'
+          : hasDataErrors
+            ? 'font-medium border-amber-400 bg-amber-50/40 text-slate-900 focus:ring-2 focus:ring-amber-500/20'
+            : 'font-medium border-slate-200 bg-white focus:ring-2 focus:ring-gci/20 focus:border-gci'
       }`"
       @input="emit('change', ($event.target as HTMLInputElement).value)"
     />

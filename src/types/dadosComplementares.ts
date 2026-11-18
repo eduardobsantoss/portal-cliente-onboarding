@@ -17,6 +17,8 @@ export interface ComplementaryFormSubmitPayload {
 export type PjStep = 1 | 2 | 3;
 
 export interface PfFormData {
+  nome: string;
+  cpf: string;
   cep: string;
   logradouro: string;
   numero: string;
@@ -74,3 +76,12 @@ export interface PjCompanyFormData {
   correspondenciaCidade: string;
   correspondenciaUf: string;
 }
+
+/** Campos da empresa preenchidos pela consulta de CNPJ e travados para edição. */
+export type PjLockedField = keyof PjCompanyFormData;
+
+/** Campos do titular PF preenchidos pela consulta de CPF e travados para edição. */
+export type PfLockedField = keyof PfFormData;
+
+/** Estado da consulta de documento (CNPJ/CPF) no início do formulário. */
+export type DocumentLookupStatus = 'idle' | 'loading' | 'success' | 'error';

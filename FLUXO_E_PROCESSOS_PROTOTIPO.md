@@ -70,8 +70,8 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 - **Navegação**:
   - CTAs de cadastro ("Conheça o Portal", "Registre-se", "Registre-se agora", "Conheça nossas soluções") abrem o formulário **"Abra sua conta"** (`RegistrationModal.vue`, tela cheia): alternância PJ (CNPJ) / PF (CPF), e-mail, documento e telefone/WhatsApp, com máscaras e validação (e-mail válido, 11/14 dígitos, telefone com DDD). O "X" fecha e volta à landing. Ao **Concluir Cadastro**, os dados são guardados em `registrationLead` e o fluxo avança para **Confirmação do celular** (`phone_verification`), que exibe o telefone informado mascarado.
   - "Acesse sua conta" / "Acesse o Portal do Cliente" levam ao **Login** (`login`).
-- **Newsletter**: o modal de newsletter (`NewsletterModal.vue`) abre sozinho após 1,5 s para quem ainda não se inscreveu (controle via `localStorage`, chave `gci_newsletter_subscribed`) e envia o lead para a Firebase Function `submitNewsletterLead`.
-- **Configuração**: `VITE_GA_MEASUREMENT_ID` (GA4), `VITE_NEWSLETTER_LEAD_URL` (endpoint do lead; em dev o vite faz proxy de `/api/newsletter-lead`). Veja `.env.example`.
+- **Newsletter**: o modal de newsletter (`NewsletterModal.vue`) abre sozinho após 1,5 s para quem ainda não se inscreveu (controle via `localStorage`, chave `gci_newsletter_subscribed`) e simula o envio do lead (**mockado**: nenhuma requisição é feita nem dado sai do navegador, para evitar disparos acidentais).
+- **Configuração**: `VITE_GA_MEASUREMENT_ID` (GA4). Veja `.env.example`.
 
 ---
 

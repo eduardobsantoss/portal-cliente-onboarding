@@ -12,7 +12,7 @@ O fluxo começa na **landing page GCI** e segue para a confirmação do celular.
 
 1. Instale as dependências:
    `npm install`
-2. (Opcional) Copie `.env.example` para `.env.local` e ajuste as variáveis (GA4 e newsletter da landing).
+2. (Opcional) Copie `.env.example` para `.env.local` e ajuste as variáveis (GA4).
 3. Rode o app:
    `npm run dev`
 

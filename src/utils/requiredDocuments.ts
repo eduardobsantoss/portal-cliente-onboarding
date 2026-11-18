@@ -38,9 +38,9 @@ export interface RequiredDocumentsInput {
   hasProcurador: boolean;
 }
 
-/** Garante sempre um quadro de sócios completo: com menos de 3, usa o mock padrão. */
+/** Usa os sócios cadastrados no formulário; só recorre ao mock padrão quando não há nenhum. */
 export function resolveEffectiveSocios(socios: Socio[] | undefined): Socio[] {
-  return socios && socios.length >= 3 ? socios : DEFAULT_ONBOARDING_SOCIOS;
+  return socios && socios.length >= 1 ? socios : DEFAULT_ONBOARDING_SOCIOS;
 }
 
 /** Procuração é obrigatória quando há qualquer representante do tipo Procurador. */

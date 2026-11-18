@@ -14,18 +14,24 @@ const props = withDefaults(
     ufLabel?: string;
     complementoPlaceholder?: string;
     cepPlaceholder?: string;
+    /** campos travados (somente leitura), ex.: preenchidos pela consulta de CNPJ */
+    readOnlyFields?: readonly AddressField[];
   }>(),
   {
     variant: 'page',
     required: true,
     logradouroLabel: 'Logradouro / Rua *',
     ufLabel: 'Estado (UF) *',
+    readOnlyFields: () => [],
   },
 );
 
 const emit = defineEmits<{ fieldChange: [field: AddressField, value: string] }>();
 
 const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
+const isReadOnly = (field: AddressField) => props.readOnlyFields.includes(field);
+const inputClassOf = (field: AddressField) =>
+  isReadOnly(field) ? styles.value.readOnlyInput : styles.value.input;
 </script>
 
 <template>
@@ -34,7 +40,8 @@ const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
       :required="required"
       :placeholder="cepPlaceholder"
       :value="values.cep"
-      :input-class-name="styles.input"
+      :read-only="isReadOnly('cep')"
+      :input-class-name="inputClassOf('cep')"
       @change="(value) => emit('fieldChange', 'cep', value)"
     >
       <template #label>CEP *</template>
@@ -44,7 +51,8 @@ const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
       wrapper-class-name="sm:col-span-2"
       :required="required"
       :value="values.logradouro"
-      :input-class-name="styles.input"
+      :read-only="isReadOnly('logradouro')"
+      :input-class-name="inputClassOf('logradouro')"
       @change="(value) => emit('fieldChange', 'logradouro', value)"
     >
       <template #label>{{ logradouroLabel }}</template>
@@ -53,7 +61,8 @@ const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
     <TextField
       :required="required"
       :value="values.numero"
-      :input-class-name="styles.input"
+      :read-only="isReadOnly('numero')"
+      :input-class-name="inputClassOf('numero')"
       @change="(value) => emit('fieldChange', 'numero', value)"
     >
       <template #label>Número *</template>
@@ -62,7 +71,8 @@ const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
     <TextField
       :placeholder="complementoPlaceholder"
       :value="values.complemento"
-      :input-class-name="styles.input"
+      :read-only="isReadOnly('complemento')"
+      :input-class-name="inputClassOf('complemento')"
       @change="(value) => emit('fieldChange', 'complemento', value)"
     >
       <template #label>Complemento</template>
@@ -71,7 +81,8 @@ const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
     <TextField
       :required="required"
       :value="values.bairro"
-      :input-class-name="styles.input"
+      :read-only="isReadOnly('bairro')"
+      :input-class-name="inputClassOf('bairro')"
       @change="(value) => emit('fieldChange', 'bairro', value)"
     >
       <template #label>Bairro *</template>
@@ -81,7 +92,8 @@ const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
       wrapper-class-name="sm:col-span-2"
       :required="required"
       :value="values.cidade"
-      :input-class-name="styles.input"
+      :read-only="isReadOnly('cidade')"
+      :input-class-name="inputClassOf('cidade')"
       @change="(value) => emit('fieldChange', 'cidade', value)"
     >
       <template #label>Cidade *</template>
@@ -91,7 +103,8 @@ const styles = computed(() => FIELD_VARIANT_STYLES[props.variant]);
       :max-length="2"
       :required="required"
       :value="values.uf"
-      :input-class-name="styles.input"
+      :read-only="isReadOnly('uf')"
+      :input-class-name="inputClassOf('uf')"
       @change="(value) => emit('fieldChange', 'uf', value.toUpperCase())"
     >
       <template #label>{{ ufLabel }}</template>

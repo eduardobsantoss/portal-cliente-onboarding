@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Check } from 'lucide-vue-next';
 import PartnerCard from '@/components/forms/PartnerCard.vue';
 import CheckboxField from '@/components/ui/CheckboxField.vue';
 import StatusChip from '@/components/ui/StatusChip.vue';
 import type { Socio } from '@/types/socio';
+import { isSocioComplete } from '@/utils/socio';
 
 const props = defineProps<{
   socio: Socio;
@@ -16,6 +18,8 @@ const emit = defineEmits<{
   toggleRepresentante: [socioId: string];
   edit: [socio: Socio];
 }>();
+
+const isComplete = computed(() => isSocioComplete(props.socio));
 </script>
 
 <template>
@@ -35,11 +39,16 @@ const emit = defineEmits<{
         <StatusChip v-if="socio.isRepresentanteLegal" tone="success">
           <Check :size="11" :stroke-width="3" /> Representante Legal
         </StatusChip>
+        <StatusChip v-if="!isComplete" tone="warning">Dados pendentes</StatusChip>
       </div>
-      <p class="text-[11px] text-slate-500">
+      <p v-if="isComplete" class="text-[11px] text-slate-500">
         CPF/CNPJ: {{ socio.cpfCnpj }} • {{ socio.email }} • {{ socio.telefone }}
       </p>
-      <p class="text-[10px] text-slate-400">
+      <p v-else class="text-[11px] text-amber-700 font-medium">
+        <template v-if="socio.cargo">{{ socio.cargo }} • </template>Clique em editar para
+        completar os dados deste sócio.
+      </p>
+      <p v-if="isComplete" class="text-[10px] text-slate-400">
         {{ socio.cidade }}/{{ socio.uf }} • {{ socio.profissao }} • {{ socio.estadoCivil }}
         <template v-if="socio.regimeBens"> ({{ socio.regimeBens }})</template>
       </p>

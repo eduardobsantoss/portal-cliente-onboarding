@@ -13,7 +13,6 @@ declare module '*.png' {
 
 interface ImportMetaEnv {
   readonly VITE_GA_MEASUREMENT_ID?: string;
-  readonly VITE_NEWSLETTER_LEAD_URL?: string;
 }
 
 interface ImportMeta {

@@ -26,6 +26,8 @@ export interface Socio {
   nacionalidade: string;
   responsabilidade: 'Sócio' | 'Representante legal' | 'Procurador' | string;
   cargo?: string;
+  /** Pré-cadastrado a partir do QSA da Receita: o nome fica travado. */
+  origemReceita?: boolean;
   pep: boolean;
   // Opcionais do sócio
   nomePai?: string;
