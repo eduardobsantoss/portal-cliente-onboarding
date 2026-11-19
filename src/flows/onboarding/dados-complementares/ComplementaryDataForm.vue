@@ -12,13 +12,20 @@ import SocioModal from '@/flows/onboarding/dados-complementares/socios/SocioModa
 import { useComplementaryForm } from '@/flows/onboarding/dados-complementares/useComplementaryForm';
 import type { ComplementaryFormSubmitPayload } from '@/types/dadosComplementares';
 
+const props = defineProps<{
+  /** CNPJ informado no cadastro da landing (com máscara); é consultado ao abrir o formulário. */
+  initialCnpj?: string;
+}>();
+
 const emit = defineEmits<{
   submit: [payload?: ComplementaryFormSubmitPayload];
   /** declarado por compatibilidade com o roteador; o formulário não dispara 'back' */
   back: [];
 }>();
 
-const form = useComplementaryForm((payload) => emit('submit', payload));
+const form = useComplementaryForm((payload) => emit('submit', payload), {
+  initialCnpj: props.initialCnpj,
+});
 const {
   accountType,
   hasDataErrors,

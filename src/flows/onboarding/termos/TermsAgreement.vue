@@ -71,7 +71,7 @@ const {
       <form @submit="handleSubmit" class="p-6 sm:p-8 space-y-6">
         <!-- Body Welcome Text -->
         <div class="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
-          Bem-vindo ao portal do Grupo Ceres Investimentos. Antes de iniciar o envio de documentos para liberação do seu limite operacional, solicitamos a concordância com os termos e condições da plataforma.
+          Bem-vindo ao portal do Grupo Ceres Investimentos. Antes de iniciar o envio de documentos para análise de crédito, solicitamos a concordância com os termos e condições da plataforma.
         </div>
 
         <!-- Clean Single Checkbox -->

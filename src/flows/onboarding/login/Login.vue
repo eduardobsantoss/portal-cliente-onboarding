@@ -7,6 +7,11 @@ import { useLoginForm } from './useLoginForm';
 import LoginForm from './LoginForm.vue';
 import LoginHeroPanel from './LoginHeroPanel.vue';
 
+const props = defineProps<{
+  /** E-mail informado no cadastro da landing; preenche o campo de login. */
+  initialEmail?: string;
+}>();
+
 const emit = defineEmits<{
   login: [];
   startActivation: [];
@@ -22,7 +27,7 @@ const {
   isCreatePasswordOpen,
   handleSubmit,
   handleCreatePasswordClose,
-} = useLoginForm({ onLogin: () => emit('login') });
+} = useLoginForm({ onLogin: () => emit('login'), initialEmail: props.initialEmail });
 </script>
 
 <template>

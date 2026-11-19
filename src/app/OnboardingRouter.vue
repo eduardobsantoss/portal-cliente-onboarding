@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import LandingPage from '@/flows/onboarding/landing/LandingPage.vue';
 import InitialPhoneVerification from '@/flows/onboarding/sms/InitialPhoneVerification.vue';
-import CreatePasswordScreen from '@/flows/onboarding/senha/CreatePasswordScreen.vue';
+// import CreatePasswordScreen from '@/flows/onboarding/senha/CreatePasswordScreen.vue'; // etapa desativada: a senha é criada no cadastro da landing
 import Login from '@/flows/onboarding/login/Login.vue';
 import TermsAgreement from '@/flows/onboarding/termos/TermsAgreement.vue';
 import ComplementaryDataForm from '@/flows/onboarding/dados-complementares/ComplementaryDataForm.vue';
@@ -36,33 +36,39 @@ const handleSubmitDocs = () => {
 </script>
 
 <template>
-  <!-- Step 0: Landing page do GCI (CTAs de cadastro abrem o formulário e seguem para a confirmação do celular) -->
+  <!-- Step 0: Landing page do GCI (CTAs de cadastro abrem o formulário e seguem para o login) -->
   <LandingPage
     v-if="flow.currentView === 'landing'"
     @register="flow.submitRegistration"
     @login="flow.goTo('login')"
   />
 
-  <!-- Step 1: Confirmação do celular por SMS -->
+  <!-- Step 1: Login (logo após o cadastro na landing, ou para quem já possui acesso) -->
+  <Login
+    v-else-if="flow.currentView === 'login'"
+    :initial-email="flow.registrationLead?.email"
+    @login="flow.goTo('phone_verification')"
+    @start-activation="flow.goTo('phone_verification')"
+  />
+
+  <!-- Step 2: Confirmação do celular por SMS (depois de logar) -->
   <InitialPhoneVerification
     v-else-if="flow.currentView === 'phone_verification'"
     :masked-phone="registeredMaskedPhone"
-    @confirmed="flow.goTo('create_password')"
+    @confirmed="flow.goTo('terms')"
     @go-to-login="flow.goTo('login')"
   />
 
-  <!-- Step 2: Criação de Senha -->
+  <!--
+    Step 3: Criação de Senha — desativado: a senha agora é criada no formulário "Abra sua conta" da landing.
+    Para reativar: descomente este bloco e o import de CreatePasswordScreen, e volte o
+    @confirmed da confirmação do celular para flow.goTo('create_password').
+
   <CreatePasswordScreen
     v-else-if="flow.currentView === 'create_password'"
     @close="flow.goTo('terms')"
   />
-
-  <!-- Step 3: Login (Para quem já possui cadastro ou deseja voltar) -->
-  <Login
-    v-else-if="flow.currentView === 'login'"
-    @login="flow.goTo('terms')"
-    @start-activation="flow.goTo('phone_verification')"
-  />
+  -->
 
   <!-- Step 4: Terms of Use & Privacy Agreement -->
   <TermsAgreement
@@ -74,6 +80,7 @@ const handleSubmitDocs = () => {
   <!-- Step 5: Complementary Data Form (PF or PJ with dynamic steps and partners) -->
   <ComplementaryDataForm
     v-else-if="flow.currentView === 'complementary_form'"
+    :initial-cnpj="flow.registrationLead?.document"
     @submit="flow.handleComplementarySubmit"
     @back="flow.goTo('terms')"
   />

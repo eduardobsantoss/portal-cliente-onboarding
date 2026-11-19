@@ -38,7 +38,7 @@ const handleVerified = () => {
         class="text-xs font-semibold text-slate-500 hover:text-gci flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
       >
         <LogOut :size="14" />
-        Já possuo senha
+        Voltar ao login
       </button>
     </template>
 
@@ -75,7 +75,7 @@ const handleVerified = () => {
           <div class="space-y-0.5">
             <span class="font-bold">Ambiente Seguro GCI SCD</span>
             <p class="text-emerald-800 text-[11px] leading-relaxed">
-              Após a confirmação do celular, você definirá sua senha de acesso exclusiva para formalizar o cadastro e acompanhar suas operações.
+              Após a confirmação do celular, você seguirá para os termos de uso e para o envio dos dados e documentos da sua empresa.
             </p>
           </div>
         </div>

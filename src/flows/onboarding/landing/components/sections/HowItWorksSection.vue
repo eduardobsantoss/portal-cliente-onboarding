@@ -16,7 +16,7 @@ const steps = [
   {
     number: '01',
     title: 'Faça seu cadastro',
-    description: 'Informe e-mail, CPF ou CNPJ e telefone. Confirme por SMS e crie sua senha.',
+    description: 'Informe os dados da empresa e o seu contato e crie sua senha. Depois, entre no portal e confirme seu celular por SMS.',
     icon: FileText,
   },
   {

@@ -6,7 +6,8 @@ import type { RegistrationLead } from '@/types/registration';
 
 export function useOnboardingFlow() {
   // A jornada começa na landing page do GCI e segue:
-  // Landing (formulário "Abra sua conta") → Confirmação do celular por SMS → Criação de senha → Termos → Dados complementares...
+  // Landing (formulário "Abra sua conta") → Login → Confirmação do celular por SMS → Termos (boas-vindas) → Dados complementares...
+  // A etapa "Criar Senha de Acesso" está desativada: a senha agora é criada no formulário da landing.
   const currentView = ref<OnboardingViewState>('landing');
   const history = ref<OnboardingViewState[]>([]);
   const registrationLead = ref<RegistrationLead | null>(null);
@@ -28,10 +29,11 @@ export function useOnboardingFlow() {
     history.value = prev.slice(0, -1);
   };
 
-  /** Guarda os dados do formulário da landing e avança para a confirmação do celular. */
+  /** Guarda os dados do formulário da landing e avança para o login (o SMS vem depois de logar). */
   const submitRegistration = (lead: RegistrationLead) => {
     registrationLead.value = lead;
-    goTo('phone_verification');
+    goTo('login');
+    // Fluxo anterior: goTo('phone_verification') direto do cadastro.
   };
 
   const setDocumentsSnapshot = (items: DocumentUploadItem[] | null) => {

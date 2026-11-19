@@ -3,10 +3,12 @@ import { MOCK_USER_EMAIL } from '@/mocks/onboardingUser';
 
 interface UseLoginFormParams {
   onLogin: () => void;
+  /** E-mail do cadastro recém-feito na landing; sem ele, usa o e-mail de exemplo. */
+  initialEmail?: string;
 }
 
-export function useLoginForm({ onLogin }: UseLoginFormParams) {
-  const email = ref(MOCK_USER_EMAIL);
+export function useLoginForm({ onLogin, initialEmail }: UseLoginFormParams) {
+  const email = ref(initialEmail || MOCK_USER_EMAIL);
   const password = ref('');
   const showPassword = ref(false);
   const isCreatePasswordOpen = ref(false);

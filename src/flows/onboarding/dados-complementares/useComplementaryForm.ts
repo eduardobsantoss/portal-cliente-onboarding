@@ -15,7 +15,15 @@ import {
 } from '@/utils/complementarySubmit';
 import { isSocioComplete } from '@/utils/socio';
 
-export function useComplementaryForm(onSubmit: (payload?: ComplementaryFormSubmitPayload) => void) {
+interface UseComplementaryFormOptions {
+  /** CNPJ informado no cadastro da landing: já entra no formulário e dispara a consulta na Receita. */
+  initialCnpj?: string;
+}
+
+export function useComplementaryForm(
+  onSubmit: (payload?: ComplementaryFormSubmitPayload) => void,
+  { initialCnpj }: UseComplementaryFormOptions = {},
+) {
   const accountType = ref<AccountType>('pj');
 
   // Validation state
@@ -40,6 +48,9 @@ export function useComplementaryForm(onSubmit: (payload?: ComplementaryFormSubmi
   // Consultas de documento: o CNPJ/CPF vem primeiro e preenche o restante do formulário.
   const cnpjLookup = useCnpjLookup({ pj, sociosEditor });
   const cpfLookup = useCpfLookup({ pf });
+
+  // O CNPJ do cadastro da landing segue para cá e já faz a busca, sem o usuário digitar de novo.
+  if (initialCnpj) cnpjLookup.handleCnpjChange(initialCnpj);
 
   const selectAccountType = (type: AccountType) => {
     accountType.value = type;

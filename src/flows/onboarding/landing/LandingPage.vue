@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+// import { onBeforeUnmount } from 'vue'; // usado apenas pelo timer da newsletter (desativada)
 import Navbar from './components/layout/Navbar.vue';
 import Footer from './components/layout/Footer.vue';
 import HeroSection from './components/sections/HeroSection.vue';
@@ -8,10 +9,10 @@ import BenefitsSection from './components/sections/BenefitsSection.vue';
 import SocialProofSection from './components/sections/SocialProofSection.vue';
 import HowItWorksSection from './components/sections/HowItWorksSection.vue';
 import CallToActionSection from './components/sections/CallToActionSection.vue';
-import NewsletterModal from './components/modals/NewsletterModal.vue';
+// import NewsletterModal from './components/modals/NewsletterModal.vue'; // newsletter desativada por enquanto
 import RegistrationModal from './components/modals/RegistrationModal.vue';
 import LegalDocumentModal from './components/modals/LegalDocumentModal.vue';
-import { NEWSLETTER_STORAGE_SUBSCRIBED } from './constants/newsletter';
+// import { NEWSLETTER_STORAGE_SUBSCRIBED } from './constants/newsletter'; // newsletter desativada por enquanto
 import type { RegistrationLead } from '@/types/registration';
 import type { TermsDocumentType } from '@/types/terms';
 import { useLandingMotion } from './animations/useLandingMotion';
@@ -21,7 +22,7 @@ import { pauseSmoothScroll, resumeSmoothScroll } from './animations/useSmoothScr
  * Passo 0 do onboarding: landing page do Grupo Ceres Investimentos.
  * Os CTAs de cadastro abrem o formulário "Abra sua conta"; ao concluir, o fluxo segue para a
  * confirmação do celular. "Acesse sua conta" leva ao login.
- * O modal de newsletter continua abrindo sozinho (uma vez) para quem ainda não se inscreveu.
+ * O modal de newsletter está desativado (comentado) por enquanto; ver os blocos marcados abaixo para reativar.
  */
 const emit = defineEmits<{
   register: [lead: RegistrationLead];
@@ -31,13 +32,13 @@ const emit = defineEmits<{
 const pageRoot = ref<HTMLElement | null>(null);
 useLandingMotion(pageRoot);
 
-const isNewsletterModalOpen = ref(false);
+// const isNewsletterModalOpen = ref(false); // newsletter desativada por enquanto
 const isRegistrationOpen = ref(false);
 const legalDocument = ref<TermsDocumentType | null>(null);
-let newsletterTimer: number | undefined;
+// let newsletterTimer: number | undefined; // newsletter desativada por enquanto
 
 const openRegistration = () => {
-  isNewsletterModalOpen.value = false;
+  // isNewsletterModalOpen.value = false; // newsletter desativada por enquanto
   isRegistrationOpen.value = true;
 };
 const handleRegistrationSubmit = (lead: RegistrationLead) => {
@@ -47,27 +48,33 @@ const handleRegistrationSubmit = (lead: RegistrationLead) => {
 const openLogin = () => emit('login');
 
 // Com um modal aberto, a rolagem suave da página é pausada (o modal rola sozinho).
-watch([isRegistrationOpen, isNewsletterModalOpen, legalDocument], ([registration, newsletter, legal]) => {
-  if (registration || newsletter || legal) pauseSmoothScroll();
+watch([isRegistrationOpen, legalDocument], ([registration, legal]) => {
+  if (registration || legal) pauseSmoothScroll();
   else resumeSmoothScroll();
 });
+// Versão com newsletter (desativada por enquanto):
+// watch([isRegistrationOpen, isNewsletterModalOpen, legalDocument], ([registration, newsletter, legal]) => {
+//   if (registration || newsletter || legal) pauseSmoothScroll();
+//   else resumeSmoothScroll();
+// });
 
 onMounted(() => {
   window.scrollTo({ top: 0 });
 
-  const subscribed = localStorage.getItem(NEWSLETTER_STORAGE_SUBSCRIBED);
-  if (subscribed) return;
-
-  newsletterTimer = window.setTimeout(() => {
-    // Não sobrepõe o formulário de cadastro caso o visitante já o tenha aberto.
-    if (isRegistrationOpen.value) return;
-    isNewsletterModalOpen.value = true;
-  }, 1500);
+  // Newsletter desativada por enquanto: o modal abria sozinho (uma vez) para quem ainda não se inscreveu.
+  // const subscribed = localStorage.getItem(NEWSLETTER_STORAGE_SUBSCRIBED);
+  // if (subscribed) return;
+  //
+  // newsletterTimer = window.setTimeout(() => {
+  //   // Não sobrepõe o formulário de cadastro caso o visitante já o tenha aberto.
+  //   if (isRegistrationOpen.value) return;
+  //   isNewsletterModalOpen.value = true;
+  // }, 1500);
 });
 
-onBeforeUnmount(() => {
-  window.clearTimeout(newsletterTimer);
-});
+// onBeforeUnmount(() => {
+//   window.clearTimeout(newsletterTimer);
+// });
 </script>
 
 <template>
@@ -102,9 +109,11 @@ onBeforeUnmount(() => {
       @close="legalDocument = null"
     />
 
+    <!-- Newsletter desativada por enquanto
     <NewsletterModal
       :isOpen="isNewsletterModalOpen"
       :onClose="() => (isNewsletterModalOpen = false)"
     />
+    -->
   </div>
 </template>
