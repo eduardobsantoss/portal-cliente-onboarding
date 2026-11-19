@@ -115,55 +115,41 @@ const isStrongPassword = (value: string) =>
   /\d/.test(value) &&
   /[^A-Za-z0-9]/.test(value);
 
+// Nenhum campo é obrigatório por enquanto: campos vazios passam; o que for preenchido ainda é conferido.
+// Para voltar a exigir, reative as checagens de "campo vazio" (ver o histórico do git), as props `required`
+// do template e a validação do aceite dos termos.
 const validate = () => {
   const next: typeof errors.value = {};
 
-  if (!form.document.trim()) {
-    next.document = 'Por favor, informe o CNPJ.';
-  } else if (onlyDigits(form.document).length !== 14) {
-    next.document = 'O CNPJ deve conter 14 dígitos.';
-  } else if (!isValidCnpj(form.document)) {
+  if (form.document.trim() && !isValidCnpj(form.document)) {
     next.document = 'CNPJ inválido. Confira os números digitados.';
   }
 
-  if (!form.cpf.trim()) {
-    next.cpf = 'Por favor, informe o CPF.';
-  } else if (onlyDigits(form.cpf).length !== 11) {
-    next.cpf = 'O CPF deve conter 11 dígitos.';
-  } else if (!isValidCpf(form.cpf)) {
+  if (form.cpf.trim() && !isValidCpf(form.cpf)) {
     next.cpf = 'CPF inválido. Confira os números digitados.';
   }
 
-  if (form.name.trim().split(/\s+/).filter(Boolean).length < 2) {
-    next.name = 'Informe seu nome completo.';
-  }
-
-  if (!EMAIL_PATTERN.test(form.email.trim())) {
+  if (form.email.trim() && !EMAIL_PATTERN.test(form.email.trim())) {
     next.email = 'Informe um endereço de e-mail válido.';
   }
 
-  if (!form.emailConfirmation.trim()) {
-    next.emailConfirmation = 'Confirme o seu e-mail.';
-  } else if (form.emailConfirmation.trim().toLowerCase() !== form.email.trim().toLowerCase()) {
+  if (
+    (form.email.trim() || form.emailConfirmation.trim()) &&
+    form.emailConfirmation.trim().toLowerCase() !== form.email.trim().toLowerCase()
+  ) {
     next.emailConfirmation = 'Os e-mails informados não são iguais.';
   }
 
-  if (onlyDigits(form.phone).length < 10) {
+  if (form.phone.trim() && onlyDigits(form.phone).length < 10) {
     next.phone = 'Informe um telefone/WhatsApp válido com DDD.';
   }
 
-  if (!isStrongPassword(form.password)) {
+  if (form.password && !isStrongPassword(form.password)) {
     next.password = PASSWORD_HINT;
   }
 
-  if (!form.passwordConfirmation) {
-    next.passwordConfirmation = 'Confirme a sua senha.';
-  } else if (form.passwordConfirmation !== form.password) {
+  if ((form.password || form.passwordConfirmation) && form.passwordConfirmation !== form.password) {
     next.passwordConfirmation = 'As senhas informadas não são iguais.';
-  }
-
-  if (!termsAccepted.value) {
-    next.terms = 'É necessário aceitar os Termos de Uso e a Política de Privacidade.';
   }
 
   return next;
@@ -302,7 +288,6 @@ const handleSubmit = () => {
                 hint="14 dígitos"
                 inputmode="numeric"
                 placeholder="00.000.000/0000-00"
-                required
                 :error="errors.document"
                 @input="onDocumentInput"
               />
@@ -315,7 +300,6 @@ const handleSubmit = () => {
                 inputmode="numeric"
                 autocomplete="off"
                 placeholder="000.000.000-00"
-                required
                 :error="errors.cpf"
                 @input="onCpfInput"
               />
@@ -327,7 +311,6 @@ const handleSubmit = () => {
                 label="Nome completo"
                 autocomplete="name"
                 placeholder="Seu nome completo"
-                required
                 :error="errors.name"
                 @input="clearError('name')"
               />
@@ -339,7 +322,6 @@ const handleSubmit = () => {
                 type="email"
                 autocomplete="email"
                 placeholder="seuemail@empresa.com.br"
-                required
                 :error="errors.email"
                 @input="clearError('email')"
               />
@@ -351,7 +333,6 @@ const handleSubmit = () => {
                 type="email"
                 autocomplete="off"
                 placeholder="Repita o e-mail"
-                required
                 :error="errors.emailConfirmation"
                 @input="clearError('emailConfirmation')"
               />
@@ -364,7 +345,6 @@ const handleSubmit = () => {
                 type="tel"
                 autocomplete="tel"
                 placeholder="(00) 00000-0000"
-                required
                 :error="errors.phone"
                 @input="onPhoneInput"
               />
@@ -376,7 +356,6 @@ const handleSubmit = () => {
                 type="password"
                 autocomplete="new-password"
                 placeholder="Crie uma senha segura"
-                required
                 :error="errors.password"
                 @input="clearError('password')"
               />
@@ -388,7 +367,6 @@ const handleSubmit = () => {
                 type="password"
                 autocomplete="new-password"
                 placeholder="Repita a senha"
-                required
                 :error="errors.passwordConfirmation"
                 @input="clearError('passwordConfirmation')"
               />
@@ -419,7 +397,7 @@ const handleSubmit = () => {
                   >
                     Política de Privacidade
                   </button>
-                  da plataforma. *
+                  da plataforma.
                 </TcCheckbox>
                 <p
                   v-if="errors.terms"
@@ -430,10 +408,6 @@ const handleSubmit = () => {
                   {{ errors.terms }}
                 </p>
               </div>
-
-              <p class="m-0 text-[length:var(--text-xs)] text-[color:var(--text-muted)] sm:col-span-2">
-                * campo obrigatório
-              </p>
 
               <TcButton
                 id="btn-submit-registration"
