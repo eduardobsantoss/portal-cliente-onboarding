@@ -29,7 +29,7 @@ const emit = defineEmits<{
   >
     <template #icon><QrCode :size="18" /></template>
     <template #badge>
-      <ValidationBadge :is-done="facialVerified" done-label="Validada" variant="topic" />
+      <ValidationBadge :is-done="facialVerified" done-label="Concluído" variant="topic" />
     </template>
 
     <FacialVerification :is-verified="facialVerified" @verified="emit('verified')" />

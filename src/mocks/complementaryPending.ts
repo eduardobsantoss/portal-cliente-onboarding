@@ -4,6 +4,7 @@ import type { Socio } from '@/types/socio';
 export const MOCK_FATURAMENTO_ANUAL = '18.500.000,00';
 
 type SocioPendingField =
+  | 'cpfCnpj'
   | 'email'
   | 'telefone'
   | 'dataNascimento'
@@ -31,6 +32,7 @@ function buildMockEmail(name: string | undefined): string {
  */
 export function buildMockSocioPendingFields(form: Partial<Socio>): Partial<Socio> {
   const mock: Record<SocioPendingField, string> = {
+    cpfCnpj: '529.982.247-25',
     email: buildMockEmail(form.nome),
     telefone: '(34) 99999-0000',
     dataNascimento: '1980-01-15',

@@ -22,15 +22,18 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
    │ ("Conheça o Portal" / "Registre-se")
    ▼
 [Formulário "Abra sua conta" (e-mail, CPF/CNPJ, telefone)] ──("X")──► [Landing GCI]
-   │ ("Concluir Cadastro")
+   │ ("Concluir Cadastro": tela de processamento e sucesso, estilo Nubank)
    ▼
-[Confirmação do celular (SMS)] ──► [Criação de senha]
+[Login]
    │
    ▼
-[Login] 
+[Confirmação do celular (SMS)]
    │
    ▼
-[Termos de Uso e Política de Privacidade]
+[Biometria facial (QR Code + prova de vida)]
+   │
+   ▼
+[Boas-vindas — "Portal Grupo Ceres" (TermsAgreement)]
    │
    ▼
 [Dados Complementares para Abertura] (Pessoa Física ou Pessoa Jurídica)
@@ -38,8 +41,9 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
    │ └─ PF: Titular, Estado Civil Obrigatório (Cônjuge condicional), Endereço, Sócios vinculados
    ▼
 [Envio de Documentos Iniciais de Abertura]
-   │ ├─ Documentos da Empresa (Contrato/Estatuto, Ata de Eleição se S/A, Procuração opcional)
-   │ └─ Documentos dos Sócios (Eduardo Santos pré-carregado; Marcos Damasceno e Cristiano Drigo limpos para upload)
+   │ ├─ Documentos da Empresa (Contrato/Estatuto, Ata se S/A, Procuração, Alteração/Certidão, Organograma, Endividamento,
+   │ │   Balanço e DRE 2023-2025 + balancete 2026 — ou DAS para ME —, Faturamento 2023-2025 + período corrente)
+   │ └─ Documentos dos Sócios (identidade, estado civil, residência e IRPF + recibo para sócios PF)
    ▼
 [Validação e Análise Documental em Tela]
    │ ├─ Simulação: Aprovar Documentos ──► [Sua Conta Digital GCI está aberta!]
@@ -54,11 +58,11 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 [Dashboard do Cliente / Portal GCI — Home]
    ├─ Menu liberado (Home, Minhas Informações, Carteira, Operações, Compl. Cadastro)
    ├─ Limite de R$ 2.000.000,00 disponível, "Antecipar Agora" abre a Solicitação de Operação
-   └─ Aba "Compl. Cadastro" (Documentos e Checklist Oficial GCI)
-        ├─ Seção 3: Documentos Cadastrais da Empresa
-        ├─ Seção 4: Demonstrativos Financeiros & Contábeis (Regra Simples Nacional)
-        ├─ Seção 5: Crédito & Relacionamento Bancário
-        └─ Seção 6: Quadro Societário / Partes Relacionadas (Sócios PF com cônjuges e Sócios PJ)
+   ├─ Primeiro acesso: tour guiado ("Fazer tutorial" ou "Pular")
+   └─ Aba "Compl. Cadastro" (Checklist enxuto)
+        ├─ 1. Confirmação do telefone por SMS (já concluída no início)
+        ├─ 2. Reconhecimento & Biometria Facial (já concluída no início)
+        └─ 3. Quadro Societário / Partes Relacionadas (documento do cônjuge e sócios PJ)
 ```
 
 ---
@@ -68,7 +72,7 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 ### Etapa 0: Landing Page GCI (`LandingPage.vue`)
 - **Objetivo**: Primeira tela da jornada. Apresenta o Portal do Cliente GCI (Hero, Soluções, Benefícios, Prova Social, Como Funciona, CTA final e Rodapé) antes de qualquer passo de cadastro. Origem: projeto `landing-page-gci`, portado para `src/flows/onboarding/landing/`.
 - **Navegação**:
-  - CTAs de cadastro ("Conheça o Portal", "Registre-se", "Registre-se agora", "Conheça nossas soluções") abrem o formulário **"Abra sua conta"** (`RegistrationModal.vue`, tela cheia): alternância PJ (CNPJ) / PF (CPF), e-mail, documento e telefone/WhatsApp, com máscaras e validação (e-mail válido, 11/14 dígitos, telefone com DDD). O "X" fecha e volta à landing. Ao **Concluir Cadastro**, os dados são guardados em `registrationLead` e o fluxo avança para **Confirmação do celular** (`phone_verification`), que exibe o telefone informado mascarado.
+  - CTAs de cadastro ("Conheça o Portal", "Registre-se", "Registre-se agora", "Conheça nossas soluções") abrem o formulário **"Abra sua conta"** (`RegistrationModal.vue`, tela cheia): alternância PJ (CNPJ) / PF (CPF), e-mail, documento e telefone/WhatsApp, com máscaras e validação (e-mail válido, 11/14 dígitos, telefone com DDD). O "X" fecha e volta à landing. Ao **Concluir Cadastro**, o formulário trava e exibe uma tela de **processamento** (ícone girando e três passos: "Validando seus dados", "Criando seu acesso", "Preparando o seu portal") seguida de uma tela de **sucesso** animada ("Tudo certo, {nome}!"), que só avança pelo botão "Continuar" (não há avanço automático) (`RegistrationSubmitFeedback.vue`). Só então os dados são guardados em `registrationLead` e o fluxo segue para o **Login** (`login`), com o e-mail já preenchido.
   - "Acesse sua conta" / "Acesse o Portal do Cliente" levam ao **Login** (`login`).
 - **Newsletter**: o modal de newsletter (`NewsletterModal.vue`) abre sozinho após 1,5 s para quem ainda não se inscreveu (controle via `localStorage`, chave `gci_newsletter_subscribed`) e simula o envio do lead (**mockado**: nenhuma requisição é feita nem dado sai do navegador, para evitar disparos acidentais).
 - **Configuração**: `VITE_GA_MEASUREMENT_ID` (GA4). Veja `.env.example`.
@@ -83,15 +87,24 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
   - E-mail: `eduardo.santos@ceresinvestimentos.com`
   - Perfil de Titular / Representante Legal.
 - **Recursos Adicionais**: Recuperação de senha e modal de suporte rápido.
+- **Navegação**: Depois de logar, o fluxo segue para a confirmação do celular.
 
 ---
 
-### Etapa 2: Termos de Uso e Política de Privacidade (`TermsAgreement.vue`)
-- **Objetivo**: Consentimento formal conforme diretrizes de SCD do Banco Central (Bacen) e LGPD.
-- **Estrutura**:
-  - Leitura dos Termos Gerais de Abertura de Conta de Pagamento / Crédito.
-  - Checkboxes obrigatórios de ciência e aceite dos termos.
-  - Bloqueio do botão de prosseguir até a concordância integral.
+### Etapa 1.1: Confirmação do Celular por SMS (`InitialPhoneVerification.vue`)
+- **Objetivo**: Validar o telefone informado no cadastro (exibido mascarado) com um código de 6 dígitos (no protótipo, `123456`).
+- **Navegação**: Ao confirmar, avança para a biometria facial. Permite voltar ao login.
+
+### Etapa 1.2: Biometria Facial (`InitialFacialVerification.vue`)
+- **Objetivo**: Reconhecimento facial com prova de vida, que antes ficava no "Compl. Cadastro" e agora é feito logo no início da jornada, depois do SMS.
+- **Estrutura**: QR Code e link (copiar ou enviar por SMS) para abrir a captura no celular, com o botão discreto **"Simular Validação Facial"** (demo). Ao validar, mostra o cartão de sucesso (identificador, liveness score e status de auditoria) e avança sozinho para as boas-vindas.
+- **Navegação**: Permite voltar ao login. No portal, o tópico "Reconhecimento & Biometria Facial" aparece já como **Concluído**, igual ao do telefone.
+
+---
+
+### Etapa 2: Boas-vindas (`TermsAgreement.vue`)
+- **Objetivo**: Tela de boas-vindas, com o título **"Portal Grupo Ceres"** e um texto de acolhimento ("Que bom ter você por aqui! Seja bem-vindo...") que termina com *"Vamos iniciar a sua jornada de crédito?"*.
+- **Estrutura**: O aceite formal dos termos (checkboxes de Termos Gerais e LGPD) está desativado por enquanto no protótipo; fica só o botão de continuar.
 - **Navegação**: Permite retornar ao login ou avançar para o formulário complementar.
 
 ---
@@ -126,11 +139,19 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 - **Objetivo**: Recepção dos arquivos de identificação e societários para o processo de abertura de conta.
 - **Especificações Técnicas de Arquivo**:
   - Formatos aceitos: **JPG, JPEG, PNG ou PDF (base64)** até **12MB** por arquivo.
-- **Documentos da Empresa**:
+- **Organização da tela**: os documentos ficam em um cartão por empresa e por sócio, **expansível/recolhível** como os tópicos do "Compl. Cadastro" (cabeçalho clicável com selo "x de y enviados" e chevron). Ao abrir a tela, só o cartão da empresa vem expandido; no ajuste de documentação, os cartões com documento recusado também abrem sozinhos.
+- **Documentos da Empresa** (todos obrigatórios; cada item guarda o `typeId` do Pipefy para a integração futura):
   - *Contrato Social Consolidado* ou *Estatuto Social Vigente* (título e obrigatoriedade adaptados dinamicamente se o tipo de empresa for S/A ou Cooperativa).
   - *Ata de Eleição de Diretoria* (obrigatório condicionalmente se for S/A).
   - *Procuração* (opcional caso haja procurador constituído).
+  - *Última Alteração Contratual / Certidão Simplificada* (com NIRE; alteração superior a 3 anos exige certidão simplificada).
+  - *Organograma Societário* e *Demonstrativo de Endividamento Atualizado*.
+  - *Balanço Patrimonial e DRE* de 2023, 2024 e 2025 + *Balancete do período corrente (2026)*, um upload por exercício.
+  - *Declaração de Faturamento Mensal* de 2023, 2024 e 2025 + período corrente (2026), um upload por exercício.
+  - **Empresa ME / Simples Nacional** (`simples.optante` da ReceitaWS): o Balanço/DRE/balancete é dispensado e os **DAS** (2023, 2024, 2025 e 2026 corrente) entram no lugar. Um botão discreto da demo ("Simular empresa ME / Simples") alterna os dois cenários.
+  - Os itens por exercício aparecem agrupados sob um título comum ("Balanço Patrimonial e DRE", "Declaração de Faturamento Mensal", "DAS").
 - **Documentos dos Sócios (Regra Estrita Implementada)**:
+  - Sócios Pessoa Física também enviam *Comprovante de Residência* e *Declaração de IRPF + recibo de entrega*; a *Certidão de Casamento / União Estável* aparece conforme o estado civil.
   - **Eduardo Santos**: Já vem pré-carregado no protótipo com documento anexado para agilidade de demonstração.
   - **Marcos Damasceno**: Vem **em branco / não preenchido** (campo de número de documento vazio) e **sem arquivo enviado** (`uploaded: false`).
   - **Cristiano Drigo**: Vem **em branco / não preenchido** e **sem arquivo enviado** (`uploaded: false`).
@@ -178,48 +199,20 @@ A aplicação está estruturada em dois macro-momentos sequenciais:
 - **Aba "Compl. Cadastro"**:
   - Documentos e Checklist Oficial GCI. É opcional para operar: ao concluí-lo, o cliente volta à Home com o aviso de cadastro concluído.
 
-#### O Checklist Documental Oficial da GCI (`DocumentVerification.vue`):
-Construído rigorosamente sobre as especificações do documento oficial da instituição, dividido em:
+#### O Checklist de "Compl. Cadastro" (`DocumentVerification.vue`):
+Os documentos da empresa, os demonstrativos financeiros e os documentos pessoais dos sócios PF foram **movidos para o Envio de Documentos** (Etapa 4), porque o Pipefy abre o card uma única vez. A *Declaração de Relacionamento Bancário de Crédito* foi **removida**. O checklist ficou com três tópicos:
 
-##### Seção 3: Documentos Cadastrais da Empresa
-1. **Contrato Social ou Estatuto Social Vigente**:
-   - Registrado na Junta Comercial ou órgão competente.
-2. **Cópia da Ata de Eleição da Diretoria Vigente (só S/A)**:
-   - Obrigatório exclusivamente para Sociedades Anônimas (S/A).
-3. **Última Alteração Contratual / Certidão Simplificada**:
-   - Com indicação expressa do nº do NIRE; se a alteração for superior a 3 anos, obrigatoriedade de certidão simplificada atualizada.
-4. **Procuração Vigente**:
-   - Condicional caso haja procurador constituído.
-5. **Organograma Societário**:
-   - Estrutura completa de participação societária até a identificação do beneficiário final (exigido para Middle Corporate e Simples/PME).
+1. **Confirmação do Telefone por SMS**: já concluída no início da jornada, exibida como *Concluído*.
+2. **Reconhecimento & Biometria Facial**: também feita no início (Etapa 1.2) e exibida como *Concluído*, igual ao telefone.
+3. **Quadro Societário / Partes Relacionadas**:
+   - *Sócios Pessoa Física*: apenas o *Documento de Identidade do Cônjuge (RG ou CNH)*, exibido e exigido condicionalmente quando há vínculo conjugal. Sem cônjuge, a parte exibe o aviso de que os documentos pessoais seguem no Envio de Documentos.
+   - *Sócios e Avalistas Pessoa Jurídica*: *Contrato Social ou Estatuto Social atualizado* e *Documentação dos beneficiários finais* (documento de identificação + CPF/CNH).
+   - *Representantes não sócios*: documento de identidade e comprovante de residência.
 
-##### Seção 4: Demonstrativos Financeiros & Contábeis
-- **Middle Corporate**:
-  1. *Balanço Patrimonial e DRE* (últimos 4 exercícios) + balancete do período corrente.
-  2. *Declaração de Faturamento Mensal* (últimos 4 exercícios + corrente até o mês anterior, assinada pelo contador responsável com CRC).
-  3. *Demonstrativo de Endividamento Atualizado* (instituição financeira, modalidade, saldo devedor, garantias, taxa de juros, prazo de vencimento — papel timbrado com CNPJ, emissão em até 90 dias; SCR não substitui).
-- **Simples / PME**:
-  - Exatamente os mesmos itens, com uma única exceção documentada:
-  - O item **Balanço Patrimonial e DRE** é marcado com a observação explícita do checklist: *"Não será obrigatório para empresas cadastradas pelo Simples Nacional."*
-  - A *Declaração de Faturamento* e o *Demonstrativo de Endividamento* continuam **obrigatórios**.
-
-##### Seção 5: Crédito & Relacionamento Bancário
-- Item único para ambas as modalidades:
-  1. **Declaração de Relacionamento Bancário de Crédito**:
-     - Em papel timbrado da instituição, indicando banco, agência, conta corrente e contato direto do gerente comercial; datada e assinada em até 90 dias.
-     - *(Extratos bancários soltos de 90 dias foram completamente removidos conforme determinação do checklist oficial).*
-
-##### Seção 6: Quadro Societário / Partes Relacionadas
-Auditoria completa para sócios, representantes, avalistas e cônjuges:
-- **Para Sócios Pessoa Física (PF)**:
-  1. *Documento de Identidade* (RG ou CNH).
-  2. *Comprovante de Residência* (emissão em até 90 dias).
-  3. *Declaração de IRPF + Recibo de Entrega RFB*.
-  4. *Certidão de Casamento / Contrato de União Estável / Averbação de Divórcio* (texto exato do checklist).
-  5. *Documento de Identidade do Cônjuge (RG ou CNH)*: exibido e exigido condicionalmente quando há vínculo conjugal.
-- **Para Sócios e Avalistas Pessoa Jurídica (PJ)**:
-  1. *Contrato Social ou Estatuto Social atualizado*.
-  2. *Documentação dos beneficiários finais* (documento de identificação + CPF/CNH).
+#### Primeiro acesso ao portal: tour guiado
+- Na primeira entrada no Dashboard após a aprovação, um modal pergunta **"Fazer tutorial"** ou **"Pular"**.
+- O tutorial destaca, em popups passo a passo, Home, Minhas Informações, Carteira, Operações, Compl. Cadastro e o cabeçalho. Dá para navegar (Anterior/Próximo), pular a qualquer momento ou fechar com Esc.
+- A flag de "tutorial já visto" fica em memória; recarregar a página reinicia o tour. O menu de ajuda do cabeçalho traz "Refazer tutorial".
 
 ---
 

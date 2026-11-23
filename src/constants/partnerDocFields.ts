@@ -41,35 +41,16 @@ export const PJ_PARTNER_DOC_FIELDS: PartnerDocField[] = [
   },
 ];
 
-/** Sócios Pessoa Física (o documento do cônjuge é condicional). */
+/**
+ * Sócios Pessoa Física: identidade, residência, IRPF e certidão de estado civil já são enviados no
+ * "Envio de Documentos". Aqui resta apenas o documento do cônjuge (condicional).
+ */
 export const PF_PARTNER_DOC_FIELDS: PartnerDocField[] = [
-  {
-    docKey: 'cnhRg',
-    label: 'Documento de Identidade (RG ou CNH)',
-    previewTitle: 'Documento de Identidade (RG ou CNH)',
-  },
-  {
-    docKey: 'residencia',
-    label: 'Comprovante de Residência (até 90 dias)',
-    previewTitle: 'Comprovante de Residência',
-  },
-  {
-    docKey: 'certidaoCasamento',
-    label: 'Certidão de Casamento / Contrato de União Estável / Averbação de Divórcio',
-    note: 'Conforme o estado civil declarado',
-    previewTitle: 'Certidão de Casamento / União Estável / Averbação de Divórcio',
-  },
   {
     docKey: 'documentoConjuge',
     label: 'Documento de Identidade do Cônjuge (RG ou CNH)',
     note: 'Identificação oficial com foto do(a) cônjuge ou companheiro(a)',
     previewTitle: 'Documento de Identidade do Cônjuge',
     requiresSpouse: true,
-  },
-  {
-    docKey: 'irpf',
-    label: 'Declaração de IRPF + recibo de entrega',
-    note: 'Declaração completa do último exercício com respectivo recibo de entrega RFB',
-    previewTitle: 'Declaração de IRPF + Recibo',
   },
 ];

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { motion, AnimatePresence } from 'motion-v';
 import type { PartnerData, PartnerDocKey, PreviewDoc } from '@/types/documentChecklist';
+import { PARTNER_NO_PENDING_DOCS_NOTE } from '@/constants/checklistTopics';
 import { getPartnerDocFields } from '@/utils/partnerRules';
 import PartnerDocItem from './PartnerDocItem.vue';
 import PartnerHeader from './PartnerHeader.vue';
@@ -32,6 +33,12 @@ const emit = defineEmits<{
         :exit="{ height: 0, opacity: 0 }"
         class="border-t border-slate-100 p-3.5 bg-slate-50/30 grid grid-cols-1 sm:grid-cols-2 gap-2.5"
       >
+        <p
+          v-if="getPartnerDocFields(partner).length === 0"
+          class="sm:col-span-2 text-[11px] text-slate-500 leading-relaxed"
+        >
+          {{ PARTNER_NO_PENDING_DOCS_NOTE }}
+        </p>
         <PartnerDocItem
           v-for="field in getPartnerDocFields(partner)"
           :key="field.docKey"

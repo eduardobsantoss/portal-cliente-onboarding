@@ -13,6 +13,7 @@ export interface OnboardingDocumentUploadProps {
   cnpj?: string;
   tipoEmpresa?: string;
   hasProcurador?: boolean;
+  isSimplesNacional?: boolean;
   documentsMode?: DocumentsMode;
   initialDocuments?: DocumentUploadItem[] | null;
   adjustmentRequestId?: number;
@@ -42,4 +43,10 @@ export interface DocumentUploadItem {
   cargo?: string;
   documentNumber?: string;
   isPersonDoc?: boolean;
+  /** `typeId` do documento no webhook do Pipefy (integração futura). */
+  pipefyTypeId?: number;
+  /** Exercício do documento (campo `ano` do Pipefy) ou "corrente" para o período em andamento. */
+  year?: number | 'corrente';
+  /** Título de seção dentro do cartão da pessoa/empresa (agrupa os uploads por exercício). */
+  section?: string;
 }

@@ -7,8 +7,8 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     id: 'faq-1',
     category: 'Financeiro',
-    question: 'Por que são solicitados 4 exercícios de Balanço Patrimonial e DRE?',
-    answer: 'Para o segmento Middle Corporate, a análise de 4 exercícios consecutivos permite à mesa de crédito compreender a evolução histórica de liquidez, margens operacionais e consistência de faturamento ao longo dos ciclos. Não será obrigatório para empresas cadastradas pelo Simples Nacional.'
+    question: 'Por que são solicitados 3 exercícios de Balanço Patrimonial e DRE, mais o balancete?',
+    answer: 'A análise dos exercícios de 2023, 2024 e 2025, somada ao balancete do período corrente (2026), permite à mesa de crédito compreender a evolução histórica de liquidez, margens operacionais e consistência de faturamento. Para empresas do Simples Nacional (ME), o Balanço não é exigido e os DAS entram no lugar, como comprovação de faturamento.'
   },
   {
     id: 'faq-2',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { AlertCircle, Lock, X } from 'lucide-vue-next';
 import Logo from '../layout/Logo.vue';
 import TcDialog from '@/components/theme/TcDialog.vue';
@@ -12,6 +12,7 @@ import TcTextField from '@/components/theme/TcTextField.vue';
 import TcCheckbox from '@/components/theme/TcCheckbox.vue';
 import TcButton from '@/components/theme/TcButton.vue';
 import LegalDocumentModal from './LegalDocumentModal.vue';
+import RegistrationSubmitFeedback from './RegistrationSubmitFeedback.vue';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { isValidCnpj, isValidCpf } from '@/utils/documentValidation';
 import { maskCnpj, maskCpf, maskPhone, onlyDigits } from '@/utils/registrationMasks';
@@ -21,7 +22,8 @@ import type { TermsDocumentType } from '@/types/terms';
 
 /**
  * Formulário "Abra sua conta" (tela cheia) aberto pelos CTAs de cadastro da landing.
- * Ao concluir, entrega os dados para o fluxo, que segue para o login (a confirmação do celular por SMS
+ * Ao concluir, mostra a resposta visual do envio (processando e confirmação) e só então entrega os dados
+ * para o fluxo, que segue para o login (a confirmação do celular por SMS
  * acontece depois de logar). O CNPJ informado aqui é levado ao Portal do Cliente para a consulta na Receita.
  */
 const emit = defineEmits<{
@@ -31,7 +33,6 @@ const emit = defineEmits<{
 
 useBodyScrollLock();
 
-const SUBMIT_DELAY_MS = 600;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Toggle PJ/PF desativado por enquanto: o cadastro é sempre de Pessoa Jurídica (CNPJ).
@@ -45,6 +46,7 @@ const INTRO_TEXT =
 const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_HINT = 'Mín. 8 caracteres, com maiúscula, minúscula, número e símbolo.';
 
+// Enquanto o feedback do envio está na tela, o formulário fica inativo e o diálogo não fecha.
 const isSubmitting = ref(false);
 const form = reactive({
   document: '',
@@ -104,7 +106,7 @@ const onTermsChange = (accepted: boolean) => {
 
 // Com a leitura de um documento aberta, o Esc fecha só o documento (o formulário continua).
 const handleClose = () => {
-  if (legalDocument.value) return;
+  if (legalDocument.value || isSubmitting.value) return;
   emit('close');
 };
 
@@ -164,24 +166,30 @@ const handleSubmit = () => {
 
   errors.value = {};
   isSubmitting.value = true;
-  setTimeout(() => {
-    isSubmitting.value = false;
-    // A senha não segue no lead: ela só existe para a criação do acesso (o login a pede novamente).
-    emit('submit', {
-      documentType,
-      document: form.document,
-      cpf: form.cpf,
-      name: form.name.trim(),
-      email: form.email.trim(),
-      phone: form.phone,
-    });
-  }, SUBMIT_DELAY_MS);
 };
+
+// Fim da animação de envio: entrega o lead ao fluxo.
+// A senha não segue no lead: ela só existe para a criação do acesso (o login a pede novamente).
+const handleFeedbackDone = () => {
+  emit('submit', {
+    documentType,
+    document: form.document,
+    cpf: form.cpf,
+    name: form.name.trim(),
+    email: form.email.trim(),
+    phone: form.phone,
+  });
+};
+
+const firstName = computed(() => form.name.trim().split(/\s+/)[0] ?? '');
 </script>
 
 <template>
   <TcDialog :open="true" variant="fullscreen" labelledby="registration-title" @close="handleClose">
-    <div class="grid flex-1 grid-cols-1 gap-[var(--page-gutter)] lg:grid-cols-2">
+    <div
+      class="grid flex-1 grid-cols-1 gap-[var(--page-gutter)] lg:grid-cols-2"
+      :inert="isSubmitting"
+    >
       <!-- Painel de foto: some em telas pequenas, deixando só o formulário -->
       <TcPhotoSection
         :src="photoSrc"
@@ -415,10 +423,9 @@ const handleSubmit = () => {
                 arrow
                 type="submit"
                 class="w-full sm:col-span-2"
-                :loading="isSubmitting"
                 :disabled="isSubmitting"
               >
-                {{ isSubmitting ? 'Enviando cadastro...' : 'Concluir cadastro' }}
+                Concluir cadastro
               </TcButton>
             </form>
           </div>
@@ -427,6 +434,13 @@ const handleSubmit = () => {
     </div>
 
     <!-- Leitura dos documentos legais por cima do formulário (dentro do diálogo, para o foco não escapar) -->
+    <!-- Resposta visual do envio: cobre o formulário e, ao terminar, segue para o login -->
+    <RegistrationSubmitFeedback
+      v-if="isSubmitting"
+      :first-name="firstName"
+      @done="handleFeedbackDone"
+    />
+
     <LegalDocumentModal v-if="legalDocument" :doc-type="legalDocument" @close="legalDocument = null" />
   </TcDialog>
 </template>

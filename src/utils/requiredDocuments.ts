@@ -16,6 +16,7 @@ import {
   POWER_OF_ATTORNEY_TITLE_OPTIONAL,
   POWER_OF_ATTORNEY_TITLE_REQUIRED,
 } from '@/constants/requiredDocuments';
+import { PIPEFY_TYPE_CONTRATO } from '@/constants/financialDocuments';
 import { MOCK_CONTRACT_UPLOADED_FILE } from '@/mocks/onboardingDocumentFiles';
 import { DEFAULT_ONBOARDING_SOCIOS } from '@/mocks/onboardingDocumentSocios';
 import type { AccountType } from '@/types/dadosComplementares';
@@ -23,6 +24,7 @@ import type { DocumentUploadItem } from '@/types/documentUpload';
 import type { NonPartnerRepresentative } from '@/types/representante';
 import type { Socio } from '@/types/socio';
 import { isEstatutoCompanyType } from '@/utils/companyType';
+import { buildFinancialCompanyDocuments } from '@/utils/requiredFinancialDocuments';
 import {
   buildNonPartnerDocuments,
   buildPartnerDocuments,
@@ -36,6 +38,8 @@ export interface RequiredDocumentsInput {
   companyName: string;
   tipoEmpresa: string;
   hasProcurador: boolean;
+  /** Optante pelo Simples Nacional (ME): troca Balanço/DRE/balancete pelos DAS. */
+  isSimplesNacional?: boolean;
 }
 
 /** Usa os sócios cadastrados no formulário; só recorre ao mock padrão quando não há nenhum. */
@@ -71,6 +75,7 @@ function buildCompanyDocuments(
       description: CONTRACT_DOC_DESCRIPTION,
       isRequired: true,
       uploaded: true,
+      pipefyTypeId: PIPEFY_TYPE_CONTRATO,
       ...MOCK_CONTRACT_UPLOADED_FILE,
     },
     {
@@ -101,7 +106,8 @@ function buildCompanyDocuments(
 /**
  * Monta a lista de documentos da etapa conforme o tipo de conta:
  * - PJ: Contrato/Estatuto; Ata de Eleição (sempre visível no protótipo; na regra, só S/A); Procuração (se houver Procurador);
- *   + identificação (e estado civil) de cada sócio e de cada representante não sócio.
+ *   Alteração/Certidão, Organograma, Endividamento, Balanço/DRE (ou DAS para ME) e Faturamento por exercício;
+ *   + identificação (e estado civil) de cada sócio e representante não sócio, e residência + IRPF dos sócios PF.
  * - PF: identificação do titular + sócios/co-titulares relacionados.
  */
 export function buildRequiredDocuments(input: RequiredDocumentsInput): DocumentUploadItem[] {
@@ -120,6 +126,7 @@ export function buildRequiredDocuments(input: RequiredDocumentsInput): DocumentU
 
   return [
     ...buildCompanyDocuments(input.companyName, isEstatuto, isProcuradorRequired),
+    ...buildFinancialCompanyDocuments(input.companyName, Boolean(input.isSimplesNacional)),
     ...buildPartnerDocuments(effectiveSocios),
     ...buildNonPartnerDocuments(input.nonPartnerRepresentatives),
   ];

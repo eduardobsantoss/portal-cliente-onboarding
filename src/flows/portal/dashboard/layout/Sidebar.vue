@@ -43,6 +43,7 @@ const isNarrowViewport = () => window.innerWidth < 1024;
       <button
         v-for="item in DASHBOARD_NAV_ITEMS"
         :key="item.id"
+        :data-tour="`nav-${item.id}`"
         @click="emit('selectItem', item)"
         :class="`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
           activeTab === item.id

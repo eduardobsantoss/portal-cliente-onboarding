@@ -52,5 +52,6 @@ export function buildSubmitPayload(
     tipoEmpresa: company.tipoEmpresa,
     capitalSocial: company.capitalSocial,
     hasProcurador,
+    isSimplesNacional: company.isSimplesNacional,
   };
 }

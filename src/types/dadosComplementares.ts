@@ -12,6 +12,7 @@ export interface ComplementaryFormSubmitPayload {
   tipoEmpresa?: string;
   capitalSocial?: string;
   hasProcurador?: boolean;
+  isSimplesNacional?: boolean;
 }
 
 export type PjStep = 1 | 2 | 3;
@@ -58,6 +59,8 @@ export interface PjCompanyFormData {
   dataAbertura: string;
   capitalSocial: string;
   faturamentoAnual: string;
+  /** Optante pelo Simples Nacional (ME): dispensa o Balanço e pede os DAS no envio de documentos. */
+  isSimplesNacional: boolean;
   tipoEmpresa: string;
   cnae: string;
   cep: string;
@@ -78,7 +81,7 @@ export interface PjCompanyFormData {
 }
 
 /** Campos da empresa preenchidos pela consulta de CNPJ e travados para edição. */
-export type PjLockedField = keyof PjCompanyFormData;
+export type PjLockedField = Exclude<keyof PjCompanyFormData, 'isSimplesNacional'>;
 
 /** Campos do titular PF preenchidos pela consulta de CPF e travados para edição. */
 export type PfLockedField = keyof PfFormData;

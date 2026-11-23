@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { motion } from 'motion-v';
 import OnboardingPageShell from '@/components/layout/OnboardingPageShell.vue';
 import { MOCK_COMPANY_CNPJ, MOCK_COMPANY_NAME } from '@/mocks/onboardingCompany';
@@ -17,6 +17,7 @@ import DocumentUploadIntro from './DocumentUploadIntro.vue';
 import MissingDocumentsNotice from './MissingDocumentsNotice.vue';
 import RegularizationAlert from './RegularizationAlert.vue';
 import SecureTransmissionNotice from './SecureTransmissionNotice.vue';
+import SimplesDemoToggle from './SimplesDemoToggle.vue';
 import UploadErrorBanner from './UploadErrorBanner.vue';
 import UploadProgressHeader from './UploadProgressHeader.vue';
 import { useDocumentUploads } from './useDocumentUploads';
@@ -31,6 +32,7 @@ const props = withDefaults(
     cnpj?: string;
     tipoEmpresa?: string;
     hasProcurador?: boolean;
+    isSimplesNacional?: boolean;
     documentsMode?: DocumentsMode;
     initialDocuments?: DocumentUploadItem[] | null;
     adjustmentRequestId?: number;
@@ -44,6 +46,7 @@ const props = withDefaults(
     cnpj: MOCK_COMPANY_CNPJ,
     tipoEmpresa: 'Sociedade empresária limitada',
     hasProcurador: false,
+    isSimplesNacional: false,
     documentsMode: undefined,
     initialDocuments: null,
     adjustmentRequestId: 0,
@@ -60,6 +63,13 @@ const emit = defineEmits<{
 }>();
 
 const documentsMode = computed<DocumentsMode>(() => props.documentsMode ?? 'initial');
+// Parte da consulta de CNPJ; o botão discreto da demo alterna o cenário (refaz a lista de documentos).
+// Um rascunho salvo (volta à etapa) manda: se ele já tem os DAS, o cenário era Simples.
+const isSimples = ref(
+  props.initialDocuments?.length
+    ? props.initialDocuments.some((doc) => doc.id.startsWith('pj-das-'))
+    : props.isSimplesNacional
+);
 const requiredDocumentsInput = computed<RequiredDocumentsInput>(() => ({
   accountType: props.accountType,
   socios: props.socios,
@@ -67,6 +77,7 @@ const requiredDocumentsInput = computed<RequiredDocumentsInput>(() => ({
   companyName: props.companyName,
   tipoEmpresa: props.tipoEmpresa,
   hasProcurador: props.hasProcurador,
+  isSimplesNacional: isSimples.value,
 }));
 
 const buildDocuments = useRequiredDocuments(requiredDocumentsInput);
@@ -99,7 +110,11 @@ const stats = computed(() => getDocumentStats(documentList.value));
     main-class-name="max-w-5xl w-full mx-auto my-auto py-8 space-y-6"
   >
     <template #footerAction>
-      <AttachAllDemoButton @click="handleAttachAllDemo" />
+      <div v-if="accountType === 'pj'" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+        <SimplesDemoToggle :is-simples="isSimples" @toggle="isSimples = !isSimples" />
+        <AttachAllDemoButton @click="handleAttachAllDemo" />
+      </div>
+      <AttachAllDemoButton v-else @click="handleAttachAllDemo" />
     </template>
 
     <!-- Main Card -->

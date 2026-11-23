@@ -7,6 +7,7 @@ export const EMPTY_PJ_COMPANY_DATA: PjCompanyFormData = {
   dataAbertura: '',
   capitalSocial: '',
   faturamentoAnual: '',
+  isSimplesNacional: false,
   tipoEmpresa: '',
   cnae: '',
   cep: '',
@@ -34,6 +35,7 @@ export const INITIAL_PJ_COMPANY_DATA: PjCompanyFormData = {
   dataAbertura: '2014-03-12',
   capitalSocial: '1.500.000,00',
   faturamentoAnual: '18.500.000,00',
+  isSimplesNacional: false,
   tipoEmpresa: 'Sociedade empresária limitada',
   cnae: '01.15-6/00 - Cultivo de soja',
   // Passo 2: Endereço da Empresa

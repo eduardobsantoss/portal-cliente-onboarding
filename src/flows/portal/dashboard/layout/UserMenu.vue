@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { motion, AnimatePresence } from 'motion-v';
-import { ChevronDown, LogOut } from 'lucide-vue-next';
+import { ChevronDown, Compass, LogOut } from 'lucide-vue-next';
 import { COPY_FEEDBACK_MS } from '@/constants/dashboardTimings';
 import { PORTAL_ACCOUNT_CLIPBOARD_TEXT } from '@/mocks/portalAccount';
 import AccountDetailsCard from './AccountDetailsCard.vue';
@@ -13,6 +13,7 @@ defineProps<{
 
 const emit = defineEmits<{
   groupChange: [group: string];
+  startTour: [];
   logout: [];
 }>();
 
@@ -24,6 +25,11 @@ const handleCopyAccountInfo = () => {
   navigator.clipboard.writeText(PORTAL_ACCOUNT_CLIPBOARD_TEXT);
   copiedAccountInfo.value = true;
   setTimeout(() => (copiedAccountInfo.value = false), COPY_FEEDBACK_MS);
+};
+
+const handleStartTour = () => {
+  isOpen.value = false;
+  emit('startTour');
 };
 
 const handleSelectGroup = (group: string) => {
@@ -85,7 +91,14 @@ const handleSelectGroup = (group: string) => {
         <!-- Group Switching Section -->
         <GroupSwitcher :selected-group="selectedGroup" @select-group="handleSelectGroup" />
 
-        <div class="border-t border-slate-50 pt-2 px-2">
+        <div class="border-t border-slate-50 pt-2 px-2 space-y-1">
+          <button
+            @click="handleStartTour"
+            class="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-xl transition-colors font-medium"
+          >
+            <Compass :size="16" />
+            Refazer tutorial
+          </button>
           <button
             @click="emit('logout')"
             class="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-500 hover:bg-red-50 rounded-xl transition-colors font-medium"

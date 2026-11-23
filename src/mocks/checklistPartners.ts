@@ -13,11 +13,7 @@ export const INITIAL_PARTNERS: PartnerData[] = [
     maritalStatus: 'Casado (Comunhão Parcial)',
     status: 'validado',
     docs: {
-      cnhRg: { uploaded: true, fileName: 'CNH_Eduardo_Santos.pdf', status: 'aprovado' },
-      residencia: { uploaded: true, fileName: 'Comprovante_Residencia_Eduardo_Santos.pdf', status: 'aprovado' },
-      certidaoCasamento: { uploaded: true, fileName: 'Certidao_Casamento_Eduardo_Santos.pdf', status: 'aprovado' },
       documentoConjuge: { uploaded: true, fileName: 'CNH_Conjuge_Juliana_Santos.pdf', status: 'aprovado' },
-      irpf: { uploaded: true, fileName: 'IRPF_2025_Eduardo_Santos_Recibo.pdf', status: 'aprovado', note: 'Recibo RFB validado' },
     }
   },
   {
@@ -30,12 +26,8 @@ export const INITIAL_PARTNERS: PartnerData[] = [
     phone: '(11) 97654-3210',
     quotaPercentage: 25,
     maritalStatus: 'Solteira',
-    status: 'em_analise',
-    docs: {
-      cnhRg: { uploaded: true, fileName: 'RG_Mariana_Costa.pdf', status: 'aprovado' },
-      residencia: { uploaded: true, fileName: 'Fatura_Residencial_Mariana.pdf', status: 'em_analise' },
-      irpf: { uploaded: true, fileName: 'IRPF_Mariana_2025.pdf', status: 'em_analise', note: 'Checagem de recibo em andamento' },
-    }
+    status: 'validado',
+    docs: {}
   },
   {
     id: 'partner-3',
@@ -49,11 +41,7 @@ export const INITIAL_PARTNERS: PartnerData[] = [
     maritalStatus: 'Casado',
     status: 'pendente_documentos',
     docs: {
-      cnhRg: { uploaded: true, fileName: 'CNH_Roberto_Mendes.pdf', status: 'aprovado' },
-      residencia: { uploaded: false, status: 'pendente' },
-      certidaoCasamento: { uploaded: false, status: 'pendente' },
       documentoConjuge: { uploaded: false, status: 'pendente' },
-      irpf: { uploaded: false, status: 'pendente', note: 'Declaração e recibo RFB obrigatórios' },
     }
   },
   {

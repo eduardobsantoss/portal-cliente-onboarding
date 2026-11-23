@@ -16,6 +16,8 @@ export function useOnboardingFlow() {
   const documentsMode = ref<DocumentsMode>('initial');
   const adjustmentRequestId = ref(0);
   const appliedAdjustmentRequestId = ref(0);
+  // Tour guiado do portal: oferecido só no primeiro acesso (em memória, como o resto do protótipo).
+  const hasSeenTour = ref(false);
 
   const goTo = (view: OnboardingViewState) => {
     history.value = [...history.value, currentView.value];
@@ -44,6 +46,10 @@ export function useOnboardingFlow() {
     appliedAdjustmentRequestId.value = id;
   };
 
+  const markTourSeen = () => {
+    hasSeenTour.value = true;
+  };
+
   const handleComplementarySubmit = (payload?: ComplementaryFormSubmitPayload) => {
     if (payload) {
       formData.value = payload;
@@ -67,6 +73,8 @@ export function useOnboardingFlow() {
     documentsMode,
     adjustmentRequestId,
     appliedAdjustmentRequestId,
+    hasSeenTour,
+    markTourSeen,
     setDocumentsSnapshot,
     setAppliedAdjustmentRequestId,
     canGoBack: computed(() => history.value.length > 0),

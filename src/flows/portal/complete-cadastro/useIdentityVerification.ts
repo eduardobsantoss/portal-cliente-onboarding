@@ -1,14 +1,15 @@
 import { ref } from 'vue';
 import { INITIAL_PHONE_VERIFIED_AT } from '@/constants/documentChecklist';
 
-/** Estado das validações por SMS (tópico 1) e biometria facial (tópico 2). */
+/**
+ * Estado das validações por SMS (tópico 1) e biometria facial (tópico 2).
+ * Ambas são feitas no início da jornada (depois do login), então chegam aqui já concluídas.
+ */
 export function useIdentityVerification() {
-  // Phone verification state - starts as Concluído per Item 2
   const phoneVerified = ref(true);
   const phoneVerifiedAt = ref(INITIAL_PHONE_VERIFIED_AT);
 
-  // Facial verification state
-  const facialVerified = ref(false);
+  const facialVerified = ref(true);
 
   const handlePhoneVerified = () => {
     phoneVerified.value = true;
@@ -29,7 +30,7 @@ export function useIdentityVerification() {
   const resetIdentity = () => {
     phoneVerified.value = true;
     phoneVerifiedAt.value = INITIAL_PHONE_VERIFIED_AT;
-    facialVerified.value = false;
+    facialVerified.value = true;
   };
 
   return {

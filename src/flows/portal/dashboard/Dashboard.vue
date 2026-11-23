@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import DashboardModals from './DashboardModals.vue';
 import DashboardNotices from './DashboardNotices.vue';
 import DashboardTabContent from './DashboardTabContent.vue';
@@ -12,14 +12,22 @@ import { useLinkSelection } from './hooks/useLinkSelection';
 import { useOperations } from './hooks/useOperations';
 import { useResolveScreen } from './hooks/useResolveScreen';
 import { useSacadoContacts } from './hooks/useSacadoContacts';
+import ProductTour from '../tour/ProductTour.vue';
+import { useProductTour } from '../tour/useProductTour';
 import PageHeader from './layout/PageHeader.vue';
 import Sidebar from './layout/Sidebar.vue';
 import SidebarOverlay from './layout/SidebarOverlay.vue';
 import TopHeader from './layout/TopHeader.vue';
 
 /** Portal do Cliente: orquestra navegação, estado das áreas e a composição de layout, abas e modais. */
+const props = defineProps<{
+  /** Primeiro acesso: oferece o tour guiado ao abrir o portal. */
+  offerTour?: boolean;
+}>();
+
 const emit = defineEmits<{
   logout: [];
+  tourSeen: [];
 }>();
 
 // Cada composable devolve refs; `reactive(...)` as desembrulha para repassar o estado aos filhos
@@ -59,6 +67,12 @@ const link = reactive(
   }),
 );
 
+// Tour do primeiro acesso: o convite aparece uma vez; "Refazer tutorial" (menu do perfil) o reinicia.
+const tour = reactive(useProductTour({ onSeen: () => emit('tourSeen') }));
+onMounted(() => {
+  if (props.offerTour) tour.offer();
+});
+
 const goToCarteira = () => {
   nav.setActiveTab('carteira');
   overlays.activePendingToastSource = null;
@@ -87,6 +101,7 @@ const goToCarteira = () => {
         @toggle-sidebar="nav.isSidebarOpen = !nav.isSidebarOpen"
         @select-pending="overlays.selectedPendingTask = $event"
         @group-change="group.handleGroupChange"
+        @start-tour="tour.start()"
         @logout="emit('logout')"
       />
 
@@ -119,6 +134,20 @@ const goToCarteira = () => {
         />
       </main>
     </div>
+
+    <ProductTour
+      :phase="tour.phase"
+      :step="tour.currentStep"
+      :step-index="tour.stepIndex"
+      :total-steps="tour.totalSteps"
+      :is-first-step="tour.isFirstStep"
+      :is-last-step="tour.isLastStep"
+      @start="tour.start()"
+      @skip="tour.close()"
+      @next="tour.next()"
+      @previous="tour.previous()"
+      @sidebar="nav.isSidebarOpen = $event"
+    />
 
     <DashboardModals
       :ops="ops"

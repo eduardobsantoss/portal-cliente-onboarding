@@ -85,10 +85,12 @@ export function mapReceitaToCompany(data: ReceitaWsResponse, cnpj: string): Mapp
     bairro: clean(data.bairro),
     cidade: clean(data.municipio),
     uf: clean(data.uf).toUpperCase(),
+    isSimplesNacional: Boolean(data.simples?.optante || data.simei?.optante),
   };
 
-  const locked = (Object.keys(values) as PjLockedField[]).filter(
-    (field) => field !== 'cnpj' && Boolean(values[field]),
+  const locked = (Object.keys(values) as (keyof typeof values)[]).filter(
+    (field): field is PjLockedField =>
+      field !== 'cnpj' && field !== 'isSimplesNacional' && Boolean(values[field]),
   );
 
   return { company: values, locked };

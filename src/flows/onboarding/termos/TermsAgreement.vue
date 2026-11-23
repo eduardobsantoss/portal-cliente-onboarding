@@ -70,7 +70,7 @@ const emit = defineEmits<{
           <ShieldCheck :size="26" />
         </div>
         <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-          Bem-vindo ao Portal do Cliente
+          Portal Grupo Ceres
         </h1>
       </div>
 
@@ -78,7 +78,9 @@ const emit = defineEmits<{
       <form @submit.prevent="emit('accept')" class="p-6 sm:p-8 space-y-6">
         <!-- Body Welcome Text -->
         <div class="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
-          Bem-vindo ao portal do Grupo Ceres Investimentos. Vamos iniciar o envio de documentos para análise de crédito.
+          Que bom ter você por aqui! Seja bem-vindo. Nos próximos passos vamos conhecer
+          melhor a sua empresa e reunir os documentos necessários para a análise, de forma simples e segura.
+          Vamos iniciar a sua jornada de crédito?
         </div>
 
         <!-- Aceite dos termos desativado

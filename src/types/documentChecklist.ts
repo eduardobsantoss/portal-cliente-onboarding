@@ -1,4 +1,3 @@
-export type CompanyTier = 'middle_corporate' | 'simples_pme';
 export type PartnerPersonType = 'PF' | 'PJ';
 
 export type DocumentStatus = 'aprovado' | 'em_analise' | 'pendente' | 'rejeitado';
@@ -14,9 +13,7 @@ export interface PartnerDocState {
 export type PartnerDocKey =
   | 'cnhRg'
   | 'residencia'
-  | 'certidaoCasamento'
   | 'documentoConjuge'
-  | 'irpf'
   | 'contratoEstatutoSocialPj'
   | 'beneficiariosFinaisPj';
 
@@ -26,9 +23,7 @@ export type PartnerDocs = {
   // Documentos para Pessoa Física (PF)
   cnhRg?: PartnerDocState;
   residencia?: PartnerDocState;
-  certidaoCasamento?: PartnerDocState; // "Certidão de Casamento / Contrato de União Estável / Averbação de Divórcio"
   documentoConjuge?: PartnerDocState; // "Documento de Identidade do Cônjuge (RG ou CNH)"
-  irpf?: PartnerDocState; // "Declaração de IRPF + recibo de entrega"
 
   // Documentos para sócio(s) e/ou avalista(s) Pessoa Jurídica (PJ)
   contratoEstatutoSocialPj?: PartnerDocState; // "Contrato Social ou Estatuto Social atualizado"
@@ -51,23 +46,6 @@ export interface PartnerData {
   docs: PartnerDocs;
 }
 
-export type DocumentCategory = 'pj' | 'financeiro' | 'credito';
-
-export interface DocumentItem {
-  id: string;
-  category: DocumentCategory;
-  title: string;
-  description: string;
-  requiredFor: CompanyTier[];
-  optionalFor?: CompanyTier[];
-  optionalNote?: string;
-  status: DocumentStatus;
-  rejectionReason?: string;
-  fileName?: string;
-  fileSize?: string;
-  uploadDate?: string;
-}
-
 export interface NewPartnerForm {
   name: string;
   type: PartnerPersonType;
@@ -84,6 +62,6 @@ export interface PreviewDoc {
   fileName: string;
 }
 
-export type ChecklistTopicKey = 'sms' | 'biometria' | 'pj' | 'financeiro' | 'credito' | 'socios';
+export type ChecklistTopicKey = 'sms' | 'biometria' | 'socios';
 
 export type ExpandedTopics = Record<ChecklistTopicKey, boolean>;

@@ -10,7 +10,7 @@ const isDocOk = (doc: PartnerDocState | undefined): boolean =>
   Boolean(doc?.uploaded && doc.status !== 'rejeitado');
 
 /**
- * Indícios de cônjuge: estado civil casado/união estável OU já existe certidão/documento do cônjuge enviado.
+ * Indícios de cônjuge: estado civil casado/união estável OU já existe documento do cônjuge enviado.
  * (Regra usada tanto na validação do sócio PF quanto na exibição do documento do cônjuge.)
  */
 export function hasSpouseIndicators(partner: PartnerData): boolean {
@@ -18,7 +18,6 @@ export function hasSpouseIndicators(partner: PartnerData): boolean {
     partner.maritalStatus?.toLowerCase().includes('casad') ||
       partner.maritalStatus?.toLowerCase().includes('união') ||
       partner.maritalStatus?.toLowerCase().includes('uniao') ||
-      partner.docs.certidaoCasamento?.uploaded ||
       partner.docs.documentoConjuge?.uploaded
   );
 }
@@ -48,18 +47,10 @@ export function isPartnerValidCheck(partner: PartnerData): boolean {
     );
   }
 
-  // PF:
-  const cnhOk = isDocOk(partner.docs.cnhRg);
-  const resOk = isDocOk(partner.docs.residencia);
-  const irpfOk = isDocOk(partner.docs.irpf);
+  // PF: os documentos pessoais foram enviados na etapa de documentos; resta só o do cônjuge.
+  if (hasSpouseIndicators(partner)) return isDocOk(partner.docs.documentoConjuge);
 
-  if (hasSpouseIndicators(partner)) {
-    const certOk = isDocOk(partner.docs.certidaoCasamento);
-    const conjOk = isDocOk(partner.docs.documentoConjuge);
-    return cnhOk && resOk && irpfOk && certOk && conjOk;
-  }
-
-  return cnhOk && resOk && irpfOk;
+  return true;
 }
 
 /** Documentos exigidos da parte conforme o tipo (não sócio / PJ / PF) e a regra condicional do cônjuge. */

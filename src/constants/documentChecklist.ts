@@ -1,6 +1,6 @@
 import type { ChecklistTopicKey, ExpandedTopics, NewPartnerForm } from '@/types/documentChecklist';
 
-export const TOTAL_CHECKLIST_TOPICS = 6;
+export const TOTAL_CHECKLIST_TOPICS = 3;
 
 export const INITIAL_PHONE_VERIFIED_AT = '10/05/2026 às 14:32';
 export const CHECKLIST_MASKED_PHONE = '(34) 9 ••••-1234';
@@ -8,26 +8,19 @@ export const CHECKLIST_MASKED_PHONE = '(34) 9 ••••-1234';
 export const INITIAL_EXPANDED_TOPICS: ExpandedTopics = {
   sms: true,
   biometria: false,
-  pj: false,
-  financeiro: false,
-  credito: false,
   socios: false,
 };
 
 /** Tópicos abertos quando a simulação de "Ajustes Necessários" é disparada. */
-export const ADJUSTMENT_OPEN_TOPICS: ChecklistTopicKey[] = ['pj', 'socios'];
+export const ADJUSTMENT_OPEN_TOPICS: ChecklistTopicKey[] = ['socios'];
 
 export const INITIAL_EXPANDED_PARTNER_ID = 'partner-3';
 export const BULK_FILL_DELAY_MS = 400;
 
-export const REJECTED_COMPANY_DOC_ID = 'pj-1';
-export const REJECTED_COMPANY_DOC_REASON =
-  'Imagem sem nitidez / margens cortadas. Por favor, anexe o documento digitalizado legível com todas as páginas e assinaturas.';
-
 export const REJECTED_PARTNER_ID = 'partner-3';
-export const REJECTED_PARTNER_IRPF_FILE_NAME = 'IRPF_Roberto_Mendes.pdf';
-export const REJECTED_PARTNER_IRPF_REASON =
-  'Não foi possível validar os dados do arquivo. Certifique-se de anexar o documento completo e legível com o respectivo comprovante de entrega.';
+export const REJECTED_PARTNER_SPOUSE_FILE_NAME = 'Documento_Conjuge_Roberto_Mendes.pdf';
+export const REJECTED_PARTNER_SPOUSE_REASON =
+  'Não foi possível validar os dados do arquivo. Certifique-se de anexar o documento completo e legível, com frente e verso.';
 
 export const CHECKLIST_FILE_ACCEPT = '.pdf,.png,.jpg,.jpeg';
 

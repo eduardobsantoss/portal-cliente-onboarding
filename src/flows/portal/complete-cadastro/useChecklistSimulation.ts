@@ -1,17 +1,14 @@
 import { ref } from 'vue';
-import { OFFICIAL_DOCS } from '@/constants/checklistDocuments';
 import {
   ADJUSTMENT_OPEN_TOPICS,
   BULK_FILL_DELAY_MS,
   REJECTED_PARTNER_ID,
 } from '@/constants/documentChecklist';
 import { INITIAL_PARTNERS } from '@/mocks/checklistPartners';
-import type { ChecklistTopicKey, DocumentItem, PartnerData } from '@/types/documentChecklist';
-import { fillDocForBulk, rejectCompanyContract } from '@/utils/checklistDocs';
-import { fillPartnerForBulk, rejectPartnerIrpf } from '@/utils/partnerDocs';
+import type { ChecklistTopicKey, PartnerData } from '@/types/documentChecklist';
+import { fillPartnerForBulk, rejectPartnerSpouseDoc } from '@/utils/partnerDocs';
 
 interface ChecklistSimulationInput {
-  setDocs: (next: DocumentItem[] | ((current: DocumentItem[]) => DocumentItem[])) => void;
   setPartners: (next: PartnerData[] | ((current: PartnerData[]) => PartnerData[])) => void;
   setExpandedPartnerId: (id: string | null) => void;
   openTopics: (keys: ChecklistTopicKey[]) => void;
@@ -23,7 +20,6 @@ interface ChecklistSimulationInput {
 
 /** Ações de simulação do protótipo: preencher tudo, validar, pedir ajustes e restaurar o estado inicial. */
 export function useChecklistSimulation({
-  setDocs,
   setPartners,
   setExpandedPartnerId,
   openTopics,
@@ -49,11 +45,8 @@ export function useChecklistSimulation({
     isValidatingDocuments.value = false;
     hasValidationErrors.value = true;
 
-    // Set Contrato Social as rejected due to sharpness/edges issue
-    setDocs((current) => current.map(rejectCompanyContract));
-
-    // Set Partner 3 IRPF as rejected due to unextracted data / missing RFB receipt
-    setPartners((current) => current.map((p) => rejectPartnerIrpf(p, REJECTED_PARTNER_ID)));
+    // Documento do cônjuge do sócio 3 rejeitado (arquivo incompleto / ilegível)
+    setPartners((current) => current.map((p) => rejectPartnerSpouseDoc(p, REJECTED_PARTNER_ID)));
 
     // Open the relevant accordions
     openTopics(ADJUSTMENT_OPEN_TOPICS);
@@ -67,7 +60,6 @@ export function useChecklistSimulation({
       markAllIdentityVerified();
       hasValidationErrors.value = false;
 
-      setDocs((current) => current.map(fillDocForBulk));
       setPartners((current) => current.map(fillPartnerForBulk));
 
       isBulkUploading.value = false;
@@ -80,7 +72,6 @@ export function useChecklistSimulation({
     resetIdentity();
     isValidatingDocuments.value = false;
     hasValidationErrors.value = false;
-    setDocs(OFFICIAL_DOCS);
     setPartners(INITIAL_PARTNERS);
     onResetVerification?.();
   };

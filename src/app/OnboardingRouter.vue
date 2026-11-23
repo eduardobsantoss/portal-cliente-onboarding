@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import LandingPage from '@/flows/onboarding/landing/LandingPage.vue';
 import InitialPhoneVerification from '@/flows/onboarding/sms/InitialPhoneVerification.vue';
+import InitialFacialVerification from '@/flows/onboarding/biometria/InitialFacialVerification.vue';
 // import CreatePasswordScreen from '@/flows/onboarding/senha/CreatePasswordScreen.vue'; // etapa desativada: a senha é criada no cadastro da landing
 import Login from '@/flows/onboarding/login/Login.vue';
 import TermsAgreement from '@/flows/onboarding/termos/TermsAgreement.vue';
@@ -55,6 +56,13 @@ const handleSubmitDocs = () => {
   <InitialPhoneVerification
     v-else-if="flow.currentView === 'phone_verification'"
     :masked-phone="registeredMaskedPhone"
+    @confirmed="flow.goTo('facial_verification')"
+    @go-to-login="flow.goTo('login')"
+  />
+
+  <!-- Step 2b: Biometria facial (logo após o SMS; no portal ela aparece já concluída em "Compl. Cadastro") -->
+  <InitialFacialVerification
+    v-else-if="flow.currentView === 'facial_verification'"
     @confirmed="flow.goTo('terms')"
     @go-to-login="flow.goTo('login')"
   />
@@ -95,6 +103,7 @@ const handleSubmitDocs = () => {
     :company-name="flow.formData?.companyName"
     :cnpj="flow.formData?.cnpj"
     :tipo-empresa="flow.formData?.tipoEmpresa"
+    :is-simples-nacional="flow.formData?.isSimplesNacional"
     :documents-mode="flow.documentsMode"
     :initial-documents="flow.documentsSnapshot"
     :adjustment-request-id="flow.adjustmentRequestId"
@@ -144,6 +153,11 @@ const handleSubmitDocs = () => {
     @retry-demo="flow.goTo('terms')"
   />
 
-  <!-- Step 10: Dashboard — Home, com a Análise de Crédito disponível no menu -->
-  <Dashboard v-else @logout="flow.goTo('login')" />
+  <!-- Step 10: Dashboard — Home, com a Análise de Crédito disponível no menu; no primeiro acesso oferece o tour guiado -->
+  <Dashboard
+    v-else
+    :offer-tour="!flow.hasSeenTour"
+    @tour-seen="flow.markTourSeen"
+    @logout="flow.goTo('login')"
+  />
 </template>

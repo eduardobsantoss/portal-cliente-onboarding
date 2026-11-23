@@ -1,4 +1,13 @@
 import {
+  IRPF_DOC_DESCRIPTION,
+  IRPF_DOC_TYPE,
+  PIPEFY_TYPE_IRPF,
+  PIPEFY_TYPE_RESIDENCIA,
+  RESIDENCE_PROOF_DOC_DESCRIPTION,
+  RESIDENCE_PROOF_DOC_TITLE,
+  RESIDENCE_PROOF_DOC_TYPE,
+} from '@/constants/financialDocuments';
+import {
   DEFAULT_PARTNER_ROLE_LABEL,
   DOCUMENT_ENTITY_HOLDER,
   DOCUMENT_ENTITY_LEGAL_REPRESENTATIVE,
@@ -23,6 +32,7 @@ import type { DocumentUploadItem } from '@/types/documentUpload';
 import type { NonPartnerRepresentative } from '@/types/representante';
 import type { Socio } from '@/types/socio';
 import { buildCivilStatusDocument } from '@/utils/civilStatusDocument';
+import { onlyDigits } from '@/utils/registrationMasks';
 
 /** PF: 1 doc do titular (já enviado no mock) + 1 doc por sócio/co-titular relacionado (sem envio). */
 export function buildPfDocuments(socios: Socio[]): DocumentUploadItem[] {
@@ -113,6 +123,38 @@ export function buildPartnerDocuments(socios: Socio[]): DocumentUploadItem[] {
       entityType,
     });
     if (civilDoc) docs.push(civilDoc);
+
+    // Residência e IRPF só se aplicam a sócios Pessoa Física (CNPJ de 14 dígitos = sócio PJ).
+    if (onlyDigits(socio.cpfCnpj).length !== 14) {
+      docs.push(
+        {
+          id: `socio-residencia-${socio.id || idx}`,
+          targetPersonOrEntity: socio.nome,
+          cargo: roleLabel,
+          entityType,
+          documentType: RESIDENCE_PROOF_DOC_TYPE,
+          title: RESIDENCE_PROOF_DOC_TITLE,
+          description: RESIDENCE_PROOF_DOC_DESCRIPTION,
+          isRequired: true,
+          uploaded: false,
+          isPersonDoc: false,
+          pipefyTypeId: PIPEFY_TYPE_RESIDENCIA,
+        },
+        {
+          id: `socio-irpf-${socio.id || idx}`,
+          targetPersonOrEntity: socio.nome,
+          cargo: roleLabel,
+          entityType,
+          documentType: IRPF_DOC_TYPE,
+          title: IRPF_DOC_TYPE,
+          description: IRPF_DOC_DESCRIPTION,
+          isRequired: true,
+          uploaded: false,
+          isPersonDoc: false,
+          pipefyTypeId: PIPEFY_TYPE_IRPF,
+        }
+      );
+    }
   });
 
   return docs;

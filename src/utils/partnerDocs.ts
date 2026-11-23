@@ -1,6 +1,6 @@
 import {
-  REJECTED_PARTNER_IRPF_FILE_NAME,
-  REJECTED_PARTNER_IRPF_REASON,
+  REJECTED_PARTNER_SPOUSE_FILE_NAME,
+  REJECTED_PARTNER_SPOUSE_REASON,
 } from '@/constants/documentChecklist';
 import type { NewPartnerForm, PartnerData, PartnerDocKey } from '@/types/documentChecklist';
 import { isMarriedByExactStatus, isMarriedByLooseStatus, isPartnerValidCheck } from '@/utils/partnerRules';
@@ -14,7 +14,6 @@ export function applyPartnerDocUpload(partner: PartnerData, docType: PartnerDocK
       fileName: file.name,
       status: 'aprovado' as const,
       rejectionReason: undefined,
-      note: docType === 'irpf' ? 'Recibo RFB validado' : undefined,
     },
   };
 
@@ -46,18 +45,14 @@ export function buildPartnerFromForm(form: NewPartnerForm, id: string): PartnerD
     phone: form.phone || '(11) 99999-0000',
     quotaPercentage: Number(form.quotaPercentage) || 10,
     maritalStatus: isPJ ? undefined : form.maritalStatus,
-    status: 'pendente_documentos',
+    status: isPJ || isMarried ? 'pendente_documentos' : 'validado',
     docs: isPJ
       ? {
           contratoEstatutoSocialPj: { uploaded: false, status: 'pendente' },
           beneficiariosFinaisPj: { uploaded: false, status: 'pendente' },
         }
       : {
-          cnhRg: { uploaded: false, status: 'pendente' },
-          residencia: { uploaded: false, status: 'pendente' },
-          certidaoCasamento: isMarried ? { uploaded: false, status: 'pendente' } : undefined,
           documentoConjuge: isMarried ? { uploaded: false, status: 'pendente' } : undefined,
-          irpf: { uploaded: false, status: 'pendente' },
         },
   };
 }
@@ -92,28 +87,24 @@ export function fillPartnerForBulk(partner: PartnerData): PartnerData {
     ...partner,
     status: 'validado',
     docs: {
-      cnhRg: { uploaded: true, fileName: `CNH_${firstName}.pdf`, status: 'aprovado', rejectionReason: undefined },
-      residencia: { uploaded: true, fileName: `Residencia_${firstName}.pdf`, status: 'aprovado', rejectionReason: undefined },
-      certidaoCasamento: isMarried ? { uploaded: true, fileName: `Certidao_Casamento_${firstName}.pdf`, status: 'aprovado', rejectionReason: undefined } : undefined,
       documentoConjuge: isMarried ? { uploaded: true, fileName: `Documento_Conjuge_${firstName}.pdf`, status: 'aprovado', rejectionReason: undefined } : undefined,
-      irpf: { uploaded: true, fileName: `IRPF_Recibo_RFB_${firstName}.pdf`, status: 'aprovado', note: 'Recibo RFB conferido', rejectionReason: undefined },
     },
   };
 }
 
-/** Simulação de ajustes: rejeita o IRPF do sócio indicado (dados não extraídos / recibo ausente). */
-export function rejectPartnerIrpf(partner: PartnerData, partnerId: string): PartnerData {
+/** Simulação de ajustes: rejeita o documento do cônjuge do sócio indicado (arquivo incompleto). */
+export function rejectPartnerSpouseDoc(partner: PartnerData, partnerId: string): PartnerData {
   if (partner.id === partnerId) {
     return {
       ...partner,
       status: 'pendente_documentos',
       docs: {
         ...partner.docs,
-        irpf: {
+        documentoConjuge: {
           uploaded: true,
-          fileName: REJECTED_PARTNER_IRPF_FILE_NAME,
+          fileName: REJECTED_PARTNER_SPOUSE_FILE_NAME,
           status: 'rejeitado',
-          rejectionReason: REJECTED_PARTNER_IRPF_REASON,
+          rejectionReason: REJECTED_PARTNER_SPOUSE_REASON,
         },
       },
     };

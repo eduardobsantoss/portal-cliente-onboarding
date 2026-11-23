@@ -6,15 +6,11 @@ import FacialTopic from './biometria-facial/FacialTopic.vue';
 import ChecklistFooter from './ChecklistFooter.vue';
 import ChecklistProgressBar from './ChecklistProgressBar.vue';
 import ChecklistToolbar from './ChecklistToolbar.vue';
-import CompanyDocumentsSection from './documentos-empresa/CompanyDocumentsSection.vue';
-import CreditRelationshipSection from './credito-relacionamento/CreditRelationshipSection.vue';
 import DocumentPreviewModal from './DocumentPreviewModal.vue';
-import FinancialStatementsSection from './demonstrativos-financeiros/FinancialStatementsSection.vue';
 import AddPartnerModal from './quadro-societario/AddPartnerModal.vue';
 import PartnersSection from './quadro-societario/PartnersSection.vue';
 import SmsTopic from './sms-telefone/SmsTopic.vue';
 import { useAddPartnerForm } from './useAddPartnerForm';
-import { useChecklistDocuments } from './useChecklistDocuments';
 import { useChecklistProgress } from './useChecklistProgress';
 import { useChecklistSimulation } from './useChecklistSimulation';
 import { useChecklistTopics } from './useChecklistTopics';
@@ -32,8 +28,6 @@ const emit = defineEmits<{
   resetVerification: [];
 }>();
 
-const { companyTier, setCompanyTier, setDocs, pjDocs, finDocs, credDocs, handleFileUpload } =
-  useChecklistDocuments();
 const {
   phoneVerified,
   phoneVerifiedAt,
@@ -73,7 +67,6 @@ const {
   handleQuickUploadAll,
   handleResetState,
 } = useChecklistSimulation({
-  setDocs,
   setPartners,
   setExpandedPartnerId,
   openTopics,
@@ -84,24 +77,17 @@ const {
 });
 
 const {
-  pjStats,
-  finStats,
-  credStats,
   partnersValidCount,
   partnersDone,
   completedTopicsCount,
   totalTopics,
 } = useChecklistProgress({
-  companyTier,
-  pjDocs,
-  finDocs,
-  credDocs,
   partners,
   phoneVerified,
   facialVerified,
 });
 
-/** Checklist da Análise de Crédito: orquestra as 6 seções, progresso, modais e simulações. */
+/** Checklist da Análise de Crédito: orquestra as 3 seções (SMS, biometria e quadro societário), progresso, modais e simulações. */
 </script>
 
 <template>
@@ -115,11 +101,7 @@ const {
   <div v-else class="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300 pb-12">
 
     <!-- Controls & Demo Switcher Bar -->
-    <ChecklistToolbar
-      :company-tier="companyTier"
-      @tier-change="setCompanyTier"
-      @help="showSupportModal = true"
-    />
+    <ChecklistToolbar @help="showSupportModal = true" />
 
     <!-- Rejection / Adjustments Warning Banner -->
     <ValidationErrorBanner v-if="hasValidationErrors" />
@@ -145,36 +127,6 @@ const {
         :is-open="expandedTopics.biometria"
         @toggle="toggleTopic('biometria')"
         @verified="handleFacialVerified"
-      />
-
-      <CompanyDocumentsSection
-        :docs="pjDocs"
-        :stats="pjStats"
-        :company-tier="companyTier"
-        :is-open="expandedTopics.pj"
-        @toggle="toggleTopic('pj')"
-        @upload="handleFileUpload"
-        @preview="(doc) => (previewDoc = doc)"
-      />
-
-      <FinancialStatementsSection
-        :docs="finDocs"
-        :stats="finStats"
-        :company-tier="companyTier"
-        :is-open="expandedTopics.financeiro"
-        @toggle="toggleTopic('financeiro')"
-        @upload="handleFileUpload"
-        @preview="(doc) => (previewDoc = doc)"
-      />
-
-      <CreditRelationshipSection
-        :docs="credDocs"
-        :stats="credStats"
-        :company-tier="companyTier"
-        :is-open="expandedTopics.credito"
-        @toggle="toggleTopic('credito')"
-        @upload="handleFileUpload"
-        @preview="(doc) => (previewDoc = doc)"
       />
 
       <PartnersSection

@@ -27,6 +27,7 @@ export interface ReceitaWsResponse {
   municipio?: string;
   uf?: string;
   cep?: string;
+  simples?: { optante?: boolean };
   simei?: { optante?: boolean };
 }
 

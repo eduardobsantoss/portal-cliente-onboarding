@@ -33,6 +33,7 @@ function inputKeyOf(input: RequiredDocumentsInput): string {
     input.companyName,
     input.tipoEmpresa,
     String(input.hasProcurador),
+    String(Boolean(input.isSimplesNacional)),
     input.socios.map((socio) => socio.id).join(','),
     input.nonPartnerRepresentatives.map((rep) => rep.id).join(','),
   ].join('|');

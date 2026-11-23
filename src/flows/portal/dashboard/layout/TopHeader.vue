@@ -13,6 +13,7 @@ const emit = defineEmits<{
   toggleSidebar: [];
   selectPending: [task: PendingTask];
   groupChange: [group: string];
+  startTour: [];
   logout: [];
 }>();
 </script>
@@ -31,12 +32,13 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <div class="flex items-center gap-4 md:gap-6">
+    <div class="flex items-center gap-4 md:gap-6" data-tour="header-actions">
       <NotificationsMenu @select-pending="emit('selectPending', $event)" />
 
       <UserMenu
         :selected-group="selectedGroup"
         @group-change="emit('groupChange', $event)"
+        @start-tour="emit('startTour')"
         @logout="emit('logout')"
       />
     </div>

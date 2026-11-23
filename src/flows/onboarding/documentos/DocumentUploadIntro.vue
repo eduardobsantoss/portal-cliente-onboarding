@@ -20,7 +20,7 @@ defineProps<{
       {{
         accountType === 'pf'
           ? 'Envie o documento de identificação oficial do titular (CNH, RG, RNE ou CIN) nos formatos JPG, JPEG, PNG ou PDF até 12MB.'
-          : 'Envie os documentos da empresa (Contrato/Estatuto Social, Ata de Eleição se aplicável e Procuração se houver) e o documento de identificação (CNH, RG, RNE ou CIN) de cada sócio/representante cadastrado.'
+          : 'Envie os documentos cadastrais e financeiros da empresa (Contrato/Estatuto, Alteração Contratual, Organograma, Balanço e Faturamento por exercício, Endividamento) e a documentação pessoal de cada sócio/representante cadastrado.'
       }}
     </p>
   </div>
