@@ -23,7 +23,8 @@ export function prefersReducedMotion(): boolean {
  * Envolve cada palavra do elemento em `<span overflow:hidden><span class="wi">` para que possa
  * subir de dentro de uma "máscara". Preserva a estrutura de elementos (ex.: o `<span>` da segunda
  * linha dos títulos) e o espaço entre as palavras.
- * O `padding-bottom` com `margin-bottom` negativo evita cortar as descendentes (g, p, q).
+ * O padding com margem negativa de mesmo valor não altera o layout, mas dá folga à máscara para
+ * não cortar as descendentes (g, p, q) nem o que sobra nas laterais (ponta do "s", vírgula, itálico).
  */
 export function splitWords(el: HTMLElement): HTMLElement[] {
   // O setup roda de novo quando a media query muda: reaproveita palavras já separadas.
@@ -52,7 +53,7 @@ export function splitWords(el: HTMLElement): HTMLElement[] {
         }
         const mask = document.createElement('span');
         mask.style.cssText =
-          'display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.12em;margin-bottom:-.12em';
+          'display:inline-block;overflow:hidden;vertical-align:top;padding:0 .12em .12em .12em;margin:0 -.12em -.12em -.12em';
         const word = document.createElement('span');
         word.className = 'wi';
         word.style.display = 'inline-block';
