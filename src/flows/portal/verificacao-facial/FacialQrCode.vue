@@ -1,37 +1,43 @@
 <script setup lang="ts">
 import { motion } from 'motion-v';
 import { Camera } from 'lucide-vue-next';
+
+/*
+ * QR code de demonstração (vetor). Cores: azul da marca (`currentColor`), branco do tema e o quadrado central
+ * em `--accent` (uso decorativo permitido). A linha de varredura é azul e não anima com `prefers-reduced-motion`.
+ */
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center p-5 bg-white rounded-2xl border border-slate-200 shadow-sm shrink-0 w-full md:w-64 text-center">
-    <div class="relative p-3 bg-slate-50 rounded-xl border border-slate-200 group">
-      <!-- Styled Crisp Vector QR Code -->
+  <div class="flex flex-col items-center gap-[var(--space-3)] text-center">
+    <div
+      class="relative rounded-[var(--radius-lg)] bg-[var(--surface-soft)] p-[var(--space-5)]"
+    >
       <svg
         viewBox="0 0 160 160"
-        class="w-40 h-40 text-[#083C4A]"
+        class="size-[200px] rounded-[var(--radius-md)] bg-[var(--surface-card)] text-[color:var(--gci-base)]"
         fill="currentColor"
+        role="img"
+        aria-label="QR Code de demonstração para a verificação facial"
       >
-        <!-- Outer boundary & corners -->
         <!-- Top-Left Finder -->
-        <rect x="10" y="10" width="40" height="40" rx="6" fill="#083C4A" />
-        <rect x="18" y="18" width="24" height="24" rx="3" fill="#ffffff" />
-        <rect x="24" y="24" width="12" height="12" rx="2" fill="#083C4A" />
+        <rect x="10" y="10" width="40" height="40" rx="6" />
+        <rect x="18" y="18" width="24" height="24" rx="3" class="fill-[var(--white)]" />
+        <rect x="24" y="24" width="12" height="12" rx="2" />
 
         <!-- Top-Right Finder -->
-        <rect x="110" y="10" width="40" height="40" rx="6" fill="#083C4A" />
-        <rect x="118" y="18" width="24" height="24" rx="3" fill="#ffffff" />
-        <rect x="124" y="24" width="12" height="12" rx="2" fill="#083C4A" />
+        <rect x="110" y="10" width="40" height="40" rx="6" />
+        <rect x="118" y="18" width="24" height="24" rx="3" class="fill-[var(--white)]" />
+        <rect x="124" y="24" width="12" height="12" rx="2" />
 
         <!-- Bottom-Left Finder -->
-        <rect x="10" y="110" width="40" height="40" rx="6" fill="#083C4A" />
-        <rect x="18" y="118" width="24" height="24" rx="3" fill="#ffffff" />
-        <rect x="24" y="124" width="12" height="12" rx="2" fill="#083C4A" />
+        <rect x="10" y="110" width="40" height="40" rx="6" />
+        <rect x="18" y="118" width="24" height="24" rx="3" class="fill-[var(--white)]" />
+        <rect x="24" y="124" width="12" height="12" rx="2" />
 
-        <!-- Decorative Authentic Data Dots Matrix -->
         <!-- Central brand dot -->
-        <rect x="68" y="68" width="24" height="24" rx="4" fill="#F27D26" />
-        <rect x="74" y="74" width="12" height="12" rx="2" fill="#ffffff" />
+        <rect x="68" y="68" width="24" height="24" rx="4" class="fill-[var(--accent)]" />
+        <rect x="74" y="74" width="12" height="12" rx="2" class="fill-[var(--white)]" />
 
         <!-- Data pattern squares -->
         <rect x="60" y="15" width="8" height="8" rx="1.5" />
@@ -63,20 +69,25 @@ import { Camera } from 'lucide-vue-next';
       </svg>
 
       <!-- Scanning line animation -->
-      <div class="absolute inset-x-3 top-3 bottom-3 overflow-hidden pointer-events-none rounded-lg">
+      <div
+        class="pointer-events-none absolute inset-x-[var(--space-5)] inset-y-[var(--space-5)] overflow-hidden rounded-[var(--radius-md)] motion-reduce:hidden"
+        aria-hidden="true"
+      >
         <motion.div
-          :animate="{ y: [0, 140, 0] }"
+          :animate="{ y: [0, 190, 0] }"
           :transition="{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }"
-          class="w-full h-0.5 bg-gradient-to-r from-transparent via-[#F27D26] to-transparent shadow-[0_0_8px_rgba(242,125,38,0.8)]"
+          class="h-[2px] w-full bg-gradient-to-r from-transparent via-[var(--gci-base)] to-transparent"
         />
       </div>
     </div>
 
-    <div class="mt-3 space-y-1">
-      <span class="text-[11px] font-bold text-slate-800 flex items-center justify-center gap-1.5">
-        <Camera :size="13" class="text-gci" /> Escaneie com seu celular
+    <div class="flex flex-col gap-[var(--space-1)]">
+      <span
+        class="inline-flex items-center justify-center gap-[var(--space-2)] text-[length:var(--text-sm)] font-[number:var(--weight-semibold)] text-[color:var(--text-strong)]"
+      >
+        <Camera class="size-[var(--space-4)] shrink-0" aria-hidden="true" /> Escaneie com seu celular
       </span>
-      <p class="text-[10px] text-slate-400">
+      <p class="m-0 text-[length:var(--text-xs)] text-[color:var(--text-muted)]">
         Sessão segura criptografada
       </p>
     </div>

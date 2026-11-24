@@ -62,3 +62,6 @@ refactor-theme-client/
 
 # Saídas locais do Claude (não versionar)
 Claude outputs/
+
+# Prompts cursor-theme do refactor (arquivos-refactor) — material de trabalho local
+arquivos-refactor/cursor-theme-client-*.md

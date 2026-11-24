@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Copy, Check, Send } from 'lucide-vue-next';
+import TcButton from '@/components/theme/TcButton.vue';
 
 defineProps<{
   copied: boolean;
@@ -13,25 +14,21 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center gap-2">
-    <button
-      type="button"
-      class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 text-slate-700 text-xs font-semibold flex items-center gap-2 transition-all shadow-sm active:scale-95"
-      @click="emit('copyLink')"
-    >
-      <Check v-if="copied" :size="14" class="text-emerald-600" />
-      <Copy v-else :size="14" class="text-slate-400" />
-      {{ copied ? 'Link copiado!' : 'Copiar link para celular' }}
-    </button>
+  <div class="flex flex-wrap gap-[var(--space-3)]">
+    <TcButton variant="secondary" size="compact" class="flex-[1_1_auto]" @click="emit('copyLink')">
+      <span class="inline-flex items-center gap-[var(--space-2)]">
+        <Check v-if="copied" class="size-[var(--space-4)]" aria-hidden="true" />
+        <Copy v-else class="size-[var(--space-4)]" aria-hidden="true" />
+        <span aria-live="polite">{{ copied ? 'Link copiado!' : 'Copiar link' }}</span>
+      </span>
+    </TcButton>
 
-    <button
-      type="button"
-      class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 text-slate-700 text-xs font-semibold flex items-center gap-2 transition-all shadow-sm active:scale-95"
-      @click="emit('sendSms')"
-    >
-      <Check v-if="smsSent" :size="14" class="text-emerald-600" />
-      <Send v-else :size="14" class="text-slate-400" />
-      {{ smsSent ? 'SMS enviado!' : 'Enviar link por SMS' }}
-    </button>
+    <TcButton variant="secondary" size="compact" class="flex-[1_1_auto]" @click="emit('sendSms')">
+      <span class="inline-flex items-center gap-[var(--space-2)]">
+        <Check v-if="smsSent" class="size-[var(--space-4)]" aria-hidden="true" />
+        <Send v-else class="size-[var(--space-4)]" aria-hidden="true" />
+        <span aria-live="polite">{{ smsSent ? 'SMS enviado!' : 'Enviar por SMS' }}</span>
+      </span>
+    </TcButton>
   </div>
 </template>

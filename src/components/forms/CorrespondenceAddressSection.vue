@@ -19,10 +19,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="pt-2">
+  <div class="pt-2 tc:pt-[var(--space-4)]">
     <CheckboxField
       :checked="sameAsMain"
-      label-class-name="flex items-center gap-2.5 cursor-pointer p-3 bg-slate-50 border border-slate-200/80 rounded-xl"
+      label-class-name="flex items-center gap-2.5 cursor-pointer p-3 bg-slate-50 border border-slate-200/80 rounded-xl tc:rounded-[var(--radius-lg)] tc:border-0 tc:bg-[var(--surface-soft)] tc:p-[var(--space-4)]"
       span-class-name="text-xs font-semibold text-slate-800"
       @change="(checked) => emit('sameAsMainChange', checked)"
     >
@@ -34,9 +34,9 @@ const emit = defineEmits<{
       :initial="{ opacity: 0, height: 0 }"
       :animate="{ opacity: 1, height: 'auto' }"
       :exit="{ opacity: 0, height: 0 }"
-      class="mt-4 p-4 border border-slate-200 rounded-2xl bg-slate-50/50 space-y-4"
+      class="mt-4 p-4 border border-slate-200 rounded-2xl bg-slate-50/50 space-y-4 tc:mt-[var(--space-5)] tc:rounded-[var(--radius-xl)] tc:border-0 tc:bg-[var(--surface-soft)] tc:p-[var(--space-6)]"
     >
-      <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">{{ title }}</h4>
+      <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider tc:text-[length:var(--text-md)] tc:normal-case tc:tracking-normal tc:text-[color:var(--text-strong)]">{{ title }}</h4>
       <AddressFields
         :values="address"
         :required="!sameAsMain"

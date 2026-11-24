@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { CheckCircle2, RotateCcw } from 'lucide-vue-next';
+import TcButton from '@/components/theme/TcButton.vue';
+import TcNotice from '@/components/theme/TcNotice.vue';
 
 defineProps<{
   maskedPhone: string;
@@ -12,33 +14,20 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-emerald-50/70 border border-emerald-200/90 rounded-2xl">
-    <div class="flex items-center gap-3.5 min-w-0">
-      <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-        <CheckCircle2 :size="20" />
-      </div>
-      <div class="min-w-0">
-        <div class="flex items-center gap-2 flex-wrap">
-          <h4 class="text-sm font-bold text-slate-900">Telefone validado com sucesso</h4>
-          <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100/90 px-2.5 py-0.5 rounded-full shrink-0">
-            Concluído
-          </span>
-        </div>
-        <p class="text-xs text-slate-600 mt-1 flex items-center gap-2 flex-wrap">
-          <span>Número: <strong class="text-slate-800 font-mono">{{ maskedPhone }}</strong></span>
-          <span class="text-slate-300 hidden sm:inline">•</span>
-          <span>Confirmado em: <strong class="font-semibold text-slate-700">{{ verifiedAt }}</strong></span>
-        </p>
-      </div>
-    </div>
+  <TcNotice tone="success" :icon="CheckCircle2" title="Telefone validado com sucesso">
+    <p class="m-0">
+      Número: <strong class="font-[number:var(--weight-bold)] tabular-nums">{{ maskedPhone }}</strong>
+      <span aria-hidden="true"> • </span>
+      Confirmado em: <strong class="font-[number:var(--weight-bold)]">{{ verifiedAt }}</strong>
+    </p>
 
-    <button
-      type="button"
-      @click="emit('redo')"
-      class="px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 self-start sm:self-center shrink-0 whitespace-nowrap active:scale-95"
-    >
-      <RotateCcw :size="14" class="text-slate-500" />
-      <span>Refazer validação</span>
-    </button>
-  </div>
+    <template #action>
+      <TcButton variant="secondary" size="compact" @click="emit('redo')">
+        <span class="inline-flex items-center gap-[var(--space-2)]">
+          <RotateCcw class="size-[var(--space-4)]" aria-hidden="true" />
+          Refazer validação
+        </span>
+      </TcButton>
+    </template>
+  </TcNotice>
 </template>

@@ -9,3 +9,13 @@ export const ONBOARDING_PROGRESS_STEPS: OnboardingProgressStepItem[] = [
   { number: 3, label: '3. Assinatura' },
   { number: 4, label: '4. Análise' },
 ];
+
+/** Etapas da jornada exibidas no `TcStepper` (guidelines §7.2). Boas-vindas não é uma etapa. */
+export const ONBOARDING_JOURNEY_STEPS = [
+  { label: 'Celular' },
+  { label: 'Biometria' },
+  { label: 'Dados' },
+  { label: 'Documentos' },
+  { label: 'Assinatura' },
+  { label: 'Análise' },
+] as const;

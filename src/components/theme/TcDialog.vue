@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
           ? 'z-[100] overflow-y-auto p-[var(--page-gutter)]'
           : 'z-[120] flex overflow-y-auto p-[var(--page-gutter)]'
       "
-      :style="variant === 'centered' ? { background: 'rgba(4, 26, 32, 0.72)' } : undefined"
+      :style="variant === 'centered' ? { background: 'var(--scrim-dialog)' } : undefined"
       @click.self="variant === 'centered' && emit('close')"
     >
       <div

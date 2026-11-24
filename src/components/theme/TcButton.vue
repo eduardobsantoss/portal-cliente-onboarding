@@ -7,7 +7,8 @@ type Variant = 'primary' | 'inverse' | 'secondary' | 'glass';
 const props = withDefaults(
   defineProps<{
     variant: Variant;
-    size?: 'md' | 'hero' | 'nav';
+    /** `compact`: 52px, sem círculo de seta (ações dentro de avisos, barras de ferramentas e toasts). */
+    size?: 'md' | 'hero' | 'nav' | 'compact';
     arrow?: boolean;
     /** Troca a seta do círculo por um spinner (use junto com `arrow`). */
     loading?: boolean;
@@ -37,22 +38,26 @@ const isPrimaryLike = computed(
   () => props.variant === 'primary' || props.variant === 'inverse',
 );
 
+// O tamanho `compact` nunca mostra o círculo da seta, mesmo com `arrow`.
+const showArrow = computed(() => props.arrow && props.size !== 'compact');
+
 const heightClass = computed(() => {
   if (props.size === 'hero') return 'h-[var(--control-hero)]';
   if (props.size === 'nav') return 'h-[var(--control-nav)]';
+  if (props.size === 'compact') return 'h-[var(--control-secondary)]';
   return isPrimaryLike.value
     ? 'h-[var(--control-primary)]'
     : 'h-[var(--control-secondary)]';
 });
 
 const textClass = computed(() =>
-  isPrimaryLike.value && props.size !== 'nav'
+  isPrimaryLike.value && props.size !== 'nav' && props.size !== 'compact'
     ? 'text-[length:var(--text-base)]'
     : 'text-[length:var(--text-sm)]',
 );
 
 const paddingClass = computed(() =>
-  props.arrow ? 'pl-[26px] pr-[8px] justify-between gap-[var(--space-4)]' : 'px-[26px] justify-center',
+  showArrow.value ? 'pl-[26px] pr-[8px] justify-between gap-[var(--space-4)]' : 'px-[26px] justify-center',
 );
 
 const circleSizeClass = computed(() =>
@@ -77,7 +82,7 @@ const circleColorClass = computed(() =>
   >
     <span><slot /></span>
     <span
-      v-if="arrow"
+      v-if="showArrow"
       class="inline-flex shrink-0 items-center justify-center rounded-[var(--radius-full)] transition-transform duration-500 ease-[var(--ease-standard)] motion-reduce:transition-none"
       :class="[circleSizeClass, circleColorClass, loading ? '' : 'group-hover:rotate-45']"
       aria-hidden="true"

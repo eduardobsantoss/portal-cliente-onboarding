@@ -115,6 +115,9 @@
                    rgba(8, 60, 74, 0.70) 46%,
                    rgba(8, 60, 74, 0.20) 82%);
 
+  /* Véu atrás dos diálogos (sobre a página, não sobre foto) */
+  --scrim-dialog: rgba(4, 26, 32, 0.72);
+
   /* ---- Gráfico de composição sobre azul (4 fatias por luminosidade) [V3.1] ---- */
   --chart-1: var(--white);
   --chart-2: var(--mist-300);
@@ -242,3 +245,13 @@
   --z-modal:    400;
   --z-toast:    500;
 }
+
+
+/* =====================================================================
+   VARIANTE `tc:` — aplica o utilitário só dentro de uma tela migrada
+   (a própria `.theme-client` ou qualquer descendente). Usada SOMENTE nos
+   primitivos compartilhados legados (components/ui, components/forms e
+   constants/formStyles.ts) para que tenham o visual novo dentro do tema e
+   continuem iguais fora dele. Telas novas usam os componentes Tc*.
+   ===================================================================== */
+@custom-variant tc (&:where(.theme-client, .theme-client *));

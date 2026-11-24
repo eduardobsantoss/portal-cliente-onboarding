@@ -13,6 +13,8 @@ const emit = defineEmits<{ close: [] }>();
 
 /*
  * Slots: title e subtitle (conteúdo do cabeçalho).
+ * Dentro do theme-client (`tc:`): título de 24px/800, subtítulo de 14px em `--text-muted` e botão de fechar
+ * circular de 44px (`TcIconButton outline`). Sem faixa colorida.
  */
 
 const DEFAULT_BAR_CLASS = 'p-8 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10';
@@ -21,10 +23,19 @@ const DEFAULT_SUBTITLE_CLASS = 'text-sm text-slate-500 font-medium mt-1';
 const DEFAULT_CLOSE_CLASS =
   'w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-gci hover:bg-slate-100 transition-colors';
 
-const barClass = computed(() => props.className ?? DEFAULT_BAR_CLASS);
-const titleClass = computed(() => props.titleClassName ?? DEFAULT_TITLE_CLASS);
-const subtitleClass = computed(() => props.subtitleClassName ?? DEFAULT_SUBTITLE_CLASS);
-const closeClass = computed(() => props.closeButtonClassName ?? DEFAULT_CLOSE_CLASS);
+const TC_BAR =
+  'tc:border-[color:var(--border-subtle)] tc:bg-[var(--surface-card)] tc:px-[var(--space-9)] tc:py-[var(--space-7)]';
+const TC_TITLE =
+  'tc:text-[length:var(--text-lg)] tc:font-[number:var(--weight-black)] tc:leading-[var(--leading-heading)] tc:tracking-[var(--tracking-tight)] tc:text-[color:var(--text-strong)]';
+const TC_SUBTITLE =
+  'tc:mt-[var(--space-1)] tc:text-[length:var(--text-sm)] tc:font-[number:var(--weight-regular)] tc:text-[color:var(--text-muted)]';
+const TC_CLOSE =
+  'tc:size-[var(--control-arrow)] tc:shrink-0 tc:cursor-pointer tc:border-[1.5px] tc:border-[color:var(--border-strong)] tc:bg-transparent tc:text-[color:var(--text-strong)] tc:hover:bg-[var(--surface-soft)] tc:hover:text-[color:var(--text-strong)] tc:focus-visible:outline-none tc:focus-visible:shadow-[var(--focus-ring)]';
+
+const barClass = computed(() => [props.className ?? DEFAULT_BAR_CLASS, TC_BAR]);
+const titleClass = computed(() => [props.titleClassName ?? DEFAULT_TITLE_CLASS, TC_TITLE]);
+const subtitleClass = computed(() => [props.subtitleClassName ?? DEFAULT_SUBTITLE_CLASS, TC_SUBTITLE]);
+const closeClass = computed(() => [props.closeButtonClassName ?? DEFAULT_CLOSE_CLASS, TC_CLOSE]);
 
 /** Cabeçalho (título, subtítulo e botão fechar) dos modais centralizados do portal. */
 </script>
@@ -35,8 +46,8 @@ const closeClass = computed(() => props.closeButtonClassName ?? DEFAULT_CLOSE_CL
       <h2 :class="titleClass"><slot name="title" /></h2>
       <p :class="subtitleClass"><slot name="subtitle" /></p>
     </div>
-    <button :class="closeClass" @click="emit('close')">
-      <X :size="24" />
+    <button aria-label="Fechar" :class="closeClass" @click="emit('close')">
+      <X :size="24" aria-hidden="true" />
     </button>
   </div>
 </template>

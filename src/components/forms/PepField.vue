@@ -12,7 +12,7 @@ const emit = defineEmits<{ change: [checked: boolean] }>();
 </script>
 
 <template>
-  <div class="sm:col-span-2 pt-2 border-t border-slate-200/50">
+  <div class="sm:col-span-2 pt-2 border-t border-slate-200/50 tc:border-[color:var(--border-subtle)] tc:pt-[var(--space-4)]">
     <CheckboxField
       :checked="checked"
       label-class-name="flex items-center gap-2 cursor-pointer"

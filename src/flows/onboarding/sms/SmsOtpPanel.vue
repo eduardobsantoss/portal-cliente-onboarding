@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useId } from 'vue';
 import { motion } from 'motion-v';
 import { AlertCircle } from 'lucide-vue-next';
+import TcButton from '@/components/theme/TcButton.vue';
+import { SMS_CODE_LENGTH } from '@/constants/sms';
 import SmsOtpInputs from './SmsOtpInputs.vue';
 
 defineProps<{
@@ -17,66 +20,80 @@ const emit = defineEmits<{
   paste: [e: ClipboardEvent];
   resend: [];
   validate: [code: string];
+  openSupport: [];
 }>();
+
+const firstCellId = useId();
+const errorId = useId();
+
+/** Segundos restantes no formato m:ss (ex.: 42 → "0:42"). */
+const formatCooldown = (seconds: number) =>
+  `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+
+const linkButtonClass =
+  'cursor-pointer rounded-[var(--radius-sm)] border-0 bg-transparent p-0 text-[length:var(--text-xs)] font-[number:var(--weight-semibold)] text-[color:var(--text-link)] hover:text-[color:var(--text-link-hover)] hover:underline focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]';
+
+const isIncomplete = (digits: string[]) => digits.join('').length < SMS_CODE_LENGTH;
 </script>
 
 <template>
   <motion.div
     :initial="{ opacity: 0, y: 8 }"
     :animate="{ opacity: 1, y: 0 }"
-    class="p-6 sm:p-8 bg-white border border-slate-200 rounded-2xl space-y-5 shadow-sm text-center"
+    class="flex flex-col gap-[var(--space-5)]"
   >
-    <div class="space-y-1.5">
-      <h4 class="text-sm sm:text-base font-bold text-slate-900">
-        Digite o código de 6 dígitos enviado por SMS
-      </h4>
-      <p class="text-xs text-slate-500">
-        Enviamos o código para <span class="font-bold text-slate-700 font-mono">{{ maskedPhone }}</span>
+    <div class="flex flex-col gap-[var(--space-2)]">
+      <label
+        :for="firstCellId"
+        class="text-[length:var(--text-sm)] font-[number:var(--weight-semibold)] text-[color:var(--text-strong)]"
+      >
+        Código de 6 dígitos
+      </label>
+
+      <SmsOtpInputs
+        :digits="digits"
+        :input-refs="inputRefs"
+        :first-id="firstCellId"
+        :invalid="!!errorMsg"
+        @digit-change="(index, value) => emit('digitChange', index, value)"
+        @key-down="(index, e) => emit('keyDown', index, e)"
+        @paste="(e) => emit('paste', e)"
+      />
+
+      <p
+        v-if="errorMsg"
+        :id="errorId"
+        role="alert"
+        class="m-0 flex items-center gap-[var(--space-1)] text-[length:var(--text-xs)] text-[color:var(--danger-dark)]"
+      >
+        <AlertCircle class="size-[14px] shrink-0" aria-hidden="true" />
+        {{ errorMsg }}
       </p>
     </div>
 
-    <!-- 6 Inputs -->
-    <SmsOtpInputs
-      :digits="digits"
-      :input-refs="inputRefs"
-      @digit-change="(index, value) => emit('digitChange', index, value)"
-      @key-down="(index, e) => emit('keyDown', index, e)"
-      @paste="(e) => emit('paste', e)"
-    />
-
-    <!-- Error Message -->
-    <motion.div
-      v-if="errorMsg"
-      :initial="{ opacity: 0, y: -4 }"
-      :animate="{ opacity: 1, y: 0 }"
-      class="flex items-center justify-center gap-1.5 text-xs text-rose-600 font-bold"
+    <TcButton
+      variant="primary"
+      arrow
+      class="w-full"
+      :disabled="isIncomplete(digits)"
+      @click="emit('validate', digits.join(''))"
     >
-      <AlertCircle :size="14" />
-      <span>{{ errorMsg }}</span>
-    </motion.div>
+      Confirmar código
+    </TcButton>
 
-    <!-- Cooldown & Resend Action -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100 text-xs">
-      <button
-        type="button"
-        :disabled="cooldown > 0"
-        @click="emit('resend')"
-        :class="`font-semibold transition-colors ${
-          cooldown > 0
-            ? 'text-slate-400 cursor-not-allowed'
-            : 'text-gci hover:underline'
-        }`"
-      >
-        {{ cooldown > 0 ? `Reenviar código em ${cooldown}s` : 'Reenviar código' }}
+    <div
+      class="flex flex-wrap items-center justify-between gap-x-[var(--space-4)] gap-y-[var(--space-2)] text-[length:var(--text-xs)] text-[color:var(--text-muted)]"
+    >
+      <span v-if="cooldown > 0">
+        Reenviar em
+        <strong class="font-[number:var(--weight-bold)] tabular-nums text-[color:var(--text-strong)]">{{ formatCooldown(cooldown) }}</strong>
+      </span>
+      <button v-else type="button" :class="linkButtonClass" @click="emit('resend')">
+        Reenviar código
       </button>
 
-      <button
-        type="button"
-        @click="emit('validate', digits.join(''))"
-        :disabled="digits.join('').length < 6"
-        class="w-full sm:w-auto px-7 py-3 bg-gci hover:bg-gci-hover disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-sm active:scale-95 whitespace-nowrap cursor-pointer"
-      >
-        Confirmar Código
+      <button type="button" :class="linkButtonClass" @click="emit('openSupport')">
+        Não é o seu número?
       </button>
     </div>
   </motion.div>

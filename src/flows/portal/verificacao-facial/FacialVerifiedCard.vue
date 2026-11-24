@@ -1,46 +1,34 @@
 <script setup lang="ts">
 import { CheckCircle2 } from 'lucide-vue-next';
+import TcNotice from '@/components/theme/TcNotice.vue';
+import TcStatusChip from '@/components/theme/TcStatusChip.vue';
 import {
   MOCK_FACIAL_AUDIT_STATUS,
   MOCK_FACIAL_IDENTIFIER,
   MOCK_FACIAL_LIVENESS_SCORE,
 } from '@/mocks/facialVerification';
+
+const FACTS = [
+  { label: 'Identificador', value: MOCK_FACIAL_IDENTIFIER },
+  { label: 'Liveness Score', value: MOCK_FACIAL_LIVENESS_SCORE },
+  { label: 'Status de Auditoria', value: MOCK_FACIAL_AUDIT_STATUS },
+];
 </script>
 
 <template>
-  <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-5 space-y-4">
-    <div class="flex items-start justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-          <CheckCircle2 :size="22" />
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h4 class="text-sm font-bold text-emerald-950">Biometria Facial Validada com Sucesso</h4>
-            <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-              Prova de Vida Aprovada
-            </span>
-          </div>
-          <p class="text-xs text-emerald-800 mt-0.5">
-            Reconhecimento facial do sócio administrador autenticado e auditado digitalmente.
-          </p>
-        </div>
+  <TcNotice tone="success" :icon="CheckCircle2" title="Biometria Facial Validada com Sucesso">
+    <div class="flex flex-col gap-[var(--space-3)]">
+      <div>
+        <TcStatusChip tone="success">Prova de Vida Aprovada</TcStatusChip>
       </div>
-    </div>
+      <p class="m-0">Reconhecimento facial do sócio administrador autenticado e auditado digitalmente.</p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs border-t border-emerald-200/60 text-emerald-900">
-      <div class="bg-white/80 p-2.5 rounded-lg border border-emerald-100">
-        <span class="text-[10px] text-emerald-700 block uppercase font-bold">Identificador</span>
-        <span class="font-mono font-semibold text-slate-800 text-[11px]">{{ MOCK_FACIAL_IDENTIFIER }}</span>
-      </div>
-      <div class="bg-white/80 p-2.5 rounded-lg border border-emerald-100">
-        <span class="text-[10px] text-emerald-700 block uppercase font-bold">Liveness Score</span>
-        <span class="font-semibold text-emerald-700 text-[11px]">{{ MOCK_FACIAL_LIVENESS_SCORE }}</span>
-      </div>
-      <div class="bg-white/80 p-2.5 rounded-lg border border-emerald-100">
-        <span class="text-[10px] text-emerald-700 block uppercase font-bold">Status de Auditoria</span>
-        <span class="font-semibold text-emerald-700 text-[11px]">{{ MOCK_FACIAL_AUDIT_STATUS }}</span>
-      </div>
+      <dl class="m-0 grid grid-cols-1 gap-[var(--space-3)] sm:grid-cols-3">
+        <div v-for="fact in FACTS" :key="fact.label" class="min-w-0 rounded-[var(--radius-md)] bg-[var(--surface-card)] p-[var(--space-3)]">
+          <dt class="text-[length:var(--text-xs)] text-[color:var(--text-muted)]">{{ fact.label }}</dt>
+          <dd class="m-0 font-[number:var(--weight-semibold)] [overflow-wrap:anywhere]">{{ fact.value }}</dd>
+        </div>
+      </dl>
     </div>
-  </div>
+  </TcNotice>
 </template>
